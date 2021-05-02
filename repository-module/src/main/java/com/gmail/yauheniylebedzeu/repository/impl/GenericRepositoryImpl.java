@@ -7,7 +7,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
-import java.util.Optional;
 
 public abstract class GenericRepositoryImpl<I, T> implements GenericRepository<I, T> {
 

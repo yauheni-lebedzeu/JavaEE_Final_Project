@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Reviews</title>
+</head>
+<body>
+<h1 align="center">App Reviews</h1>
+<div align="center" th:if="${reviews.isEmpty()}">
+    <h2>There are no reviews here yet</h2>
+</div>
+<div align="center" th:unless="${reviews.isEmpty()}">
+    <form action=# th:action="@{/reviews/admin/change-visibility}" method="post" id="changingForm"></form>
+    <table border="1">
+        <thead>
+        <tr>
+            <th width="15%">Author</th>
+            <th width="60%">Content</th>
+            <th width="10%">Addition date</th>
+            <th width="5%">Status</th>
+            <th width="5%">Check the box for
+                changing status
+            </th>
+            <th width="5">Delete review</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="review: ${reviews}">
+            <td th:text="${review.userLastName + ' ' + review.userFirstName + ' ' + review.userPatronymic}">
+                User
+            </td>
+            <td>
+                <pre th:text="${review.content}">Review content</pre>
+            </td>
+            <td align="center" th:text="${review.additionDate}">Addition date</td>
+            <td>
+                <p>
+                    <span style="font-style: italic" th:if="${review.isVisible}"> visible</span>
+                    <span style="font-style: italic" th:unless="${review.isVisible}"> invisible</span>
+                </p>
+            </td>
+            <td align="center">
+                <div>
+                    <input type="checkbox" name="uuids" th:value="${review.uuid}" form="changingForm"/>
+                </div>
+            </td>
+            <td align="center">
+                <form action=# th:action="@{/reviews/admin/del/{uuid}(uuid = ${review.uuid})}"
+                      method="post">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div>
+        <input type="submit" value="Change visibility" form="changingForm"/>
+    </div>
+</div>
+</body>
+<footer>
+    <div align="center" th:if="${countOfPages>1}">
+        <span th:each="i : ${#numbers.sequence(1,countOfPages)}">
+            <a th:href="@{/reviews/admin/{id}/10(id=${i})}" th:text="'|' + ${i} + '|'"></a>
+        </span>
+    </div>
+</footer>
+</html>

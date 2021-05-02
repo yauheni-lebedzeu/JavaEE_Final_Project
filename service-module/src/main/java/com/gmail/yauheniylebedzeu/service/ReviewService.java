@@ -15,4 +15,8 @@ public interface ReviewService {
 
     Optional<ReviewDTO> changeVisibilityByUuid(String uuid);
 
+    List<ReviewDTO> findAllVisible(int startPosition, int maxResult, String sortFieldName);
+
+    Long getCountOfVisible();
+
 }

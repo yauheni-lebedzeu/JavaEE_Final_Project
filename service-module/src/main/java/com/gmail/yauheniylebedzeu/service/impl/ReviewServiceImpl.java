@@ -5,7 +5,6 @@ import com.gmail.yauheniylebedzeu.repository.model.Review;
 import com.gmail.yauheniylebedzeu.service.ReviewService;
 import com.gmail.yauheniylebedzeu.service.converter.ReviewConverter;
 import com.gmail.yauheniylebedzeu.service.model.ReviewDTO;
-import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,5 +60,20 @@ public class ReviewServiceImpl implements ReviewService {
         } else {
             return Optional.empty();
         }
+    }
+
+    @Override
+    @Transactional
+    public List<ReviewDTO> findAllVisible(int startPosition, int maxResult, String sortFieldName) {
+        List<Review> reviews = reviewRepository.findAllVisible(startPosition, maxResult, sortFieldName);
+        return reviews.stream()
+                .map(reviewConverter::convertReviewToReviewDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public Long getCountOfVisible() {
+        return reviewRepository.getCountOfVisible();
     }
 }

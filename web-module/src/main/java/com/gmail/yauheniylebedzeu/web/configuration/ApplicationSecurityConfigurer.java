@@ -27,7 +27,7 @@ public class ApplicationSecurityConfigurer extends WebSecurityConfigurerAdapter 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/users/**", "/reviews/del/**", "/reviews/change-visibility")
+                .antMatchers("/users/**", "/reviews/admin/**")
                 .hasAuthority(RoleDTOEnum.ADMIN.name())
                 .antMatchers("/")
                 .permitAll()
