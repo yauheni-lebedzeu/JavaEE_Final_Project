@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Users</title>
+</head>
+<body>
+<div align="center">
+    <form action=# th:action="@{/users/del}" method="post" id="deletingForm"></form>
+    <table border="2">
+        <thead>
+        <tr>
+            <th>Last name</th>
+            <th>First name</th>
+            <th>Patronymic</th>
+            <th>Email</th>
+            <th>Change the password</th>
+            <th>Role</th>
+            <th>Change role</th>
+            <th>Check the box for deletion</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user: ${users}">
+            <td th:text="${user.lastName}">Last name</td>
+            <td th:text="${user.firstName}">First name</td>
+            <td th:text="${user.patronymic}">Patronymic</td>
+            <td th:text="${user.email}">Email</td>
+            <td>
+                <form action=# th:action="@{/users/change-password/{uuid}(uuid = ${user.uuid})}" method="post">
+                    <button type="submit">Generate a new password</button>
+                </form>
+            </td>
+            <td th:text="${user.role}">Role</td>
+            <td align="center" th:unless="${email.equals(user.email)}">
+                <form action=# th:action="@{/users/change-role/{uuid}(uuid = ${user.uuid})}" method="post">
+                    <select name="role_name">
+                        <option th:each="role : ${allRoles}" th:value="${role.name()}"
+                                th:unless="${user.role} == ${role}" th:text="${role.name()}">Role
+                        </option>
+                    </select><br>
+                    <input type="submit" value="Change role"/>
+                </form>
+            </td>
+            <td align="center" th:unless="${email.equals(user.email)}">
+                <input type="checkbox" name="uuids" th:value="${user.uuid}" form="deletingForm"/>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <p th:if="${users.size() > 1}">
+        <input type="submit" form="deletingForm" value="Delete checked users"/>
+    </p>
+    </form>
+</div>
+</body>
+<footer>
+    <div align="center" th:if="${countOfPages>1}">
+        <span style="white-space: nowrap;" th:each="i : ${#numbers.sequence(1,countOfPages)}">
+            <a th:href="@{/users/{id}/10(id=${i})}" th:text="'|' + ${i} + '|'"></a>
+        </span>
+    </div>
+</footer>
+</html>
