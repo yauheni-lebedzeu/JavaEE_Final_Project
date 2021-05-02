@@ -23,6 +23,7 @@
 hs_err_pid*
 
 # Oters
+target
 mysql-data
 .idea
 *.iml
