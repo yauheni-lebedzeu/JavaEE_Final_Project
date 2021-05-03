@@ -8,6 +8,7 @@ import com.gmail.yauheniylebedzeu.repository.model.User;
 import com.gmail.yauheniylebedzeu.service.UserService;
 import com.gmail.yauheniylebedzeu.service.converter.UserConverter;
 import com.gmail.yauheniylebedzeu.service.enums.RoleDTOEnum;
+import com.gmail.yauheniylebedzeu.service.exception.UserNotFoundException;
 import com.gmail.yauheniylebedzeu.service.exception.UserServiceException;
 import com.gmail.yauheniylebedzeu.service.generator.RandomPasswordGenerator;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
@@ -35,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void add(UserDTO userDTO) {
+    public UserDTO add(UserDTO userDTO) {
         User user = userConverter.convertUserDTOtoUser(userDTO);
         String password = user.getPassword();
         password = passwordEncoder.encode(password);
@@ -52,18 +53,18 @@ public class UserServiceImpl implements UserService {
                     + roleName + " was not found in the database");
         }
         userRepository.persist(user);
+        return userConverter.convertUserToUserDTO(user);
     }
 
     @Override
     @Transactional
-    public Optional<UserDTO> getByEmail(String email) {
+    public UserDTO getByEmail(String email) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            UserDTO userDTO = userConverter.convertUserToUserDTO(user);
-            return Optional.ofNullable(userDTO);
+            return userConverter.convertUserToUserDTO(user);
         } else {
-            return Optional.empty();
+            throw new UserNotFoundException("User wit email " + email + " was not found in the database");
         }
     }
 

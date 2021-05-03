@@ -7,6 +7,8 @@ import com.gmail.yauheniylebedzeu.service.model.UserLogin;
 import com.gmail.yauheniylebedzeu.web.controller.exception.UserControllerException;
 import com.gmail.yauheniylebedzeu.web.validator.UserValidator;
 import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.platform.commons.util.StringUtils;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,12 +21,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 @Controller
 @AllArgsConstructor
 public class UserController {
 
+    private static final Logger logger = LogManager.getLogger(MethodHandles.lookup().lookupClass());
     private final UserService userService;
     private final UserValidator userValidator;
 
@@ -90,6 +94,7 @@ public class UserController {
                 RoleDTOEnum.valueOf(roleName);
                 userService.changeRoleByUuid(uuid, roleName);
             } catch (IllegalArgumentException e) {
+                logger.error(e.getMessage(), e);
                 throw new UserControllerException(String.format("A role named %s does not exist", roleName), e);
             }
         }

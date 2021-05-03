@@ -24,7 +24,7 @@ public class ReviewController {
                              Model model) {
         Long countOfReviews = reviewService.getCountOfReviews();
         int startPosition = (pageNumber - 1) * pageSize;
-        List<ReviewDTO> reviews = reviewService.findAll(startPosition, pageSize, "additionDate desc");
+        List<ReviewDTO> reviews = reviewService.getReviewList(startPosition, pageSize, "additionDate desc");
         model.addAttribute("reviews", reviews);
         int countOfPages = (int) (Math.ceil(countOfReviews / (double) pageSize));
         model.addAttribute("countOfPages", countOfPages);

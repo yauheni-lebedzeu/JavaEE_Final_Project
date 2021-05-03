@@ -28,7 +28,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public List<ReviewDTO> findAll(int startPosition, int maxResult, String sortFieldName) {
+    public List<ReviewDTO> getReviewList(int startPosition, int maxResult, String sortFieldName) {
         List<Review> reviews = reviewRepository.findAll(startPosition, maxResult, sortFieldName);
         return reviews.stream()
                 .map(reviewConverter::convertReviewToReviewDTO)

@@ -7,9 +7,9 @@ import java.util.Optional;
 
 public interface UserService {
 
-    void add(UserDTO userDTO);
+    UserDTO add(UserDTO userDTO);
 
-    Optional<UserDTO> getByEmail(String email);
+    UserDTO getByEmail(String email);
 
     Long getCountOfUsers();
 

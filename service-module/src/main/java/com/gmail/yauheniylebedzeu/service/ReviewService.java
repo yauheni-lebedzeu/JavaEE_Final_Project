@@ -9,7 +9,7 @@ public interface ReviewService {
 
     Long getCountOfReviews();
 
-    List<ReviewDTO> findAll(int startPosition, int maxResult, String sortFieldName);
+    List<ReviewDTO> getReviewList(int startPosition, int maxResult, String sortParameter);
 
     void removeByUuid(String uuid);
 
