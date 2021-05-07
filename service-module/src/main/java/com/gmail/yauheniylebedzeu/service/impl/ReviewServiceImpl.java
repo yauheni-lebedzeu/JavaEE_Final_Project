@@ -51,9 +51,9 @@ public class ReviewServiceImpl implements ReviewService {
         Optional<Review> optionalReview = reviewRepository.findByUuid(uuid);
         if (optionalReview.isPresent()) {
             Review review = optionalReview.get();
-            Boolean isVisible = review.getIsVisible();
-            isVisible = !isVisible;
-            review.setIsVisible(isVisible);
+            boolean isVisible = review.getIsVisible();
+            boolean newStatus = !isVisible;
+            review.setIsVisible(newStatus);
             reviewRepository.merge(review);
             ReviewDTO reviewDTO = reviewConverter.convertReviewToReviewDTO(review);
             return Optional.ofNullable(reviewDTO);
