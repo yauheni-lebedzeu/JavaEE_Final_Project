@@ -2,17 +2,19 @@ package com.gmail.yauheniylebedzeu.repository;
 
 import java.util.List;
 
-public interface GenericRepository<I, T> {
+public interface GenericRepository<T> {
 
     void persist(T entity);
 
-    T findById(I id);
+    T findByUuid(String uuid);
 
     void remove(T entity);
 
     void merge(T entity);
 
-    List<T> findAll(int startPosition, int maxResult, String sortParameter);
+    List<T> findEntitiesWithLimit(int startPosition, int maxResult, String sortParameter);
 
-    I getCountOfEntities();
+    Long getCountOfEntities();
+
+    List<T> findAll();
 }

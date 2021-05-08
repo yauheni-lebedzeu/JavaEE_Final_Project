@@ -14,7 +14,7 @@ import javax.persistence.criteria.Root;
 import java.util.Optional;
 
 @Repository
-public class RoleRepositoryImpl extends GenericRepositoryImpl<Role, Long> implements RoleRepository {
+public class RoleRepositoryImpl extends GenericRepositoryImpl<Role> implements RoleRepository {
 
     @Override
     public Optional<Role> findByName(RoleEnum name) {

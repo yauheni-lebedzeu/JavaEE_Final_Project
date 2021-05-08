@@ -1,12 +1,12 @@
 package com.gmail.yauheniylebedzeu.service.model;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
 
-@Getter
-@Setter
+@Data
 public class ReviewDTO {
 
     private Long id;

@@ -1,14 +1,14 @@
 package com.gmail.yauheniylebedzeu.service.model;
 
 import com.gmail.yauheniylebedzeu.service.enums.RoleDTOEnum;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Getter
-@Setter
+@Data
 public class UserDTO {
 
     private Long id;
@@ -18,6 +18,8 @@ public class UserDTO {
     private String patronymic;
     private String email;
     private String password;
+    private String address;
+    private String phoneNumber;
     private RoleDTOEnum role;
     private Set<ReviewDTO> reviews = new HashSet<>();
 

@@ -1,35 +1,39 @@
 package com.gmail.yauheniylebedzeu.service.impl;
 
+import com.gmail.yauheniylebedzeu.repository.model.User;
 import com.gmail.yauheniylebedzeu.service.UserService;
 import com.gmail.yauheniylebedzeu.service.exception.UserNotFoundException;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import com.gmail.yauheniylebedzeu.service.model.UserLogin;
-import lombok.AllArgsConstructor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.lang.invoke.MethodHandles;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@AllArgsConstructor
+@Log4j2
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private static final Logger logger = LogManager.getLogger(MethodHandles.lookup().lookupClass());
+    @Lazy
     private final UserService userService;
 
+    public UserDetailsServiceImpl(UserService userService) {
+        this.userService = userService;
+    }
+
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
-            UserDTO user = userService.getByEmail(username);
+            UserDTO user = userService.findByEmail(username);
             return new UserLogin(user);
         } catch (UserNotFoundException e) {
-            logger.error(e.getMessage(), e);
-            throw e;
+            log.error(e.getMessage(), e);
+            throw new UsernameNotFoundException(String.format("User with email %s was not found in the database",
+                    username));
         }
-
     }
 }

@@ -5,7 +5,7 @@ import com.gmail.yauheniylebedzeu.repository.model.Role;
 
 import java.util.Optional;
 
-public interface RoleRepository extends GenericRepository<Role, Long> {
+public interface RoleRepository extends GenericRepository<Role> {
 
     Optional<Role> findByName(RoleEnum name);
 

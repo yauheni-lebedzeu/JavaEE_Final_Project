@@ -5,11 +5,11 @@
     <title>Reviews</title>
 </head>
 <body>
-<h1 align="center">App Reviews</h1>
-<div align="center" th:if="${reviews.isEmpty()}">
+<h1 align="center">Site Reviews</h1>
+<div align="center" th:if="${page.getObjects.isEmpty()}">
     <h2>There are no reviews here yet</h2>
 </div>
-<div align="center" th:unless="${reviews.isEmpty()}">
+<div align="center" th:unless="${page.getObjects.isEmpty()}">
     <table border="1">
         <thead>
         <tr>
@@ -19,7 +19,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="review : ${reviews}">
+        <tr th:each="review : ${page.getObjects}">
             <td th:text="${review.userLastName + ' ' + review.userFirstName + ' ' + review.userPatronymic}">Author</td>
             <td th:text="${review.content}">Content</td>
             <td th:text="${review.additionDate}">Addition date</td>
@@ -28,9 +28,12 @@
     </table>
 </div>
 <footer>
-    <div align="center" th:if="${countOfPages>1}">
-        <span th:each="i : ${#numbers.sequence(1,countOfPages)}">
-            <a th:href="@{/reviews/{id}/10(id=${i})}" th:text="'|' + ${i} + '|'"></a>
+    <div align="center" th:if="${page.countOfPages > 1}">
+        <span th:each="i : ${#numbers.sequence(1,page.countOfPages)}">
+            <span th:unless="${page.pageNumber == i}">
+            <a th:href="@{'/reviews?pageNumber=' + ${i}}" th:text="'|' + ${i} + '|'"></a>
+            </span>
+            <span th:if="${page.pageNumber == i}" th:text="${i}"></span>
         </span>
     </div>
 </footer>

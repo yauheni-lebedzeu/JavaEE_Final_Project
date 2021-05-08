@@ -13,7 +13,7 @@ import javax.persistence.criteria.Root;
 import java.util.Optional;
 
 @Repository
-public class UserRepositoryImpl extends GenericRepositoryImpl<Long, User> implements UserRepository {
+public class UserRepositoryImpl extends GenericRepositoryImpl<User> implements UserRepository {
 
     @Override
     public Optional<User> findByEmail(String username) {
@@ -25,24 +25,6 @@ public class UserRepositoryImpl extends GenericRepositoryImpl<Long, User> implem
                 .where(criteriaBuilder.equal(root.get("email"), parameterExpression));
         TypedQuery<User> typedQuery = entityManager.createQuery(query);
         typedQuery.setParameter(parameterExpression, username);
-        try {
-            User user = typedQuery.getSingleResult();
-            return Optional.ofNullable(user);
-        } catch (NoResultException e) {
-            return Optional.empty();
-        }
-    }
-
-    @Override
-    public Optional<User> findByUuid(String uuid) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
-        Root<User> root = query.from(User.class);
-        ParameterExpression<String> parameterExpression = criteriaBuilder.parameter(String.class);
-        query.select(root)
-                .where(criteriaBuilder.equal(root.get("uuid"), parameterExpression));
-        TypedQuery<User> typedQuery = entityManager.createQuery(query);
-        typedQuery.setParameter(parameterExpression, uuid);
         try {
             User user = typedQuery.getSingleResult();
             return Optional.ofNullable(user);

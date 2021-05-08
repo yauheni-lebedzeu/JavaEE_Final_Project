@@ -1,8 +1,8 @@
 package com.gmail.yauheniylebedzeu.repository.model;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
@@ -11,9 +11,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "review")
 @DynamicInsert
-@Getter
-@Setter
-@EqualsAndHashCode(exclude = {"uuid", "additionDate", "user"})
+@Data
 public class Review {
 
     @Id
@@ -22,12 +20,14 @@ public class Review {
     private Long id;
 
     @Column
+    @EqualsAndHashCode.Exclude
     private String uuid;
 
     @Column
     private String content;
 
     @Column(name = "addition_date")
+    @EqualsAndHashCode.Exclude
     private LocalDate additionDate;
 
     @Column(name = "is_visible")
@@ -36,6 +36,7 @@ public class Review {
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "user_id")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private User user;
-
 }

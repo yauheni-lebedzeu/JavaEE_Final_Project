@@ -8,7 +8,7 @@ import javax.persistence.Query;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
-public abstract class GenericRepositoryImpl<I, T> implements GenericRepository<I, T> {
+public abstract class GenericRepositoryImpl<T> implements GenericRepository<T> {
 
     @PersistenceContext
     protected EntityManager entityManager;
@@ -18,7 +18,7 @@ public abstract class GenericRepositoryImpl<I, T> implements GenericRepository<I
     @SuppressWarnings("unchecked")
     public GenericRepositoryImpl() {
         ParameterizedType genericClass = (ParameterizedType) getClass().getGenericSuperclass();
-        this.entityClass = (Class<T>) genericClass.getActualTypeArguments()[1];
+        this.entityClass = (Class<T>) genericClass.getActualTypeArguments()[0];
     }
 
     @Override
@@ -27,9 +27,14 @@ public abstract class GenericRepositoryImpl<I, T> implements GenericRepository<I
     }
 
     @Override
-    public T findById(I id) {
-        return entityManager.find(entityClass, id);
+    @SuppressWarnings("unchecked")
+    public T findByUuid(String uuid) {
+        String queryString = "select c from " + entityClass.getName() + " c where c.uuid=:uuid";
+        Query query = entityManager.createQuery(queryString);
+        query.setParameter("uuid", uuid);
+        return (T) query.getSingleResult();
     }
+
 
     @Override
     public void remove(T entity) {
@@ -43,7 +48,7 @@ public abstract class GenericRepositoryImpl<I, T> implements GenericRepository<I
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<T> findAll(int startPosition, int maxResult, String sortParameter) {
+    public List<T> findEntitiesWithLimit(int startPosition, int maxResult, String sortParameter) {
         String queryString = "select c from " + entityClass.getName() + " c order by c." + sortParameter;
         Query query = entityManager.createQuery(queryString);
         query.setFirstResult(startPosition);
@@ -52,10 +57,17 @@ public abstract class GenericRepositoryImpl<I, T> implements GenericRepository<I
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public I getCountOfEntities() {
+    public Long getCountOfEntities() {
         String queryString = "select count(c.id) from " + entityClass.getName() + " c";
         Query query = entityManager.createQuery(queryString);
-        return (I) query.getSingleResult();
+        return (Long) query.getSingleResult();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<T> findAll() {
+        String queryString = "from " + entityClass.getName();
+        Query query = entityManager.createQuery(queryString);
+        return query.getResultList();
     }
 }

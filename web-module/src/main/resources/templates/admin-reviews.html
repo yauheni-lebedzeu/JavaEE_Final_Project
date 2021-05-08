@@ -5,27 +5,27 @@
     <title>Reviews</title>
 </head>
 <body>
-<h1 align="center">App Reviews</h1>
-<div align="center" th:if="${reviews.isEmpty()}">
+<h1 align="center">Site Reviews</h1>
+<div align="center" th:if="${page.getObjects.isEmpty()}">
     <h2>There are no reviews here yet</h2>
 </div>
-<div align="center" th:unless="${reviews.isEmpty()}">
-    <form action=# th:action="@{/reviews/admin/change-visibility}" method="post" id="changingForm"></form>
+<div align="center" th:unless="${page.getObjects.isEmpty()}">
+    <form action=#
+          th:action="@{/reviews/admin/change-visibility/{sourcePageNumber}(sourcePageNumber=${page.pageNumber})}"
+          method="post" id="changing_form"></form>
     <table border="1">
         <thead>
         <tr>
             <th width="15%">Author</th>
             <th width="60%">Content</th>
-            <th width="10%">Addition date</th>
-            <th width="5%">Status</th>
-            <th width="5%">Check the box for
-                changing status
+            <th width="13%">Addition date</th>
+            <th width="5%">Visible or not</th>
             </th>
-            <th width="5">Delete review</th>
+            <th width="7">Delete review</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="review: ${reviews}">
+        <tr th:each="review: ${page.getObjects}">
             <td th:text="${review.userLastName + ' ' + review.userFirstName + ' ' + review.userPatronymic}">
                 User
             </td>
@@ -33,19 +33,21 @@
                 <pre th:text="${review.content}">Review content</pre>
             </td>
             <td align="center" th:text="${review.additionDate}">Addition date</td>
-            <td>
-                <p>
-                    <span style="font-style: italic" th:if="${review.isVisible}"> visible</span>
-                    <span style="font-style: italic" th:unless="${review.isVisible}"> invisible</span>
-                </p>
-            </td>
             <td align="center">
+                <span style="font-style: italic" th:if="${review.isVisible}"> visible</span>
+                <span style="font-style: italic" th:unless="${review.isVisible}"> invisible</span>
                 <div>
-                    <input type="checkbox" name="uuids" th:value="${review.uuid}" form="changingForm"/>
+                    <input type="checkbox" name="checkedUuids" th:value="${review.uuid}"
+                           th:checked="${review.isVisible}" form="changing_form"/>
+                    <div th:if="${review.isVisible}">
+                        <input type="hidden" name="previouslyCheckedUuids" th:value="${review.uuid}"
+                               form="changing_form"/>
+                    </div>
                 </div>
             </td>
             <td align="center">
-                <form action=# th:action="@{/reviews/admin/del/{uuid}(uuid = ${review.uuid})}"
+                <form action=#
+                      th:action="@{/reviews/admin/del/{uuid}/{sourcePageNumber}(uuid = ${review.uuid}, sourcePageNumber=${page.pageNumber})}"
                       method="post">
                     <button type="submit">Delete</button>
                 </form>
@@ -53,15 +55,18 @@
         </tr>
         </tbody>
     </table>
-    <div>
-        <input type="submit" value="Change visibility" form="changingForm"/>
-    </div>
+    <p>
+        <input type="submit" value="Save the Changes" form="changing_form"/>
+    </p>
 </div>
 </body>
 <footer>
-    <div align="center" th:if="${countOfPages>1}">
-        <span th:each="i : ${#numbers.sequence(1,countOfPages)}">
-            <a th:href="@{/reviews/admin/{id}/10(id=${i})}" th:text="'|' + ${i} + '|'"></a>
+    <div align="center" th:if="${page.countOfPages > 1}">
+        <span th:each="i : ${#numbers.sequence(1,page.countOfPages)}">
+            <span th:unless="${page.pageNumber == i}">
+            <a th:href="@{'/reviews/admin?pageNumber=' + ${i}}" th:text="'|' + ${i} + '|'"></a>
+            </span>
+            <span th:if="${page.pageNumber == i}" th:text="${i}"></span>
         </span>
     </div>
 </footer>

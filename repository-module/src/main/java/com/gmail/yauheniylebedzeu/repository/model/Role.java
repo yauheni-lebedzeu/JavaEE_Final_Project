@@ -1,17 +1,13 @@
 package com.gmail.yauheniylebedzeu.repository.model;
 
 import com.gmail.yauheniylebedzeu.repository.enums.RoleEnum;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "role")
-@Getter
-@Setter
-@EqualsAndHashCode
+@Data
 public class Role {
 
     @Id

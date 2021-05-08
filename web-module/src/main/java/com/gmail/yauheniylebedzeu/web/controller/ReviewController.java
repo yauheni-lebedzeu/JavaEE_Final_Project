@@ -1,6 +1,7 @@
 package com.gmail.yauheniylebedzeu.web.controller;
 
 import com.gmail.yauheniylebedzeu.service.ReviewService;
+import com.gmail.yauheniylebedzeu.service.model.PageDTO;
 import com.gmail.yauheniylebedzeu.service.model.ReviewDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -18,44 +19,33 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @GetMapping(value = "/reviews/admin/{pageNumber}/{pageSize}")
-    public String getReviews(@PathVariable int pageNumber,
-                             @PathVariable int pageSize,
-                             Model model) {
-        Long countOfReviews = reviewService.getCountOfReviews();
-        int startPosition = (pageNumber - 1) * pageSize;
-        List<ReviewDTO> reviews = reviewService.getReviewList(startPosition, pageSize, "additionDate desc");
-        model.addAttribute("reviews", reviews);
-        int countOfPages = (int) (Math.ceil(countOfReviews / (double) pageSize));
-        model.addAttribute("countOfPages", countOfPages);
+    @GetMapping(value = "/reviews/admin")
+    public String getReviews(@RequestParam(defaultValue = "1") int pageNumber, Model model) {
+        int pageSize = 10;
+        PageDTO<ReviewDTO> page = reviewService.getReviewPage(pageNumber, pageSize, "additionDate desc");
+        model.addAttribute("page", page);
         return "admin-reviews";
     }
 
-    @PostMapping(value = "/reviews/admin/del/{uuid}")
-    public String delReviews(@PathVariable String uuid) {
-        System.out.println(uuid);
+    @PostMapping(value = "/reviews/admin/del/{uuid}/{sourcePageNumber}")
+    public String delReviews(@PathVariable String uuid, @PathVariable String sourcePageNumber) {
         reviewService.removeByUuid(uuid);
-        return "redirect:/reviews/admin/1/10";
+        return "redirect:/reviews/admin?pageNumber=" + sourcePageNumber;
     }
 
-    @PostMapping(value = "/reviews/admin/change-visibility")
-    public String changeVisibility(@RequestParam(required = false) List<String> uuids) {
-        if (uuids != null) {
-            uuids.forEach(reviewService::changeVisibilityByUuid);
-        }
-        return "redirect:/reviews/admin/1/10";
+    @PostMapping(value = "/reviews/admin/change-visibility/{sourcePageNumber}")
+    public String changeVisibility(@RequestParam(required = false) List<String> checkedUuids,
+                                   @RequestParam(required = false) List<String> previouslyCheckedUuids,
+                                   @PathVariable String sourcePageNumber) {
+        reviewService.changeVisibilityByUuids(checkedUuids, previouslyCheckedUuids);
+        return "redirect:/reviews/admin?pageNumber=" + sourcePageNumber;
     }
 
-    @GetMapping(value = "/reviews/{pageNumber}/{pageSize}")
-    public String getVisibleReviews(@PathVariable int pageNumber,
-                                    @PathVariable int pageSize,
-                                    Model model) {
-        Long countOfReviews = reviewService.getCountOfVisible();
-        int startPosition = (pageNumber - 1) * pageSize;
-        List<ReviewDTO> reviews = reviewService.findAllVisible(startPosition, pageSize, "additionDate desc");
-        model.addAttribute("reviews", reviews);
-        int countOfPages = (int) (Math.ceil(countOfReviews / (double) pageSize));
-        model.addAttribute("countOfPages", countOfPages);
+    @GetMapping(value = "/reviews")
+    public String getVisibleReviews(@RequestParam(defaultValue = "1") int pageNumber, Model model) {
+        int pageSize = 10;
+        PageDTO<ReviewDTO> page = reviewService.getVisibleReviewsPage(pageNumber, pageSize, "additionDate desc");
+        model.addAttribute("page", page);
         return "reviews";
     }
 

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${article.title}">Title</title>
+</head>
+<body>
+<table align="center" border="1">
+    <tbody>
+    <tr>
+        <td>
+            <p th:text="${article.additionDate}">Date</p>
+            <p th:text="${article.title}">Article title</p>
+            <p th:text="${article.content}">Content</p>
+            <p th:text="${article.userFirstName + ' ' + article.userLastName}">Author</p>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<table align="center" th:unless="${article.comments.isEmpty()}">
+    <thead>
+    <tr>
+        <th>Comments</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="comment : ${article.comments}">
+        <td>
+            <p th:text="${comment.userFirstName + ' ' + comment.userLastName}">Author</p>
+            <p th:text="${comment.additionDate}">Date</p>
+            <p th:text="${comment.content}">Content</p>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

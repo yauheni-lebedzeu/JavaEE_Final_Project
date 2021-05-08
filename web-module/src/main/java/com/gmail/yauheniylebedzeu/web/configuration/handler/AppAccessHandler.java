@@ -22,7 +22,7 @@ public class AppAccessHandler implements AuthenticationSuccessHandler {
         Collection<? extends GrantedAuthority> roles = authentication.getAuthorities();
         SimpleGrantedAuthority adminAuthority = new SimpleGrantedAuthority(RoleDTOEnum.ADMIN.name());
         if (roles.contains(adminAuthority)) {
-            httpServletResponse.sendRedirect("/users/1/10");
+            httpServletResponse.sendRedirect("/users");
         }
     }
 }

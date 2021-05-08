@@ -15,29 +15,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class ReviewRepositoryImpl extends GenericRepositoryImpl<Long, Review> implements ReviewRepository {
-
-    @Override
-    public Optional<Review> findByUuid(String uuid) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Review> query = criteriaBuilder.createQuery(Review.class);
-        Root<Review> root = query.from(Review.class);
-        ParameterExpression<String> parameterExpression = criteriaBuilder.parameter(String.class);
-        query.select(root)
-                .where(criteriaBuilder.equal(root.get("uuid"), parameterExpression));
-        TypedQuery<Review> typedQuery = entityManager.createQuery(query);
-        typedQuery.setParameter(parameterExpression, uuid);
-        try {
-            Review review = typedQuery.getSingleResult();
-            return Optional.ofNullable(review);
-        } catch (NoResultException e) {
-            return Optional.empty();
-        }
-    }
+public class ReviewRepositoryImpl extends GenericRepositoryImpl<Review> implements ReviewRepository {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Review> findAllVisible(int startPosition, int maxResult, String sortParameter) {
+    public List<Review> findVisibleReviews(int startPosition, int maxResult, String sortParameter) {
         String queryString = "select c from Review as c where c.isVisible = true order by c." + sortParameter;
         Query query = entityManager.createQuery(queryString);
         query.setFirstResult(startPosition);
