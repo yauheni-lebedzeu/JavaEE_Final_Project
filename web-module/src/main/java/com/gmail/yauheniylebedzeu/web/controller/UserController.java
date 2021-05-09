@@ -100,7 +100,7 @@ public class UserController {
         return "redirect:/users";
     }
 
-    @GetMapping("/users/user/profile")
+    @GetMapping(value = "/users/user/profile")
     public String GetProfile(UserUpdateDTO userUpdateDTO, BindingResult errors, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -115,7 +115,7 @@ public class UserController {
         return "profile";
     }
 
-    @PostMapping("/users/user/change/{uuid}")
+    @PostMapping(value = "/users/user/change/{uuid}")
     public String changeUserParameters(@PathVariable String uuid, UserUpdateDTO userUpdateDTO,
                                        BindingResult errors, Model model) {
         userUpdateValidator.validate(userUpdateDTO, errors);

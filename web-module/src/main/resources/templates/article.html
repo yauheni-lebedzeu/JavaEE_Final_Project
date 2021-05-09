@@ -5,33 +5,36 @@
     <title th:text="${article.title}">Title</title>
 </head>
 <body>
-<table align="center" border="1">
-    <tbody>
-    <tr>
-        <td>
-            <p th:text="${article.additionDate}">Date</p>
-            <p th:text="${article.title}">Article title</p>
-            <p th:text="${article.content}">Content</p>
-            <p th:text="${article.userFirstName + ' ' + article.userLastName}">Author</p>
-        </td>
-    </tr>
-    </tbody>
-</table>
-<table align="center" th:unless="${article.comments.isEmpty()}">
-    <thead>
-    <tr>
-        <th>Comments</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="comment : ${article.comments}">
-        <td>
-            <p th:text="${comment.userFirstName + ' ' + comment.userLastName}">Author</p>
-            <p th:text="${comment.additionDate}">Date</p>
-            <p th:text="${comment.content}">Content</p>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<div align="center">
+    <table border="1">
+        <tbody>
+        <tr>
+            <td>
+                <p th:text="${article.additionDate}">Date</p>
+                <p th:text="${article.title}">Article title</p>
+                <p th:text="${article.content}">Content</p>
+                <p th:text="${article.userFirstName + ' ' + article.userLastName}">Author</p>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <h3><a th:href="@{/articles}">Go to the list of the articles</a></h3>
+    <table th:unless="${article.comments.isEmpty()}">
+        <thead>
+        <tr>
+            <th>Comments</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="comment : ${article.comments}">
+            <td>
+                <p th:text="${comment.userFirstName + ' ' + comment.userLastName}">Author</p>
+                <p th:text="${comment.additionDate}">Date</p>
+                <p th:text="${comment.content}">Content</p>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>

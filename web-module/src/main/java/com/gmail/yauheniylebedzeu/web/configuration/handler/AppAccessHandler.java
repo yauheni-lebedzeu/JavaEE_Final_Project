@@ -21,8 +21,11 @@ public class AppAccessHandler implements AuthenticationSuccessHandler {
 
         Collection<? extends GrantedAuthority> roles = authentication.getAuthorities();
         SimpleGrantedAuthority adminAuthority = new SimpleGrantedAuthority(RoleDTOEnum.ADMIN.name());
+        SimpleGrantedAuthority customerAuthority = new SimpleGrantedAuthority(RoleDTOEnum.CUSTOMER_USER.name());
         if (roles.contains(adminAuthority)) {
             httpServletResponse.sendRedirect("/users");
+        } else if (roles.contains(customerAuthority)) {
+            httpServletResponse.sendRedirect("/articles");
         }
     }
 }

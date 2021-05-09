@@ -8,6 +8,7 @@ import com.gmail.yauheniylebedzeu.service.converter.UserConverter;
 import com.gmail.yauheniylebedzeu.service.enums.RoleDTOEnum;
 import com.gmail.yauheniylebedzeu.service.exception.RoleNotReceivedException;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
+import org.junit.platform.commons.util.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -25,6 +26,15 @@ public class UserConverterImpl implements UserConverter {
         user.setPatronymic(userDTO.getPatronymic());
         user.setEmail(userDTO.getEmail());
         user.setPassword(userDTO.getPassword());
+        String address = userDTO.getAddress();
+        String phoneNumber = userDTO.getPhoneNumber();
+        if (StringUtils.isNotBlank(address) || StringUtils.isNotBlank(phoneNumber)) {
+            UserContacts contacts = new UserContacts();
+            contacts.setAddress(address);
+            contacts.setPhoneNumber(phoneNumber);
+            contacts.setUser(user);
+            user.setContacts(contacts);
+        }
         return user;
     }
 

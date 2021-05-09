@@ -34,6 +34,8 @@ public class ApplicationSecurityConfigurer extends WebSecurityConfigurerAdapter 
         http.authorizeRequests()
                 .antMatchers("/users/**", "/reviews/admin/**")
                 .hasAuthority(RoleDTOEnum.ADMIN.name())
+                .antMatchers("/articles/**", "/users/user/**")
+                .hasAuthority(RoleDTOEnum.CUSTOMER_USER.name())
                 .antMatchers("/")
                 .permitAll()
                 .and()
@@ -53,4 +55,5 @@ public class ApplicationSecurityConfigurer extends WebSecurityConfigurerAdapter 
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
     }
+
 }

@@ -11,10 +11,8 @@ import javax.servlet.http.HttpSession;
 public class AppExceptionHandler {
 
     @ExceptionHandler(NoHandlerFoundException.class)
-    public String handler404Exception(HttpServletRequest httpServletRequest, NoHandlerFoundException exception, HttpSession session) {
-        session.setAttribute("url" , httpServletRequest.getRequestURL());
-        session.setAttribute("exception", exception);
-        return "error";
+    public String handler404Exception() {
+        return "404error";
     }
 
 }
