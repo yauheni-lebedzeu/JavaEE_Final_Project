@@ -1,11 +1,9 @@
 package com.gmail.yauheniylebedzeu.service.impl;
 
-import com.gmail.yauheniylebedzeu.repository.model.User;
 import com.gmail.yauheniylebedzeu.service.UserService;
 import com.gmail.yauheniylebedzeu.service.exception.UserNotFoundException;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import com.gmail.yauheniylebedzeu.service.model.UserLogin;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Log4j2
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Lazy
@@ -31,7 +28,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             UserDTO user = userService.findByEmail(username);
             return new UserLogin(user);
         } catch (UserNotFoundException e) {
-            log.error(e.getMessage(), e);
             throw new UsernameNotFoundException(String.format("User with email %s was not found in the database",
                     username));
         }

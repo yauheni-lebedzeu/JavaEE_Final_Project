@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.gmail.yauheniylebedzeu.service.util.ServiceUtil.getCountOfPages;
@@ -24,7 +25,6 @@ import static com.gmail.yauheniylebedzeu.service.util.ServiceUtil.getStartPositi
 
 @Service
 @AllArgsConstructor
-@Log4j2
 public class ArticleServiceImpl implements ArticleService {
 
     private final ArticleRepository articleRepository;
@@ -55,11 +55,11 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Transactional
     public ArticleDTO findArticleByUuid(String uuid) {
-        try {
-            Article article = articleRepository.findByUuid(uuid);
+        Optional<Article> optionalArticle = articleRepository.findByUuid(uuid);
+        if (optionalArticle.isPresent()) {
+            Article article = optionalArticle.get();
             return articleConverter.convertArticleToDetailedArticleDTO(article);
-        } catch (NoResultException e) {
-            log.error(e.getMessage(), e);
+        } else {
             throw new ArticleNotFoundException(String.format("The article with uuid %s was not found in the database",
                     uuid));
         }
@@ -75,14 +75,14 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Transactional
     public ArticleDTO addArticle(String userUuid, ArticleDTO articleDTO) {
-        try {
-            User user = userRepository.findByUuid(userUuid);
+        Optional<User> optionalUser = userRepository.findByUuid(userUuid);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
             Article article = articleConverter.convertArticleDTOToArticle(articleDTO);
             article.setUser(user);
             articleRepository.persist(article);
             return articleConverter.convertArticleToArticleDTO(article);
-        } catch (NoResultException e) {
-            log.error(e.getMessage(), e);
+        } else {
             throw new UserNotFoundException(String.format("The user with uuid %s was not found in the database",
                     userUuid));
         }
@@ -91,11 +91,11 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Transactional
     public void removeByUuid(String uuid) {
-        try {
-            Article article = articleRepository.findByUuid(uuid);
+        Optional<Article> optionalArticle = articleRepository.findByUuid(uuid);
+        if (optionalArticle.isPresent()) {
+            Article article = optionalArticle.get();
             articleRepository.remove(article);
-        } catch (NoResultException e) {
-            log.error(e.getMessage(), e);
+        } else {
             throw new ArticleNotFoundException(String.format("The article with uuid %s was not found in the database",
                     uuid));
         }

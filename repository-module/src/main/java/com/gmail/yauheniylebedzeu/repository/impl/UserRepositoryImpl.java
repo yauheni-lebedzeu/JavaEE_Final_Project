@@ -5,11 +5,14 @@ import com.gmail.yauheniylebedzeu.repository.constant.ParameterNameConstant;
 import com.gmail.yauheniylebedzeu.repository.model.User;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Root;
+
+import java.util.Optional;
 
 import static com.gmail.yauheniylebedzeu.repository.constant.ParameterNameConstant.EMAIL_PARAMETER_NAME;
 
@@ -17,7 +20,7 @@ import static com.gmail.yauheniylebedzeu.repository.constant.ParameterNameConsta
 public class UserRepositoryImpl extends GenericRepositoryImpl<User> implements UserRepository {
 
     @Override
-    public User findByEmail(String username) {
+    public Optional<User> findByEmail(String username) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
         Root<User> root = query.from(User.class);
@@ -26,6 +29,11 @@ public class UserRepositoryImpl extends GenericRepositoryImpl<User> implements U
                 .where(criteriaBuilder.equal(root.get(EMAIL_PARAMETER_NAME), parameterExpression));
         TypedQuery<User> typedQuery = entityManager.createQuery(query);
         typedQuery.setParameter(parameterExpression, username);
-        return typedQuery.getSingleResult();
+        try {
+            User user = typedQuery.getSingleResult();
+            return Optional.of(user);
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
     }
 }

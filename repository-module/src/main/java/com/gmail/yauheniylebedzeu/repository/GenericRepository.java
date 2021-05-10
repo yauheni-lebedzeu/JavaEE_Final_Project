@@ -1,12 +1,13 @@
 package com.gmail.yauheniylebedzeu.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface GenericRepository<T> {
 
     void persist(T entity);
 
-    T findByUuid(String uuid);
+    Optional<T> findByUuid(String uuid);
 
     void remove(T entity);
 

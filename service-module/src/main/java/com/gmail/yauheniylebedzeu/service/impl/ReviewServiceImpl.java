@@ -11,10 +11,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.NoResultException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.gmail.yauheniylebedzeu.service.util.ServiceUtil.getCountOfPages;
@@ -51,11 +51,12 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public void removeByUuid(String uuid) {
-        Review review = reviewRepository.findByUuid(uuid);
-        if (Objects.isNull(review)) {
-            throw new ReviewNotFoundException(String.format("Review with uuid %s was not found in the database", uuid));
-        } else {
+        Optional<Review> optionalReview = reviewRepository.findByUuid(uuid);
+        if (optionalReview.isPresent()) {
+            Review review = optionalReview.get();
             reviewRepository.remove(review);
+        } else {
+            throw new ReviewNotFoundException(String.format("Review with uuid %s was not found in the database", uuid));
         }
     }
 
@@ -112,14 +113,15 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private ReviewDTO changeVisibilityByUuid(String uuid) {
-        try {
-            Review review = reviewRepository.findByUuid(uuid);
+        Optional<Review> optionalReview = reviewRepository.findByUuid(uuid);
+        if (optionalReview.isPresent()) {
+            Review review = optionalReview.get();
             boolean isVisible = review.getIsVisible();
             boolean newStatus = !isVisible;
             review.setIsVisible(newStatus);
             reviewRepository.merge(review);
             return reviewConverter.convertReviewToReviewDTO(review);
-        } catch (NoResultException e) {
+        } else {
             throw new ReviewNotFoundException(String.format("Review with uuid %s was not found in the database", uuid));
         }
     }

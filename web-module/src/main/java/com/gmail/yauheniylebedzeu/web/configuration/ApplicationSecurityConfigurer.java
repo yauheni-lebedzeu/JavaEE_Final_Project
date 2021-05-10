@@ -34,9 +34,9 @@ public class ApplicationSecurityConfigurer extends WebSecurityConfigurerAdapter 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers(USERS_CONTROLLER_URL + "/**", REVIEWS_CONTROLLER_URL + ADMIN_CONTROLLER_URL + "/**")
+                .antMatchers(ADMIN_CONTROLLER_URL + "/**")
                 .hasAuthority(RoleDTOEnum.ADMIN.name())
-                .antMatchers(ARTICLES_CONTROLLER_URL + "/**", CUSTOMER_CONTROLLER_URL + "/**")
+                .antMatchers(CUSTOMER_CONTROLLER_URL + "/**")
                 .hasAuthority(RoleDTOEnum.CUSTOMER_USER.name())
                 .antMatchers(MAIN_PAGE_CONTROLLER_URL, REVIEWS_CONTROLLER_URL, ACCESS_DENIED_CONTROLLER_URL)
                 .permitAll()

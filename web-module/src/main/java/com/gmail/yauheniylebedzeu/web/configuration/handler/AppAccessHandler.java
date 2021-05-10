@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collection;
 
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.*;
+
 public class AppAccessHandler implements AuthenticationSuccessHandler {
 
     @Override
@@ -23,9 +25,9 @@ public class AppAccessHandler implements AuthenticationSuccessHandler {
         SimpleGrantedAuthority adminAuthority = new SimpleGrantedAuthority(RoleDTOEnum.ADMIN.name());
         SimpleGrantedAuthority customerAuthority = new SimpleGrantedAuthority(RoleDTOEnum.CUSTOMER_USER.name());
         if (roles.contains(adminAuthority)) {
-            httpServletResponse.sendRedirect("/users");
+            httpServletResponse.sendRedirect(ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL);
         } else if (roles.contains(customerAuthority)) {
-            httpServletResponse.sendRedirect("/articles");
+            httpServletResponse.sendRedirect(CUSTOMER_CONTROLLER_URL + ARTICLES_CONTROLLER_URL);
         }
     }
 }

@@ -7,6 +7,6 @@ import java.util.Optional;
 
 public interface RoleRepository extends GenericRepository<Role> {
 
-    Role findByName(RoleEnum name);
+    Optional<Role> findByName(RoleEnum name);
 
 }

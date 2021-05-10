@@ -36,7 +36,7 @@ public class UserController {
     private final UserValidator userValidator;
     private final UserUpdateValidator userUpdateValidator;
 
-    @GetMapping(value = USERS_CONTROLLER_URL)
+    @GetMapping(value = ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL)
     public String getUsers(@RequestParam(defaultValue = "1") int pageNumber,
                            @RequestParam(defaultValue = "10") int pageSize, Model model) {
         PageDTO<UserDTO> page = userService.getUserPage(pageNumber, pageSize, "email");
@@ -55,44 +55,45 @@ public class UserController {
         return "users";
     }
 
-    @GetMapping(value = USERS_CONTROLLER_URL + ADD_CONTROLLER_URL)
+    @GetMapping(value = ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL + ADD_CONTROLLER_URL)
     public String getUserForm(UserDTO user, Model model, BindingResult errors) {
         RoleDTOEnum[] allRoles = RoleDTOEnum.values();
         model.addAttribute("allRoles", allRoles);
         return "user-form";
     }
 
-    @PostMapping(value = USERS_CONTROLLER_URL + ADD_CONTROLLER_URL)
+    @PostMapping(value = ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL + ADD_CONTROLLER_URL)
     public String addUser(UserDTO user, Model model, BindingResult errors) {
         userValidator.validate(user, errors);
         if (errors.hasErrors()) {
             return getUserForm(user, model, errors);
         } else {
             userService.add(user);
-            return "redirect:" + USERS_CONTROLLER_URL;
+            return "redirect:" + ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL;
         }
     }
 
-    @PostMapping(value = USERS_CONTROLLER_URL + CHANGE_PASSWORD_CONTROLLER_URL + "/{uuid}/{pageNumber}")
+    @PostMapping(value = ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL
+            + CHANGE_PASSWORD_CONTROLLER_URL + "/{uuid}/{sourcePageNumber}")
     public String changePassword(@PathVariable String uuid,
-                                 @PathVariable String pageNumber) {
+                                 @PathVariable String sourcePageNumber) {
         UserDTO userWithUnencodedPassword = userService.changePasswordByUuid(uuid);
         userService.sendPasswordToUser(userWithUnencodedPassword);
-        return "redirect:" + USERS_CONTROLLER_URL + "?pageNumber=" + pageNumber;
+        return "redirect:" + ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL + "?pageNumber=" + sourcePageNumber;
     }
 
-    @PostMapping(value = USERS_CONTROLLER_URL + DEL_CONTROLLER_URL + "/{pageNumber}")
-    public String delUsers(@PathVariable String pageNumber,
+    @PostMapping(value = ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL + DEL_CONTROLLER_URL + "/{sourcePageNumber}")
+    public String delUsers(@PathVariable String sourcePageNumber,
                            @RequestParam(required = false) List<String> uuids) {
         if (uuids != null) {
             uuids.forEach(userService::removeByUuid);
         }
-        return "redirect:" + USERS_CONTROLLER_URL + "?pageNumber=" + pageNumber;
+        return "redirect:" + ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL + "?pageNumber=" + sourcePageNumber;
     }
 
-    @PostMapping(value = USERS_CONTROLLER_URL + CHANGE_ROLE_CONTROLLER_URL + "/{uuid}/{pageNumber}")
+    @PostMapping(value = ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL + CHANGE_ROLE_CONTROLLER_URL + "/{uuid}/{sourcePageNumber}")
     public String changeRole(@PathVariable String uuid,
-                             @PathVariable String pageNumber,
+                             @PathVariable String sourcePageNumber,
                              @RequestParam(name = "role_name", required = false) String roleName) {
         if (StringUtils.isNotBlank(roleName)) {
             try {
@@ -103,7 +104,7 @@ public class UserController {
                 throw new UserControllerException(String.format("A role named %s does not exist", roleName), e);
             }
         }
-        return "redirect:" + USERS_CONTROLLER_URL + "?pageNumber=" + pageNumber;
+        return "redirect:" + ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL + "?pageNumber=" + sourcePageNumber;
     }
 
     @GetMapping(value = CUSTOMER_CONTROLLER_URL + PROFILE_CONTROLLER_URL)

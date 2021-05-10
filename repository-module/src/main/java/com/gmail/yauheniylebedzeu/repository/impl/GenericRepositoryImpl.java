@@ -3,10 +3,12 @@ package com.gmail.yauheniylebedzeu.repository.impl;
 import com.gmail.yauheniylebedzeu.repository.GenericRepository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
+import java.util.Optional;
 
 import static com.gmail.yauheniylebedzeu.repository.constant.ParameterNameConstant.UUID_PARAMETER_NAME;
 
@@ -30,11 +32,16 @@ public abstract class GenericRepositoryImpl<T> implements GenericRepository<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public T findByUuid(String uuid) {
+    public Optional<T> findByUuid(String uuid) {
         String queryString = "select c from " + entityClass.getName() + " c where c.uuid=:uuid";
         Query query = entityManager.createQuery(queryString);
         query.setParameter(UUID_PARAMETER_NAME, uuid);
-        return (T) query.getSingleResult();
+        try {
+            T object = (T) query.getSingleResult();
+            return Optional.of(object);
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
     }
 
     @Override

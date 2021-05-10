@@ -27,9 +27,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.gmail.yauheniylebedzeu.service.util.ServiceUtil.getCountOfPages;
 import static com.gmail.yauheniylebedzeu.service.util.ServiceUtil.getStartPosition;
@@ -57,26 +57,26 @@ public class UserServiceImpl implements UserService {
         RoleDTOEnum roleDTOEnum = userDTO.getRole();
         String roleName = roleDTOEnum.name();
         RoleEnum roleEnum = RoleEnum.valueOf(roleName);
-        try {
-            Role role = roleRepository.findByName(roleEnum);
+        Optional<Role> optionalRole = roleRepository.findByName(roleEnum);
+        if (optionalRole.isPresent()) {
+            Role role = optionalRole.get();
             user.setRole(role);
-        } catch (NoResultException e) {
-            log.error(e.getMessage(), e);
+            userRepository.persist(user);
+            return userConverter.convertUserToUserDTO(user);
+        } else {
             throw new RoleNotFoundException(String.format("An unexpected error occurred while adding a user. Role" +
                     " named %s was not found in the database", roleName));
         }
-        userRepository.persist(user);
-        return userConverter.convertUserToUserDTO(user);
     }
 
     @Override
     @Transactional
     public UserDTO findByEmail(String email) {
-        try {
-            User user = userRepository.findByEmail(email);
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
             return userConverter.convertUserToUserDTOWithContacts(user);
-        } catch (NoResultException e) {
-            log.error(e.getMessage(), e);
+        } else {
             throw new UserNotFoundException(String.format("User with email \"%s\" was not found in the database", email));
         }
     }
@@ -90,19 +90,21 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDTO changeRoleByUuid(String uuid, String roleName) {
-        try {
-            User user = userRepository.findByUuid(uuid);
+        Optional<User> optionalUser = userRepository.findByUuid(uuid);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
             RoleEnum roleEnum = RoleEnum.valueOf(roleName);
-            try {
-                Role role = roleRepository.findByName(roleEnum);
+            Optional<Role> optionalRole = roleRepository.findByName(roleEnum);
+            if (optionalRole.isPresent()) {
+                Role role = optionalRole.get();
                 user.setRole(role);
                 userRepository.merge(user);
                 return userConverter.convertUserToUserDTO(user);
-            } catch (NoResultException e) {
+            } else {
                 throw new RoleNotFoundException(String.format("An unexpected error occurred while changing a user" +
                         "role. Role named %s was not found in the database", roleName));
             }
-        } catch (NoResultException e) {
+        } else {
             throw new UserNotFoundException(String.format("User with uuid %s was not found in the database", uuid));
         }
     }
@@ -110,11 +112,11 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void removeByUuid(String uuid) {
-        try {
-            User user = userRepository.findByUuid(uuid);
+        Optional<User> optionalUser = userRepository.findByUuid(uuid);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
             userRepository.remove(user);
-        } catch (NoResultException e) {
-            log.error(e.getMessage(), e);
+        } else {
             throw new UserNotFoundException(String.format("User with uuid %s was not found in the database", uuid));
         }
     }
@@ -141,35 +143,41 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDTO changeParameters(String uuid, UserUpdateDTO userUpdateDTO) {
-        User user = userRepository.findByUuid(uuid);
-        String firstName = userUpdateDTO.getFirstName();
-        user.setFirstName(firstName);
-        String lastName = userUpdateDTO.getLastName();
-        user.setLastName(lastName);
-        String password = userUpdateDTO.getPassword();
-        if (StringUtils.isNotBlank(password)) {
-            String encodedPassword = passwordEncoder.encode(password);
-            user.setPassword(encodedPassword);
+        Optional<User> optionalUser = userRepository.findByUuid(uuid);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            String firstName = userUpdateDTO.getFirstName();
+            user.setFirstName(firstName);
+            String lastName = userUpdateDTO.getLastName();
+            user.setLastName(lastName);
+            String password = userUpdateDTO.getPassword();
+            if (StringUtils.isNotBlank(password)) {
+                String encodedPassword = passwordEncoder.encode(password);
+                user.setPassword(encodedPassword);
+            }
+            UserContacts contacts = user.getContacts();
+            if (Objects.isNull(contacts)) {
+                contacts = new UserContacts();
+                contacts.setUser(user);
+                userContactsRepository.persist(contacts);
+            }
+            String address = userUpdateDTO.getAddress();
+            contacts.setAddress(address);
+            String phoneNumber = userUpdateDTO.getPhoneNumber();
+            contacts.setPhoneNumber(phoneNumber);
+            userRepository.merge(user);
+            return userConverter.convertUserToUserDTOWithContacts(user);
+        } else {
+            throw new UserNotFoundException(String.format("User with uuid %s was not found in the database", uuid));
         }
-        UserContacts contacts = user.getContacts();
-        if (Objects.isNull(contacts)) {
-            contacts = new UserContacts();
-            contacts.setUser(user);
-            userContactsRepository.persist(contacts);
-        }
-        String address = userUpdateDTO.getAddress();
-        contacts.setAddress(address);
-        String phoneNumber = userUpdateDTO.getPhoneNumber();
-        contacts.setPhoneNumber(phoneNumber);
-        userRepository.merge(user);
-        return userConverter.convertUserToUserDTOWithContacts(user);
     }
 
     @Override
     @Transactional
     public UserDTO changePasswordByUuid(String uuid) {
-        try {
-            User user = userRepository.findByUuid(uuid);
+        Optional<User> optionalUser = userRepository.findByUuid(uuid);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
             String randomPassword = passwordGenerator.getRandomPassword();
             String encodedPassword = passwordEncoder.encode(randomPassword);
             user.setPassword(encodedPassword);
@@ -177,8 +185,7 @@ public class UserServiceImpl implements UserService {
             UserDTO userDTO = userConverter.convertUserToUserDTO(user);
             userDTO.setPassword(randomPassword);
             return userDTO;
-        } catch (NoResultException e) {
-            log.error(e.getMessage(), e);
+        } else {
             throw new UserNotFoundException(String.format("User with uuid %s was not found in the database", uuid));
         }
     }

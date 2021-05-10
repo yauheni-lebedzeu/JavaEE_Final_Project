@@ -18,7 +18,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.persistence.NoResultException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -62,7 +61,7 @@ class UserServiceImplTest {
         RoleEnum roleEnum = RoleEnum.valueOf(roleDTOEnum.name());
         Role role = new Role();
         role.setName(roleEnum);
-        when(roleRepository.findByName(roleEnum)).thenReturn(role);
+        when(roleRepository.findByName(roleEnum)).thenReturn(Optional.of(role));
         user.setRole(role);
         Long userId = 1L;
         user.setId(userId);
@@ -85,14 +84,14 @@ class UserServiceImplTest {
         String encodedPassword = "test encoded password";
         when(passwordEncoder.encode(password)).thenReturn(encodedPassword);
         RoleEnum roleEnum = RoleEnum.valueOf(roleDTOEnum.name());
-        when(roleRepository.findByName(roleEnum)).thenThrow(NoResultException.class);
+        when(roleRepository.findByName(roleEnum)).thenReturn(Optional.empty());
         assertThrows(RoleNotFoundException.class, () -> userService.add(userDTO));
     }
 
     @Test
     void shouldFindUserByEmailAndNotFind() {
-        String email = "Uaer@email.ru";
-        when(userRepository.findByEmail(email)).thenThrow(NoResultException.class);
+        String email = "User@email.ru";
+        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
         assertThrows(UserNotFoundException.class, () -> userService.findByEmail(email));
     }
 
@@ -109,12 +108,12 @@ class UserServiceImplTest {
         String uuid = "6d4883c7-aa9c-11eb-a3ca-0242ac130002";
         User user = getUserWithTestRole();
         user.setUuid(uuid);
-        when(userRepository.findByUuid(uuid)).thenReturn(user);
+        when(userRepository.findByUuid(uuid)).thenReturn(Optional.of(user));
         String newRoleName = RoleDTOEnum.CUSTOMER_USER.name();
         RoleEnum newRoleEnum = RoleEnum.valueOf(newRoleName);
         Role newRole = new Role();
         newRole.setName(newRoleEnum);
-        when(roleRepository.findByName(newRoleEnum)).thenReturn(newRole);
+        when(roleRepository.findByName(newRoleEnum)).thenReturn(Optional.of(newRole));
         user.setRole(newRole);
         UserDTO userDTO = new UserDTO();
         RoleDTOEnum roleDTOEnum = RoleDTOEnum.valueOf(newRoleEnum.name());
@@ -130,7 +129,7 @@ class UserServiceImplTest {
         String uuid = "6d4883c7-aa9c-11eb-a3ca-0242ac130002";
         User user = getUserWithTestRole();
         user.setUuid(uuid);
-        when(userRepository.findByUuid(uuid)).thenThrow(NoResultException.class);
+        when(userRepository.findByUuid(uuid)).thenReturn(Optional.empty());
         String newRoleName = RoleDTOEnum.CUSTOMER_USER.name();
         assertThrows(UserNotFoundException.class, () -> userService.changeRoleByUuid(uuid, newRoleName));
     }
@@ -140,12 +139,12 @@ class UserServiceImplTest {
         String uuid = "6d4883c7-aa9c-11eb-a3ca-0242ac130002";
         User user = getUserWithTestRole();
         user.setUuid(uuid);
-        when(userRepository.findByUuid(uuid)).thenReturn(user);
+        when(userRepository.findByUuid(uuid)).thenReturn(Optional.of(user));
         String newRoleName = RoleDTOEnum.CUSTOMER_USER.name();
         RoleEnum newRoleEnum = RoleEnum.valueOf(newRoleName);
         Role newRole = new Role();
         newRole.setName(newRoleEnum);
-        when(roleRepository.findByName(newRoleEnum)).thenThrow(NoResultException.class);
+        when(roleRepository.findByName(newRoleEnum)).thenReturn(Optional.empty());
         assertThrows(RoleNotFoundException.class, () -> userService.changeRoleByUuid(uuid, newRoleName));
     }
 
@@ -153,7 +152,7 @@ class UserServiceImplTest {
     void shouldChangePasswordByUuidAndGetUserDTOWithNewUnencodedPassword() {
         String uuid = "6d4883c7-aa9c-11eb-a3ca-0242ac130002";
         User user = getUserWithTestRole();
-        when(userRepository.findByUuid(uuid)).thenReturn(user);
+        when(userRepository.findByUuid(uuid)).thenReturn(Optional.of(user));
         String newPassword = "test password";
         when(passwordGenerator.getRandomPassword()).thenReturn(newPassword);
         String newEncodedPassword = "test encoded password";
@@ -172,9 +171,9 @@ class UserServiceImplTest {
     }
 
     @Test
-    void shouldChangePasswordByUuidAndGetNullUser() {
+    void shouldChangePasswordByUuidAndGetEmptyOptional() {
         String uuid = "6d4883c7-aa9c-11eb-a3ca-0242ac130002";
-        when(userRepository.findByUuid(uuid)).thenThrow(NoResultException.class);
+        when(userRepository.findByUuid(uuid)).thenReturn(Optional.empty());
         assertThrows(UserNotFoundException.class, () -> userService.changePasswordByUuid(uuid));
     }
 
