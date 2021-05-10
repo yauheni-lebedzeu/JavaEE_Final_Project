@@ -1,8 +1,8 @@
 package com.gmail.yauheniylebedzeu.service;
 
-import com.gmail.yauheniylebedzeu.service.model.UserUpdateDTO;
 import com.gmail.yauheniylebedzeu.service.model.PageDTO;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
+import com.gmail.yauheniylebedzeu.service.model.UserUpdateDTO;
 
 public interface UserService {
 
@@ -12,8 +12,6 @@ public interface UserService {
 
     Long getCountOfUsers();
 
-    UserDTO changePasswordByUuid(String uuid);
-
     UserDTO changeRoleByUuid(String uuid, String roleName);
 
     void removeByUuid(String uuid);
@@ -21,4 +19,8 @@ public interface UserService {
     PageDTO<UserDTO> getUserPage(int pageNumber, int pageSize, String sortParameter);
 
     UserDTO changeParameters(String uuid, UserUpdateDTO userUpdateDTO);
+
+    UserDTO changePasswordByUuid(String uuid);
+
+    void sendPasswordToUser(UserDTO userDTO);
 }

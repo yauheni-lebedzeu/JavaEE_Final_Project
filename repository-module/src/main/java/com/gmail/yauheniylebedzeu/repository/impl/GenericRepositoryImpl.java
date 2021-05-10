@@ -35,7 +35,6 @@ public abstract class GenericRepositoryImpl<T> implements GenericRepository<T> {
         return (T) query.getSingleResult();
     }
 
-
     @Override
     public void remove(T entity) {
         entityManager.remove(entity);

@@ -73,7 +73,8 @@ public class UserController {
 
     @PostMapping(value = "/users/change-password/{uuid}")
     public String changePassword(@PathVariable String uuid) {
-        userService.changePasswordByUuid(uuid);
+        UserDTO userWithUnencodedPassword = userService.changePasswordByUuid(uuid);
+        userService.sendPasswordToUser(userWithUnencodedPassword);
         return "redirect:/users";
     }
 

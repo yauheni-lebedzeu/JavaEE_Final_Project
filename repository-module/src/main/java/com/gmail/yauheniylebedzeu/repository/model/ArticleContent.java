@@ -1,6 +1,7 @@
 package com.gmail.yauheniylebedzeu.repository.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -26,5 +27,6 @@ public class ArticleContent {
     @OneToOne(fetch = FetchType.LAZY)
     @PrimaryKeyJoinColumn
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Article article;
 }

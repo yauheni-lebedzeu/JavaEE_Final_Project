@@ -45,15 +45,15 @@ public class Article {
             cascade = CascadeType.ALL,
             mappedBy = "article",
             orphanRemoval = true)
-    @EqualsAndHashCode.Exclude
     @OrderBy("additionDate DESC")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Set<Comment> comments = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "user_id")
-    @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private User user;
 }

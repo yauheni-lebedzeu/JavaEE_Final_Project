@@ -14,9 +14,9 @@ import com.gmail.yauheniylebedzeu.service.exception.RoleNotFoundException;
 import com.gmail.yauheniylebedzeu.service.exception.UserNotFoundException;
 import com.gmail.yauheniylebedzeu.service.exception.UserServiceException;
 import com.gmail.yauheniylebedzeu.service.generator.RandomPasswordGenerator;
-import com.gmail.yauheniylebedzeu.service.model.UserUpdateDTO;
 import com.gmail.yauheniylebedzeu.service.model.PageDTO;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
+import com.gmail.yauheniylebedzeu.service.model.UserUpdateDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.junit.platform.commons.util.StringUtils;
@@ -32,7 +32,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.gmail.yauheniylebedzeu.service.util.ServiceUtil.*;
+import static com.gmail.yauheniylebedzeu.service.util.ServiceUtil.getCountOfPages;
+import static com.gmail.yauheniylebedzeu.service.util.ServiceUtil.getStartPosition;
 
 @Service
 @AllArgsConstructor
@@ -85,23 +86,6 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public Long getCountOfUsers() {
         return userRepository.getCountOfEntities();
-    }
-
-    @Override
-    @Transactional
-    public UserDTO changePasswordByUuid(String uuid) {
-        User user = userRepository.findByUuid(uuid);
-        if (Objects.isNull(user)) {
-            throw new UserNotFoundException(String.format("User with uuid %s was not found in the database", uuid));
-        } else {
-            String randomPassword = passwordGenerator.getRandomPassword();
-            String email = user.getEmail();
-            sendPassword(randomPassword, email);
-            String encodedPassword = passwordEncoder.encode(randomPassword);
-            user.setPassword(encodedPassword);
-            userRepository.merge(user);
-            return userConverter.convertUserToUserDTO(user);
-        }
     }
 
     @Override
@@ -183,11 +167,31 @@ public class UserServiceImpl implements UserService {
         return userConverter.convertUserToUserDTOWithContacts(user);
     }
 
-    private void sendPassword(String randomPassword, String email) {
+    @Override
+    @Transactional
+    public UserDTO changePasswordByUuid(String uuid) {
+        try {
+            User user = userRepository.findByUuid(uuid);
+            String randomPassword = passwordGenerator.getRandomPassword();
+            String encodedPassword = passwordEncoder.encode(randomPassword);
+            user.setPassword(encodedPassword);
+            userRepository.merge(user);
+            UserDTO userDTO = userConverter.convertUserToUserDTO(user);
+            userDTO.setPassword(randomPassword);
+            return userDTO;
+        } catch (NoResultException e) {
+            log.error(e.getMessage(), e);
+            throw new UserNotFoundException(String.format("User with uuid %s was not found in the database", uuid));
+        }
+    }
+
+    public void sendPasswordToUser(UserDTO userDTO) {
+        String email = userDTO.getEmail();
+        String password = userDTO.getPassword();
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(email);
         mailMessage.setSubject("New password");
-        mailMessage.setText(randomPassword);
+        mailMessage.setText(password);
         mailMessage.setFrom("LemotTest@yandex.ru");
         try {
             javaMailSender.send(mailMessage);
