@@ -4,7 +4,7 @@
         <Console name="LogToConsole" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
-        <RollingFile name="RollingFile" fileName="logs\logFile.log" filePattern=" ">
+        <RollingFile name="RollingFile" fileName="\logs\logFile.log" filePattern=" ">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
             <Policies>
                 <SizeBasedTriggeringPolicy size="10MB"/>

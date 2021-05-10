@@ -9,32 +9,34 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.API_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.ARTICLES_CONTROLLER_URL;
+
 @RestController
-@RequestMapping("/api")
+@RequestMapping(value = API_CONTROLLER_URL)
 @AllArgsConstructor
 public class ArticlesAPIController {
 
     private final ArticleService articleService;
 
 
-    @GetMapping(value = "/articles")
+    @GetMapping(value = ARTICLES_CONTROLLER_URL)
     public List<ArticleDTO> getArticles() {
-        List<ArticleDTO> articles = articleService.findAll();
-        return articles;
+        return articleService.findAll();
     }
 
-    @GetMapping(value = "/articles/{uuid}")
+    @GetMapping(value = ARTICLES_CONTROLLER_URL + "/{uuid}")
     public ArticleDTO getArticle(@PathVariable String uuid) {
         return articleService.findArticleByUuid(uuid);
     }
 
-    @PostMapping(value = "/articles/{userUuid}")
+    @PostMapping(value = ARTICLES_CONTROLLER_URL + "/{userUuid}")
     public ResponseEntity<Void> addArticle(@PathVariable String userUuid, @RequestBody ArticleDTO articleDTO) {
         articleService.addArticle(userUuid, articleDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping(value = "/articles/{uuid}")
+    @DeleteMapping(value = ARTICLES_CONTROLLER_URL + "/{uuid}")
     public ResponseEntity<Void> deleteArticle(@PathVariable String uuid) {
         articleService.removeByUuid(uuid);
         return new ResponseEntity<>(HttpStatus.OK);

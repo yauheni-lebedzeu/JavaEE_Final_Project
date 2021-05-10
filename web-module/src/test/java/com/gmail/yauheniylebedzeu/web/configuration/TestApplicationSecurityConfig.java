@@ -7,14 +7,16 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.API_CONTROLLER_URL;
+
 @Profile("test")
 @Configuration
 @Order(Ordered.LOWEST_PRECEDENCE)
 public class TestApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         web.ignoring()
-                .antMatchers("/api/**");
+                .antMatchers(API_CONTROLLER_URL + "/**");
     }
 }

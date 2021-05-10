@@ -16,6 +16,8 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.API_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.ARTICLES_CONTROLLER_URL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -37,14 +39,14 @@ public class ArticlesAPIControllerTest {
     @Test
     void shouldRequestGetArticles() throws Exception {
         mockMvc.perform(
-                get("/api/articles").contentType(MediaType.APPLICATION_JSON)
+                get(API_CONTROLLER_URL + ARTICLES_CONTROLLER_URL).contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk());
     }
 
     @Test
     void shouldVerifyThatBusinessLogicIsCalledWhenWeRequestGetArticles() throws Exception {
         mockMvc.perform(
-                get("/api/articles").contentType(MediaType.APPLICATION_JSON)
+                get(API_CONTROLLER_URL + ARTICLES_CONTROLLER_URL).contentType(MediaType.APPLICATION_JSON)
         );
         verify(articleService, times(1)).findAll();
     }
@@ -53,7 +55,7 @@ public class ArticlesAPIControllerTest {
     void shouldReturnEmptyCollectionWhenWeRequestGetArticles() throws Exception {
         when(articleService.findAll()).thenReturn(Collections.emptyList());
         MvcResult mvcResult = mockMvc.perform(
-                get("/api/articles").contentType(MediaType.APPLICATION_JSON)
+                get(API_CONTROLLER_URL + ARTICLES_CONTROLLER_URL).contentType(MediaType.APPLICATION_JSON)
         ).andReturn();
         String contentAsString = mvcResult.getResponse().getContentAsString();
         assertThat(contentAsString).
@@ -74,7 +76,7 @@ public class ArticlesAPIControllerTest {
         List<ArticleDTO> articles = Collections.singletonList(article);
         when(articleService.findAll()).thenReturn(articles);
         MvcResult mvcResult = mockMvc.perform(
-                get("/api/articles").contentType(MediaType.APPLICATION_JSON)
+                get(API_CONTROLLER_URL + ARTICLES_CONTROLLER_URL).contentType(MediaType.APPLICATION_JSON)
         ).andReturn();
         String contentAsString = mvcResult.getResponse().getContentAsString();
         assertThat(contentAsString).

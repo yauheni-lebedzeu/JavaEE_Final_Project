@@ -17,7 +17,8 @@
                 <a th:href="@{/reviews/admin}">Go to the admin list of the reviews</a>
             </h2>
             <h2 th:if="${role.equals('CUSTOMER_USER')}">
-                <a th:href="@{/articles}">Go to the list of the articles</a>
+                <a th:href="@{/articles}">Go to the list of the articles</a><br>
+                <a th:href="@{/customer/profile}">Go to the profile</a>
             </h2>
         </div>
     </div>

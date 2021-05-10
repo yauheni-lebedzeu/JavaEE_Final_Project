@@ -3,7 +3,6 @@ package com.gmail.yauheniylebedzeu.service.impl;
 import com.gmail.yauheniylebedzeu.repository.ArticleRepository;
 import com.gmail.yauheniylebedzeu.repository.UserRepository;
 import com.gmail.yauheniylebedzeu.repository.model.Article;
-import com.gmail.yauheniylebedzeu.repository.model.ArticleContent;
 import com.gmail.yauheniylebedzeu.repository.model.User;
 import com.gmail.yauheniylebedzeu.service.ArticleService;
 import com.gmail.yauheniylebedzeu.service.converter.ArticleConverter;
@@ -18,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.gmail.yauheniylebedzeu.service.util.ServiceUtil.getCountOfPages;
@@ -43,8 +41,9 @@ public class ArticleServiceImpl implements ArticleService {
         if (pageNumber > countOfPages) {
             pageNumber = countOfPages;
         }
+        page.setPageNumber(pageNumber);
         int startPosition = getStartPosition(pageNumber, pageSize);
-        List<Article> news = articleRepository.findEntitiesWithLimit(startPosition, pageSize, sortParameter);
+        List<Article> news = articleRepository.findEntitiesWithLimits(startPosition, pageSize, sortParameter);
         List<ArticleDTO> newsDTO = news.stream()
                 .map(articleConverter::convertArticleToArticleDTO)
                 .collect(Collectors.toList());
@@ -97,7 +96,8 @@ public class ArticleServiceImpl implements ArticleService {
             articleRepository.remove(article);
         } catch (NoResultException e) {
             log.error(e.getMessage(), e);
-            throw new ArticleNotFoundException(String.format("The article with uuid %s was not found in the database", uuid));
+            throw new ArticleNotFoundException(String.format("The article with uuid %s was not found in the database",
+                    uuid));
         }
     }
 }

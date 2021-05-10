@@ -28,13 +28,17 @@
             <td th:text="${user.patronymic}">Patronymic</td>
             <td th:text="${user.email}">Email</td>
             <td>
-                <form action=# th:action="@{/users/change-password/{uuid}(uuid = ${user.uuid})}" method="post">
+                <form action=#
+                      th:action="@{/users/change-password/{uuid}/{pageNumber}(pageNumber=${page.pageNumber}, uuid = ${user.uuid})}"
+                      method="post">
                     <button type="submit">Generate a new password</button>
                 </form>
             </td>
             <td th:text="${user.role.name}">Role</td>
             <td align="center" th:unless="${email.equals(user.email)}">
-                <form action=# th:action="@{/users/change-role/{uuid}(uuid = ${user.uuid})}" method="post">
+                <form action=#
+                      th:action="@{/users/change-role/{uuid}/{pageNumber}(pageNumber=${page.pageNumber}, uuid = ${user.uuid})}"
+                      method="post">
                     <select name="role_name">
                         <option th:each="role : ${allRoles}" th:value="${role.name()}"
                                 th:unless="${user.role} == ${role}" th:text="${role.name}">Role

@@ -4,15 +4,8 @@ import com.gmail.yauheniylebedzeu.repository.ReviewRepository;
 import com.gmail.yauheniylebedzeu.repository.model.Review;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.ParameterExpression;
-import javax.persistence.criteria.Root;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public class ReviewRepositoryImpl extends GenericRepositoryImpl<Review> implements ReviewRepository {

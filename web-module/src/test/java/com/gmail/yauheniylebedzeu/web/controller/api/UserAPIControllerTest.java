@@ -18,6 +18,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.API_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.USERS_CONTROLLER_URL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -49,7 +51,7 @@ public class UserAPIControllerTest {
         String email = user.getEmail();
         when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         mockMvc.perform(
-                post("/api/users")
+                post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(user))
         );
@@ -62,7 +64,7 @@ public class UserAPIControllerTest {
         String email = user.getEmail();
         when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         mockMvc.perform(
-                post("/api/users")
+                post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(user))
         ).andExpect(status().isCreated());
@@ -75,7 +77,7 @@ public class UserAPIControllerTest {
         ErrorsDTO errors = new ErrorsDTO();
         errors.addError("email", "This field cannot be empty!");
         MvcResult mvcResult = mockMvc.perform(
-                post("/api/users")
+                post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(user))
         ).andExpect(status().isBadRequest()).andReturn();
@@ -92,7 +94,7 @@ public class UserAPIControllerTest {
         ErrorsDTO errors = new ErrorsDTO();
         errors.addError("email", "Email was entered in the wrong format!");
         MvcResult mvcResult = mockMvc.perform(
-                post("/api/users")
+                post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(user))
         ).andExpect(status().isBadRequest()).andReturn();
@@ -110,7 +112,7 @@ public class UserAPIControllerTest {
         UserDTO anotherUser = new UserDTO();
         when(userService.findByEmail(email)).thenReturn(anotherUser);
         MvcResult mvcResult = mockMvc.perform(
-                post("/api/users")
+                post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(user))
         ).andExpect(status().isBadRequest()).andReturn();
@@ -128,7 +130,7 @@ public class UserAPIControllerTest {
         String email = user.getEmail();
         when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
-                post("/api/users")
+                post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(user))
         ).andExpect(status().isBadRequest()).andReturn();
@@ -150,7 +152,7 @@ public class UserAPIControllerTest {
         String email = user.getEmail();
         when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
-                post("/api/users")
+                post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(user))
         ).andExpect(status().isBadRequest()).andReturn();
@@ -168,7 +170,7 @@ public class UserAPIControllerTest {
         String email = user.getEmail();
         when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
-                post("/api/users")
+                post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(user))
         ).andExpect(status().isBadRequest()).andReturn();
@@ -187,7 +189,7 @@ public class UserAPIControllerTest {
         String email = user.getEmail();
         when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
-                post("/api/users")
+                post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(user))
         ).andExpect(status().isBadRequest()).andReturn();
@@ -205,7 +207,7 @@ public class UserAPIControllerTest {
         String email = user.getEmail();
         when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
-                post("/api/users")
+                post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(user))
         ).andExpect(status().isBadRequest()).andReturn();
@@ -224,7 +226,7 @@ public class UserAPIControllerTest {
         String email = user.getEmail();
         when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
-                post("/api/users")
+                post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(user))
         ).andExpect(status().isBadRequest()).andReturn();
@@ -242,7 +244,7 @@ public class UserAPIControllerTest {
         String email = user.getEmail();
         when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
-                post("/api/users")
+                post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(user))
         ).andExpect(status().isBadRequest()).andReturn();
@@ -261,7 +263,7 @@ public class UserAPIControllerTest {
         String email = user.getEmail();
         when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
-                post("/api/users")
+                post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(user))
         ).andExpect(status().isBadRequest()).andReturn();
@@ -277,7 +279,7 @@ public class UserAPIControllerTest {
         String email = user.getEmail();
         when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         mockMvc.perform(
-                post("/api/users")
+                post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(user))
         ).andExpect(status().isCreated());
@@ -293,7 +295,7 @@ public class UserAPIControllerTest {
         String email = user.getEmail();
         when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
-                post("/api/users")
+                post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(user))
         ).andExpect(status().isBadRequest()).andReturn();
@@ -309,7 +311,7 @@ public class UserAPIControllerTest {
         String email = user.getEmail();
         when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         mockMvc.perform(
-                post("/api/users")
+                post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(user))
         ).andExpect(status().isCreated());
@@ -326,7 +328,7 @@ public class UserAPIControllerTest {
         String email = user.getEmail();
         when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
-                post("/api/users")
+                post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(user))
         ).andExpect(status().isBadRequest()).andReturn();

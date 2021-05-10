@@ -13,6 +13,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.*;
+
 @Configuration
 public class ApplicationSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
@@ -32,11 +34,11 @@ public class ApplicationSecurityConfigurer extends WebSecurityConfigurerAdapter 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/users/**", "/reviews/admin/**")
+                .antMatchers(USERS_CONTROLLER_URL + "/**", REVIEWS_CONTROLLER_URL + ADMIN_CONTROLLER_URL + "/**")
                 .hasAuthority(RoleDTOEnum.ADMIN.name())
-                .antMatchers("/articles/**", "/users/user/**")
+                .antMatchers(ARTICLES_CONTROLLER_URL + "/**", CUSTOMER_CONTROLLER_URL + "/**")
                 .hasAuthority(RoleDTOEnum.CUSTOMER_USER.name())
-                .antMatchers("/")
+                .antMatchers(MAIN_PAGE_CONTROLLER_URL, REVIEWS_CONTROLLER_URL, ACCESS_DENIED_CONTROLLER_URL)
                 .permitAll()
                 .and()
                 .formLogin()

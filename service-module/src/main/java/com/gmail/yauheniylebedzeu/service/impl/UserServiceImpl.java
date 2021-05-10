@@ -30,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import static com.gmail.yauheniylebedzeu.service.util.ServiceUtil.getCountOfPages;
 import static com.gmail.yauheniylebedzeu.service.util.ServiceUtil.getStartPosition;
@@ -58,11 +57,11 @@ public class UserServiceImpl implements UserService {
         RoleDTOEnum roleDTOEnum = userDTO.getRole();
         String roleName = roleDTOEnum.name();
         RoleEnum roleEnum = RoleEnum.valueOf(roleName);
-        Optional<Role> optionalRole = roleRepository.findByName(roleEnum);
-        if (optionalRole.isPresent()) {
-            Role role = optionalRole.get();
+        try {
+            Role role = roleRepository.findByName(roleEnum);
             user.setRole(role);
-        } else {
+        } catch (NoResultException e) {
+            log.error(e.getMessage(), e);
             throw new RoleNotFoundException(String.format("An unexpected error occurred while adding a user. Role" +
                     " named %s was not found in the database", roleName));
         }
@@ -73,11 +72,11 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDTO findByEmail(String email) {
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
+        try {
+            User user = userRepository.findByEmail(email);
             return userConverter.convertUserToUserDTOWithContacts(user);
-        } else {
+        } catch (NoResultException e) {
+            log.error(e.getMessage(), e);
             throw new UserNotFoundException(String.format("User with email \"%s\" was not found in the database", email));
         }
     }
@@ -91,21 +90,20 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDTO changeRoleByUuid(String uuid, String roleName) {
-        User user = userRepository.findByUuid(uuid);
-        if (Objects.isNull(user)) {
-            throw new UserNotFoundException(String.format("User with uuid %s was not found in the database", uuid));
-        } else {
+        try {
+            User user = userRepository.findByUuid(uuid);
             RoleEnum roleEnum = RoleEnum.valueOf(roleName);
-            Optional<Role> optionalRole = roleRepository.findByName(roleEnum);
-            if (optionalRole.isPresent()) {
-                Role role = optionalRole.get();
+            try {
+                Role role = roleRepository.findByName(roleEnum);
                 user.setRole(role);
                 userRepository.merge(user);
                 return userConverter.convertUserToUserDTO(user);
-            } else {
+            } catch (NoResultException e) {
                 throw new RoleNotFoundException(String.format("An unexpected error occurred while changing a user" +
                         "role. Role named %s was not found in the database", roleName));
             }
+        } catch (NoResultException e) {
+            throw new UserNotFoundException(String.format("User with uuid %s was not found in the database", uuid));
         }
     }
 
@@ -133,7 +131,7 @@ public class UserServiceImpl implements UserService {
         }
         page.setPageNumber(pageNumber);
         int startPosition = getStartPosition(pageNumber, pageSize);
-        List<User> users = userRepository.findEntitiesWithLimit(startPosition, pageSize, sortParameter);
+        List<User> users = userRepository.findEntitiesWithLimits(startPosition, pageSize, sortParameter);
         List<UserDTO> userDTOs = userConverter.convertUserListToUserDTOList(users);
         List<UserDTO> usersOnPage = page.getObjects();
         usersOnPage.addAll(userDTOs);

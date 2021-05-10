@@ -15,9 +15,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.API_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.USERS_CONTROLLER_URL;
+
 
 @RestController
-@RequestMapping(value = "/api")
+@RequestMapping(value = API_CONTROLLER_URL)
 @Lazy
 @AllArgsConstructor
 public class UserAPIController {
@@ -26,7 +29,7 @@ public class UserAPIController {
     private final UserValidator userValidator;
     private final BindingResultConverter bindingResultConverter;
 
-    @PostMapping(value = "/users")
+    @PostMapping(value = USERS_CONTROLLER_URL)
     public ResponseEntity<?> addUser(@RequestBody UserDTO user, BindingResult bindingResult) {
         userValidator.validate(user, bindingResult);
         if (bindingResult.hasErrors()) {

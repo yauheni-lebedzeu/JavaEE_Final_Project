@@ -12,7 +12,7 @@ public interface GenericRepository<T> {
 
     void merge(T entity);
 
-    List<T> findEntitiesWithLimit(int startPosition, int maxResult, String sortParameter);
+    List<T> findEntitiesWithLimits(int startPosition, int maxResult, String sortParameter);
 
     Long getCountOfEntities();
 

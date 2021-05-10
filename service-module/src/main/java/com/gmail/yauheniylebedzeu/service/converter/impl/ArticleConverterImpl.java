@@ -1,14 +1,14 @@
 package com.gmail.yauheniylebedzeu.service.converter.impl;
 
-import com.gmail.yauheniylebedzeu.repository.model.Comment;
 import com.gmail.yauheniylebedzeu.repository.model.Article;
 import com.gmail.yauheniylebedzeu.repository.model.ArticleContent;
+import com.gmail.yauheniylebedzeu.repository.model.Comment;
 import com.gmail.yauheniylebedzeu.repository.model.User;
-import com.gmail.yauheniylebedzeu.service.converter.CommentConverter;
 import com.gmail.yauheniylebedzeu.service.converter.ArticleConverter;
+import com.gmail.yauheniylebedzeu.service.converter.CommentConverter;
 import com.gmail.yauheniylebedzeu.service.exception.UserNotReceivedException;
-import com.gmail.yauheniylebedzeu.service.model.CommentDTO;
 import com.gmail.yauheniylebedzeu.service.model.ArticleDTO;
+import com.gmail.yauheniylebedzeu.service.model.CommentDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 

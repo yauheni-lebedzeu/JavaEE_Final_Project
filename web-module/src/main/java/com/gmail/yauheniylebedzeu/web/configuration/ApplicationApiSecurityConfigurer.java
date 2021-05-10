@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.API_CONTROLLER_URL;
+
 @Configuration
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @AllArgsConstructor
@@ -27,7 +29,7 @@ public class ApplicationApiSecurityConfigurer extends WebSecurityConfigurerAdapt
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.antMatcher("/api/**")
+        http.antMatcher(API_CONTROLLER_URL + "/**")
                 .authorizeRequests(a -> a.anyRequest().hasAnyAuthority(RoleDTOEnum.SECURE_REST_API.name()))
                 .httpBasic()
                 .and()

@@ -8,6 +8,8 @@ import javax.persistence.Query;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
+import static com.gmail.yauheniylebedzeu.repository.constant.ParameterNameConstant.UUID_PARAMETER_NAME;
+
 public abstract class GenericRepositoryImpl<T> implements GenericRepository<T> {
 
     @PersistenceContext
@@ -31,7 +33,7 @@ public abstract class GenericRepositoryImpl<T> implements GenericRepository<T> {
     public T findByUuid(String uuid) {
         String queryString = "select c from " + entityClass.getName() + " c where c.uuid=:uuid";
         Query query = entityManager.createQuery(queryString);
-        query.setParameter("uuid", uuid);
+        query.setParameter(UUID_PARAMETER_NAME, uuid);
         return (T) query.getSingleResult();
     }
 
@@ -47,7 +49,7 @@ public abstract class GenericRepositoryImpl<T> implements GenericRepository<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<T> findEntitiesWithLimit(int startPosition, int maxResult, String sortParameter) {
+    public List<T> findEntitiesWithLimits(int startPosition, int maxResult, String sortParameter) {
         String queryString = "select c from " + entityClass.getName() + " c order by c." + sortParameter;
         Query query = entityManager.createQuery(queryString);
         query.setFirstResult(startPosition);

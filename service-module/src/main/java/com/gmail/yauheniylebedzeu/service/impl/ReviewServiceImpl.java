@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.NoResultException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -38,7 +39,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
         page.setPageNumber(pageNumber);
         int startPosition = getStartPosition(pageNumber, pageSize);
-        List<Review> reviews = reviewRepository.findEntitiesWithLimit(startPosition, pageSize, sortParameter);
+        List<Review> reviews = reviewRepository.findEntitiesWithLimits(startPosition, pageSize, sortParameter);
         List<ReviewDTO> reviewsDTOs = reviews.stream()
                 .map(reviewConverter::convertReviewToReviewDTO)
                 .collect(Collectors.toList());
@@ -111,15 +112,15 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private ReviewDTO changeVisibilityByUuid(String uuid) {
-        Review review = reviewRepository.findByUuid(uuid);
-        if (Objects.isNull(review)) {
-            throw new ReviewNotFoundException(String.format("Review with uuid %s was not found in the database", uuid));
-        } else {
+        try {
+            Review review = reviewRepository.findByUuid(uuid);
             boolean isVisible = review.getIsVisible();
             boolean newStatus = !isVisible;
             review.setIsVisible(newStatus);
             reviewRepository.merge(review);
             return reviewConverter.convertReviewToReviewDTO(review);
+        } catch (NoResultException e) {
+            throw new ReviewNotFoundException(String.format("Review with uuid %s was not found in the database", uuid));
         }
     }
 }
