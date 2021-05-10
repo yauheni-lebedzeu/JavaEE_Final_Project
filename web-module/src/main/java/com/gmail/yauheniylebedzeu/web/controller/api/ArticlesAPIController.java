@@ -18,25 +18,24 @@ public class ArticlesAPIController {
 
 
     @GetMapping(value = "/articles")
-    public ResponseEntity<?> getArticles() {
+    public List<ArticleDTO> getArticles() {
         List<ArticleDTO> articles = articleService.findAll();
-        return new ResponseEntity<>(articles, HttpStatus.OK);
+        return articles;
     }
 
     @GetMapping(value = "/articles/{uuid}")
-    public ResponseEntity<?> getArticle(@PathVariable String uuid) {
-        ArticleDTO article = articleService.findArticleByUuid(uuid);
-        return new ResponseEntity<>(article, HttpStatus.OK);
+    public ArticleDTO getArticle(@PathVariable String uuid) {
+        return articleService.findArticleByUuid(uuid);
     }
 
     @PostMapping(value = "/articles/{userUuid}")
-    public ResponseEntity<?> addArticle(@PathVariable String userUuid, @RequestBody ArticleDTO articleDTO) {
+    public ResponseEntity<Void> addArticle(@PathVariable String userUuid, @RequestBody ArticleDTO articleDTO) {
         articleService.addArticle(userUuid, articleDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping(value = "/articles/{uuid}")
-    public ResponseEntity<?> deleteArticle(@PathVariable String uuid) {
+    public ResponseEntity<Void> deleteArticle(@PathVariable String uuid) {
         articleService.removeByUuid(uuid);
         return new ResponseEntity<>(HttpStatus.OK);
     }

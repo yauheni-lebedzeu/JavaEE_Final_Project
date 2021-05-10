@@ -20,8 +20,8 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @GetMapping(value = "/reviews/admin")
-    public String getReviews(@RequestParam(defaultValue = "1") int pageNumber, Model model) {
-        int pageSize = 10;
+    public String getReviews(@RequestParam(defaultValue = "1") int pageNumber,
+                             @RequestParam(defaultValue = "10") int pageSize,  Model model) {
         PageDTO<ReviewDTO> page = reviewService.getReviewPage(pageNumber, pageSize, "additionDate desc");
         model.addAttribute("page", page);
         return "admin-reviews";
@@ -42,8 +42,8 @@ public class ReviewController {
     }
 
     @GetMapping(value = "/reviews")
-    public String getVisibleReviews(@RequestParam(defaultValue = "1") int pageNumber, Model model) {
-        int pageSize = 10;
+    public String getVisibleReviews(@RequestParam(defaultValue = "1") int pageNumber,
+                                    @RequestParam(defaultValue = "10") int pageSize,  Model model) {
         PageDTO<ReviewDTO> page = reviewService.getVisibleReviewsPage(pageNumber, pageSize, "additionDate desc");
         model.addAttribute("page", page);
         return "reviews";

@@ -61,7 +61,8 @@ public class ArticleServiceImpl implements ArticleService {
             return articleConverter.convertArticleToDetailedArticleDTO(article);
         } catch (NoResultException e) {
             log.error(e.getMessage(), e);
-            throw new ArticleNotFoundException(String.format("The article with uuid %s was not found in the database", uuid));
+            throw new ArticleNotFoundException(String.format("The article with uuid %s was not found in the database",
+                    uuid));
         }
     }
 
@@ -83,7 +84,8 @@ public class ArticleServiceImpl implements ArticleService {
             return articleConverter.convertArticleToArticleDTO(article);
         } catch (NoResultException e) {
             log.error(e.getMessage(), e);
-            throw new UserNotFoundException(String.format("The user with uuid %s was not found in the database", userUuid));
+            throw new UserNotFoundException(String.format("The user with uuid %s was not found in the database",
+                    userUuid));
         }
     }
 

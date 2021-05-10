@@ -12,15 +12,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@Lazy
 @AllArgsConstructor
 public class ArticleController {
 
     private final ArticleService articleService;
 
     @GetMapping(value = "/articles")
-    public String getArticles(@RequestParam(defaultValue = "1") int pageNumber, Model model) {
-        int pageSize = 10;
+    public String getArticles(@RequestParam(defaultValue = "1") int pageNumber,
+                              @RequestParam(defaultValue = "10") int pageSize, Model model) {
         PageDTO<ArticleDTO> page = articleService.getArticlesPage(pageNumber, pageSize, "additionDate desc");
         model.addAttribute("page", page);
         return "articles";

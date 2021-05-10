@@ -6,6 +6,7 @@ import com.gmail.yauheniylebedzeu.service.model.ErrorsDTO;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import com.gmail.yauheniylebedzeu.web.validator.UserValidator;
 import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/api")
+@Lazy
 @AllArgsConstructor
 public class UserAPIController {
 

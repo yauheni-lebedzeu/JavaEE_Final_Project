@@ -7,7 +7,7 @@ import com.gmail.yauheniylebedzeu.repository.model.Role;
 import com.gmail.yauheniylebedzeu.repository.model.User;
 import com.gmail.yauheniylebedzeu.service.converter.UserConverter;
 import com.gmail.yauheniylebedzeu.service.enums.RoleDTOEnum;
-import com.gmail.yauheniylebedzeu.service.exception.RoleIsNotFoundException;
+import com.gmail.yauheniylebedzeu.service.exception.RoleNotFoundException;
 import com.gmail.yauheniylebedzeu.service.exception.UserNotFoundException;
 import com.gmail.yauheniylebedzeu.service.generator.RandomPasswordGenerator;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
@@ -82,7 +82,7 @@ class UserServiceImplTest {
         when(passwordEncoder.encode(password)).thenReturn(encodedPassword);
         RoleEnum roleEnum = RoleEnum.valueOf(roleDTOEnum.name());
         when(roleRepository.findByName(roleEnum)).thenReturn(Optional.empty());
-        assertThrows(RoleIsNotFoundException.class, () -> userService.add(userDTO));
+        assertThrows(RoleNotFoundException.class, () -> userService.add(userDTO));
     }
 
     @Test
@@ -142,7 +142,7 @@ class UserServiceImplTest {
         Role newRole = new Role();
         newRole.setName(newRoleEnum);
         when(roleRepository.findByName(newRoleEnum)).thenReturn(Optional.empty());
-        assertThrows(RoleIsNotFoundException.class, () -> userService.changeRoleByUuid(uuid, newRoleName));
+        assertThrows(RoleNotFoundException.class, () -> userService.changeRoleByUuid(uuid, newRoleName));
     }
 
     @Test

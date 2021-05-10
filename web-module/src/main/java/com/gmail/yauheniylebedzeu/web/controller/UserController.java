@@ -35,8 +35,8 @@ public class UserController {
     private final UserUpdateValidator userUpdateValidator;
 
     @GetMapping(value = "/users")
-    public String getUsers(@RequestParam(defaultValue = "1") int pageNumber, Model model) {
-        int pageSize = 10;
+    public String getUsers(@RequestParam(defaultValue = "1") int pageNumber,
+                           @RequestParam(defaultValue = "10") int pageSize, Model model) {
         PageDTO<UserDTO> page = userService.getUserPage(pageNumber, pageSize, "email");
         model.addAttribute("page", page);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -78,7 +78,8 @@ public class UserController {
     }
 
     @PostMapping(value = "/users/del/{pageNumber}")
-    public String delUsers(@PathVariable String pageNumber, @RequestParam(required = false) List<String> uuids) {
+    public String delUsers(@PathVariable String pageNumber,
+                           @RequestParam(required = false) List<String> uuids) {
         if (uuids != null) {
             uuids.forEach(userService::removeByUuid);
         }

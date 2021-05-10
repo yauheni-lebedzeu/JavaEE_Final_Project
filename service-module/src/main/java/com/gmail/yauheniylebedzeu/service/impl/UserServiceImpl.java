@@ -10,7 +10,7 @@ import com.gmail.yauheniylebedzeu.repository.model.UserContacts;
 import com.gmail.yauheniylebedzeu.service.UserService;
 import com.gmail.yauheniylebedzeu.service.converter.UserConverter;
 import com.gmail.yauheniylebedzeu.service.enums.RoleDTOEnum;
-import com.gmail.yauheniylebedzeu.service.exception.RoleIsNotFoundException;
+import com.gmail.yauheniylebedzeu.service.exception.RoleNotFoundException;
 import com.gmail.yauheniylebedzeu.service.exception.UserNotFoundException;
 import com.gmail.yauheniylebedzeu.service.exception.UserServiceException;
 import com.gmail.yauheniylebedzeu.service.generator.RandomPasswordGenerator;
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
             Role role = optionalRole.get();
             user.setRole(role);
         } else {
-            throw new RoleIsNotFoundException(String.format("An unexpected error occurred while adding a user. Role" +
+            throw new RoleNotFoundException(String.format("An unexpected error occurred while adding a user. Role" +
                     " named %s was not found in the database", roleName));
         }
         userRepository.persist(user);
@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
                 userRepository.merge(user);
                 return userConverter.convertUserToUserDTO(user);
             } else {
-                throw new RoleIsNotFoundException(String.format("An unexpected error occurred while changing a user" +
+                throw new RoleNotFoundException(String.format("An unexpected error occurred while changing a user" +
                         "role. Role named %s was not found in the database", roleName));
             }
         }

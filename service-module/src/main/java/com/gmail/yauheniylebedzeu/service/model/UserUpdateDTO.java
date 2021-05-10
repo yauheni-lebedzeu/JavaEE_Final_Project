@@ -1,8 +1,10 @@
 package com.gmail.yauheniylebedzeu.service.model;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class UserUpdateDTO {
 
     private String firstName;

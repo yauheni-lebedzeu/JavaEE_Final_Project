@@ -1,7 +1,9 @@
 package com.gmail.yauheniylebedzeu.service.model;
 
 import com.gmail.yauheniylebedzeu.service.enums.RoleDTOEnum;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,7 +11,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.HashSet;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
 public class UserLogin implements UserDetails {
 
     private final UserDTO user;
