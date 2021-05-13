@@ -4,6 +4,7 @@ import com.gmail.yauheniylebedzeu.service.enums.RoleDTOEnum;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import net.minidev.json.JSONUtil;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -8,9 +8,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 @Configuration
-@EnableWebMvc
 @ComponentScan(basePackages = {"com.gmail.yauheniylebedzeu.repository", "com.gmail.yauheniylebedzeu.service"})
 public class ApplicationConfig {
 

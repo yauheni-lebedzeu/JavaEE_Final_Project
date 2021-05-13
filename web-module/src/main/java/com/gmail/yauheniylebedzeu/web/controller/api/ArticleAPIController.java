@@ -15,7 +15,7 @@ import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlCo
 @RestController
 @RequestMapping(value = API_CONTROLLER_URL)
 @AllArgsConstructor
-public class ArticlesAPIController {
+public class ArticleAPIController {
 
     private final ArticleService articleService;
 
@@ -27,12 +27,12 @@ public class ArticlesAPIController {
 
     @GetMapping(value = ARTICLES_CONTROLLER_URL + "/{uuid}")
     public ArticleDTO getArticle(@PathVariable String uuid) {
-        return articleService.findArticleByUuid(uuid);
+        return articleService.findByUuid(uuid);
     }
 
     @PostMapping(value = ARTICLES_CONTROLLER_URL + "/{userUuid}")
     public ResponseEntity<Void> addArticle(@PathVariable String userUuid, @RequestBody ArticleDTO articleDTO) {
-        articleService.addArticle(userUuid, articleDTO);
+        articleService.add(userUuid, articleDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

@@ -6,6 +6,7 @@ import com.gmail.yauheniylebedzeu.service.model.PageDTO;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import com.gmail.yauheniylebedzeu.service.model.UserLogin;
 import com.gmail.yauheniylebedzeu.service.model.UserUpdateDTO;
+import com.gmail.yauheniylebedzeu.web.controller.constant.AttributeNameConstant;
 import com.gmail.yauheniylebedzeu.web.controller.exception.UserControllerException;
 import com.gmail.yauheniylebedzeu.web.validator.UserUpdateValidator;
 import com.gmail.yauheniylebedzeu.web.validator.UserValidator;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
+import static com.gmail.yauheniylebedzeu.web.controller.constant.AttributeNameConstant.*;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.*;
 
 @Controller
@@ -40,25 +42,25 @@ public class UserController {
     public String getUsers(@RequestParam(defaultValue = "1") int pageNumber,
                            @RequestParam(defaultValue = "10") int pageSize, Model model) {
         PageDTO<UserDTO> page = userService.getUserPage(pageNumber, pageSize, "email");
-        model.addAttribute("page", page);
+        model.addAttribute(PAGE_ATTRIBUTE_NAME, page);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             UserLogin userLogin = (UserLogin) authentication.getPrincipal();
             UserDTO user = userLogin.getUser();
             String email = user.getEmail();
-            model.addAttribute("email", email);
+            model.addAttribute(EMAIL_ATTRIBUTE_NAME, email);
         } else {
             return "redirect:/login";
         }
         RoleDTOEnum[] allRoles = RoleDTOEnum.values();
-        model.addAttribute("allRoles", allRoles);
+        model.addAttribute(ROLES_ATTRIBUTE_NAME, allRoles);
         return "users";
     }
 
     @GetMapping(value = ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL + ADD_CONTROLLER_URL)
     public String getUserForm(UserDTO user, Model model, BindingResult errors) {
         RoleDTOEnum[] allRoles = RoleDTOEnum.values();
-        model.addAttribute("allRoles", allRoles);
+        model.addAttribute(ROLES_ATTRIBUTE_NAME, allRoles);
         return "user-form";
     }
 
@@ -94,7 +96,7 @@ public class UserController {
     @PostMapping(value = ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL + CHANGE_ROLE_CONTROLLER_URL + "/{uuid}/{sourcePageNumber}")
     public String changeRole(@PathVariable String uuid,
                              @PathVariable String sourcePageNumber,
-                             @RequestParam(name = "role_name", required = false) String roleName) {
+                             @RequestParam(required = false) String roleName) {
         if (StringUtils.isNotBlank(roleName)) {
             try {
                 RoleDTOEnum.valueOf(roleName);
@@ -115,11 +117,11 @@ public class UserController {
             UserDTO loggedInUser = userLogin.getUser();
             String email = loggedInUser.getEmail();
             UserDTO user = userService.findByEmail(email);
-            model.addAttribute("user", user);
+            model.addAttribute(AttributeNameConstant.USER_ATTRIBUTE_NAME, user);
+            return "profile";
         } else {
             return "redirect:/login";
         }
-        return "profile";
     }
 
     @PostMapping(value = CUSTOMER_CONTROLLER_URL + PROFILE_CONTROLLER_URL + CHANGE_CONTROLLER_URL + "/{uuid}")

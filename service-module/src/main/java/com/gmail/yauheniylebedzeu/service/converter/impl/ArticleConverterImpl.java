@@ -6,6 +6,7 @@ import com.gmail.yauheniylebedzeu.repository.model.Comment;
 import com.gmail.yauheniylebedzeu.repository.model.User;
 import com.gmail.yauheniylebedzeu.service.converter.ArticleConverter;
 import com.gmail.yauheniylebedzeu.service.converter.CommentConverter;
+import com.gmail.yauheniylebedzeu.service.exception.ArticleContentNotReceivedException;
 import com.gmail.yauheniylebedzeu.service.exception.UserNotReceivedException;
 import com.gmail.yauheniylebedzeu.service.model.ArticleDTO;
 import com.gmail.yauheniylebedzeu.service.model.CommentDTO;
@@ -30,8 +31,8 @@ public class ArticleConverterImpl implements ArticleConverter {
         article.setSynopsis(articleDTO.getSynopsis());
         ArticleContent articleContent = new ArticleContent();
         articleContent.setContent(articleDTO.getContent());
-        article.setContent(articleContent);
         articleContent.setArticle(article);
+        article.setContent(articleContent);
         return article;
     }
 
@@ -56,6 +57,12 @@ public class ArticleConverterImpl implements ArticleConverter {
     @Override
     public ArticleDTO convertArticleToDetailedArticleDTO(Article article) {
         ArticleDTO articleDTO = convertArticleToArticleDTO(article);
+        ArticleContent articleContent = article.getContent();
+        if (Objects.isNull(articleContent)) {
+            throw new ArticleContentNotReceivedException(String.format("Couldn't get the content from the database for the article" +
+                    " with id = %d", article.getId()));
+        }
+        articleDTO.setContent(articleContent.getContent());
         Set<Comment> comments = article.getComments();
         if (!comments.isEmpty()) {
             Set<CommentDTO> commentDTOs = comments.stream()
@@ -63,8 +70,6 @@ public class ArticleConverterImpl implements ArticleConverter {
                     .collect(Collectors.toSet());
             Set<CommentDTO> emptyCommentsDTOs = articleDTO.getComments();
             emptyCommentsDTOs.addAll(commentDTOs);
-            ArticleContent articleContent = article.getContent();
-            articleDTO.setContent(articleContent.getContent());
         }
         return articleDTO;
     }

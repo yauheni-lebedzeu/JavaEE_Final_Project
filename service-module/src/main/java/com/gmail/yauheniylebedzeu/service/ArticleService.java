@@ -9,11 +9,11 @@ public interface ArticleService {
 
     PageDTO<ArticleDTO> getArticlesPage(int pageNumber, int pageSize, String sortParameter);
 
-    ArticleDTO findArticleByUuid(String uuid);
+    ArticleDTO findByUuid(String uuid);
 
     List<ArticleDTO> findAll();
 
-    ArticleDTO addArticle(String userUuid, ArticleDTO articleDTO);
+    ArticleDTO add(String userUuid, ArticleDTO articleDTO);
 
     void removeByUuid(String uuid);
 }

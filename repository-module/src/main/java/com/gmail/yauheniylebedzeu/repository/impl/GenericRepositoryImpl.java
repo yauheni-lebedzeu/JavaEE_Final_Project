@@ -12,7 +12,7 @@ import java.util.Optional;
 
 import static com.gmail.yauheniylebedzeu.repository.constant.ParameterNameConstant.UUID_PARAMETER_NAME;
 
-public abstract class GenericRepositoryImpl<T> implements GenericRepository<T> {
+public abstract class GenericRepositoryImpl<I, T> implements GenericRepository<I, T> {
 
     @PersistenceContext
     protected EntityManager entityManager;
@@ -22,12 +22,17 @@ public abstract class GenericRepositoryImpl<T> implements GenericRepository<T> {
     @SuppressWarnings("unchecked")
     public GenericRepositoryImpl() {
         ParameterizedType genericClass = (ParameterizedType) getClass().getGenericSuperclass();
-        this.entityClass = (Class<T>) genericClass.getActualTypeArguments()[0];
+        this.entityClass = (Class<T>) genericClass.getActualTypeArguments()[1];
     }
 
     @Override
     public void persist(T entity) {
         entityManager.persist(entity);
+    }
+
+    @Override
+    public T findById(I id) {
+        return entityManager.find(entityClass, id);
     }
 
     @Override

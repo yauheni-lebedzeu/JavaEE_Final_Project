@@ -181,4 +181,33 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="14" author="yauheniylebedzeu@gmail.com">
+        <createTable tableName="item">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="uuid" type="UUID" defaultValueComputed="(UUID())">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price" type="DECIMAL(7,2)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="15" author="yauheniylebedzeu@gmail.com">
+        <createTable tableName="item_description">
+            <column name="item_id" type="BIGINT">
+                <constraints primaryKey="true" foreignKeyName="fk_item_id_for_item_description"
+                             references="item(id)" nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>

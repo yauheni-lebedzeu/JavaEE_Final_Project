@@ -13,16 +13,23 @@
     <table border="1">
         <tbody>
         <tr th:each="article : ${page.objects}">
-            <td width="50%" align="center">
+            <td width="50%">
                 <p th:text="${article.additionDate}">Addition date</p>
                 <p th:text="${article.title}">Title</p>
                 <p th:text="${article.userFirstName + ' ' + article.userLastName}">Author</p>
                 <p>
-                <pre th:text="${article.synopsis}">Synopsis</pre>
+                <pre style="white-space: pre-wrap" th:text="${article.synopsis}">Synopsis</pre>
                 </p>
                 <p align="right">
-                    <a th:href="@{/customer/articles/{uuid}(uuid=${article.uuid})}">More detailed...</a>
+                    <a th:href="@{/articles/{uuid}(uuid=${article.uuid})}">More detailed...</a>
                 </p>
+            </td>
+            <td width="10%" align="center" th:if="${role.equals('SALE_USER')}">
+                <form action=#
+                      th:action="@{/seller/articles/del/{uuid}/{sourcePageNumber}(uuid = ${article.uuid}, sourcePageNumber=${page.pageNumber})}"
+                      method="post">
+                    <button type="submit">Delete</button>
+                </form>
             </td>
         </tr>
         </tbody>
@@ -32,12 +39,15 @@
     <div align="center" th:if="${page.countOfPages > 1}">
         <span th:each="i : ${#numbers.sequence(1,page.countOfPages)}">
             <span th:unless="${page.pageNumber == i}">
-            <a th:href="@{'/customer/articles?pageNumber=' + ${i}}" th:text="'|' + ${i} + '|'"></a>
+            <a th:href="@{'/articles?pageNumber=' + ${i}}" th:text="'|' + ${i} + '|'"></a>
             </span>
             <span th:if="${page.pageNumber == i}" th:text="${i}"></span>
         </span>
     </div>
-    <h3 align="center" class="text-center"><a th:href="@{/}">Go back to the main page</a></h3>
+    <div align="center">
+        <h3 th:if="${role.equals('SALE_USER')}"><a th:href="@{/seller/articles/add}">Publish a new article</a></h3>
+        <h3 class="text-center"><a th:href="@{/main}">Go back to the main page</a></h3>
+    </div>
 </footer>
 </body>
 </html>

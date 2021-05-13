@@ -2,7 +2,7 @@ package com.gmail.yauheniylebedzeu.web.controller.constant;
 
 public interface ControllerUrlConstant {
     String ACCESS_DENIED_CONTROLLER_URL = "/access-denied";
-    String MAIN_PAGE_CONTROLLER_URL = "/";
+    String MAIN_PAGE_CONTROLLER_URL = "/main";
     String ARTICLES_CONTROLLER_URL = "/articles";
     String REVIEWS_CONTROLLER_URL = "/reviews";
     String USERS_CONTROLLER_URL = "/users";
@@ -16,4 +16,6 @@ public interface ControllerUrlConstant {
     String PROFILE_CONTROLLER_URL = "/profile";
     String CHANGE_CONTROLLER_URL = "/change";
     String ADD_CONTROLLER_URL = "/add";
+    String SELLER_CONTROLLER_URL = "/seller";
+    String ITEMS_CONTROLLER_URL = "/items";
 }

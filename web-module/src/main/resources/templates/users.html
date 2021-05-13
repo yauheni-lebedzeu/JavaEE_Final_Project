@@ -39,8 +39,8 @@
                 <form action=#
                       th:action="@{/admin/users/change-role/{uuid}/{sourcePageNumber}(sourcePageNumber=${page.pageNumber}, uuid = ${user.uuid})}"
                       method="post">
-                    <select name="role_name">
-                        <option th:each="role : ${allRoles}" th:value="${role.name()}"
+                    <select name="roleName">
+                        <option th:each="role : ${roles}" th:value="${role.name()}"
                                 th:unless="${user.role} == ${role}" th:text="${role.name}">Role
                         </option>
                     </select><br>
@@ -69,6 +69,6 @@
         </span>
     </div>
     <h3 align="center" class="text-center"><a th:href="@{/admin/users/add}">Add new user</a></h3>
-    <h3 align="center" class="text-center"><a th:href="@{/}">Go back to the main page</a></h3>
+    <h3 align="center" class="text-center"><a th:href="@{/main}">Go back to the main page</a></h3>
 </footer>
 </html>

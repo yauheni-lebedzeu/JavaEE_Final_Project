@@ -3,9 +3,11 @@ package com.gmail.yauheniylebedzeu.repository;
 import java.util.List;
 import java.util.Optional;
 
-public interface GenericRepository<T> {
+public interface GenericRepository<I, T> {
 
     void persist(T entity);
+
+    T findById(I id);
 
     Optional<T> findByUuid(String uuid);
 

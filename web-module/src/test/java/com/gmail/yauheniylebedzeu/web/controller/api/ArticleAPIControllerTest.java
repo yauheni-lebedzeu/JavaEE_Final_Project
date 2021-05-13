@@ -23,9 +23,9 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = ArticlesAPIController.class)
+@WebMvcTest(controllers = ArticleAPIController.class)
 @ActiveProfiles("test")
-public class ArticlesAPIControllerTest {
+public class ArticleAPIControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

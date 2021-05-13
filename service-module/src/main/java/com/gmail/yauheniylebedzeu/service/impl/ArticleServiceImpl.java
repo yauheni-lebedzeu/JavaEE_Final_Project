@@ -11,14 +11,11 @@ import com.gmail.yauheniylebedzeu.service.exception.UserNotFoundException;
 import com.gmail.yauheniylebedzeu.service.model.ArticleDTO;
 import com.gmail.yauheniylebedzeu.service.model.PageDTO;
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.gmail.yauheniylebedzeu.service.util.ServiceUtil.getCountOfPages;
 import static com.gmail.yauheniylebedzeu.service.util.ServiceUtil.getStartPosition;
@@ -38,15 +35,13 @@ public class ArticleServiceImpl implements ArticleService {
         Long countOfArticles = articleRepository.getCountOfEntities();
         int countOfPages = getCountOfPages(countOfArticles, pageSize);
         page.setCountOfPages(countOfPages);
-        if (pageNumber > countOfPages) {
+        if (pageNumber > countOfPages && countOfPages != 0) {
             pageNumber = countOfPages;
         }
         page.setPageNumber(pageNumber);
         int startPosition = getStartPosition(pageNumber, pageSize);
         List<Article> news = articleRepository.findEntitiesWithLimits(startPosition, pageSize, sortParameter);
-        List<ArticleDTO> newsDTO = news.stream()
-                .map(articleConverter::convertArticleToArticleDTO)
-                .collect(Collectors.toList());
+        List<ArticleDTO> newsDTO = articleConverter.convertArticleListToArticleDTOList(news);
         List<ArticleDTO> articlesOnPage = page.getObjects();
         articlesOnPage.addAll(newsDTO);
         return page;
@@ -54,7 +49,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     @Transactional
-    public ArticleDTO findArticleByUuid(String uuid) {
+    public ArticleDTO findByUuid(String uuid) {
         Optional<Article> optionalArticle = articleRepository.findByUuid(uuid);
         if (optionalArticle.isPresent()) {
             Article article = optionalArticle.get();
@@ -74,7 +69,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     @Transactional
-    public ArticleDTO addArticle(String userUuid, ArticleDTO articleDTO) {
+    public ArticleDTO add(String userUuid, ArticleDTO articleDTO) {
         Optional<User> optionalUser = userRepository.findByUuid(userUuid);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();

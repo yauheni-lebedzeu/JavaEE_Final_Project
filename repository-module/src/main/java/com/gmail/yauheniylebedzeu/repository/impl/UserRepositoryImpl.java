@@ -1,7 +1,6 @@
 package com.gmail.yauheniylebedzeu.repository.impl;
 
 import com.gmail.yauheniylebedzeu.repository.UserRepository;
-import com.gmail.yauheniylebedzeu.repository.constant.ParameterNameConstant;
 import com.gmail.yauheniylebedzeu.repository.model.User;
 import org.springframework.stereotype.Repository;
 
@@ -11,13 +10,12 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Root;
-
 import java.util.Optional;
 
 import static com.gmail.yauheniylebedzeu.repository.constant.ParameterNameConstant.EMAIL_PARAMETER_NAME;
 
 @Repository
-public class UserRepositoryImpl extends GenericRepositoryImpl<User> implements UserRepository {
+public class UserRepositoryImpl extends GenericRepositoryImpl<Long, User> implements UserRepository {
 
     @Override
     public Optional<User> findByEmail(String username) {

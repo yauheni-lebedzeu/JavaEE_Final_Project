@@ -6,19 +6,21 @@
 </head>
 <body>
 <div align="center">
-    <table border="1">
+    <table width="80%" border="1">
         <tbody>
         <tr>
             <td>
                 <p th:text="${article.additionDate}">Date</p>
                 <p th:text="${article.title}">Article title</p>
-                <p th:text="${article.content}">Content</p>
+                <p>
+                <pre style="white-space: pre-wrap" th:text="${article.content}">Content</pre>
+                </p>
                 <p th:text="${article.userFirstName + ' ' + article.userLastName}">Author</p>
             </td>
         </tr>
         </tbody>
     </table>
-    <h3><a th:href="@{/customer/articles}">Go back to the page of the news</a></h3>
+    <h3><a th:href="@{/articles}">Go back to the page of the news</a></h3>
     <table th:unless="${article.comments.isEmpty()}">
         <thead>
         <tr>

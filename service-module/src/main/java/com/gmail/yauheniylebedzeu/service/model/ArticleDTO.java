@@ -16,7 +16,7 @@ public class ArticleDTO {
     private Long id;
     private String uuid;
     @NotNull
-    @Size(min = 3, max = 30)
+    @Size(min = 3, max = 50)
     private String title;
     @NotNull
     @Size(min = 20, max = 200)

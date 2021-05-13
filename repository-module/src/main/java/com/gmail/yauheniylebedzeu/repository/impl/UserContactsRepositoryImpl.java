@@ -5,5 +5,5 @@ import com.gmail.yauheniylebedzeu.repository.model.UserContacts;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class UserContactsRepositoryImpl extends GenericRepositoryImpl<UserContacts> implements UserContactsRepository {
+public class UserContactsRepositoryImpl extends GenericRepositoryImpl<Long, UserContacts> implements UserContactsRepository {
 }

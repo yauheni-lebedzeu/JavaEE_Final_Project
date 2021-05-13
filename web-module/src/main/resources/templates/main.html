@@ -13,11 +13,14 @@
         <a th:href="@{/logout}"> | Sign out</a>
         <div>
             <h2 th:if="${role.equals('ADMIN')}">
-                <a th:href="@{/admin/users}">Go to the list of the users</a><br>
-                <a th:href="@{/admin/reviews}">Go to the admin list of the reviews</a>
+                <a th:href="@{/admin/users}">Go to the list of users</a><br>
+                <a th:href="@{/admin/reviews}">Go to the admin list of reviews</a>
+            </h2>
+            <h2 th:if="${role.equals('CUSTOMER_USER') or role.equals('SALE_USER')}">
+                <a th:href="@{/articles}">Go to the the news page</a><br>
+                <a th:href="@{/items}">Go to the page of items</a><br>
             </h2>
             <h2 th:if="${role.equals('CUSTOMER_USER')}">
-                <a th:href="@{/customer/articles}">Go to the page of the news</a><br>
                 <a th:href="@{/customer/profile}">Go to the profile</a>
             </h2>
         </div>

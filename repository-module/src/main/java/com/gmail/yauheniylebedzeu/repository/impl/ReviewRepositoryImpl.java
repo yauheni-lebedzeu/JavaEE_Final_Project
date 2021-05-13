@@ -8,7 +8,7 @@ import javax.persistence.Query;
 import java.util.List;
 
 @Repository
-public class ReviewRepositoryImpl extends GenericRepositoryImpl<Review> implements ReviewRepository {
+public class ReviewRepositoryImpl extends GenericRepositoryImpl<Long, Review> implements ReviewRepository {
 
     @Override
     @SuppressWarnings("unchecked")

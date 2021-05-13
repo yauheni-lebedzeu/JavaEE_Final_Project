@@ -27,7 +27,7 @@
             Patronymic error</p>
         <label for="roles">Roles</label><br>
         <select th:field="*{role}" id="roles">
-            <option th:each="role : ${allRoles}" th:value="${role}"
+            <option th:each="role : ${roles}" th:value="${role}"
                     th:text="${role.name}">Role
             </option>
         </select><br>
@@ -49,7 +49,7 @@
                required/>
         <p style="color: red; white-space: pre" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
             Password errors</p><br>
-        <input type="submit" value="Add user"><input type="reset" value="Reset">
+        <input type="submit" value="Add"><input type="reset" value="Reset">
     </form>
     <h3 class="text-center"><a th:href="@{/admin/users}">Go back to the list of users</a></h3>
 </div>

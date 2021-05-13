@@ -17,7 +17,7 @@ import java.util.Optional;
 import static com.gmail.yauheniylebedzeu.repository.constant.ParameterNameConstant.NAME_PARAMETER_NAME;
 
 @Repository
-public class RoleRepositoryImpl extends GenericRepositoryImpl<Role> implements RoleRepository {
+public class RoleRepositoryImpl extends GenericRepositoryImpl<Long, Role> implements RoleRepository {
 
     @Override
     public Optional<Role> findByName(RoleEnum name) {

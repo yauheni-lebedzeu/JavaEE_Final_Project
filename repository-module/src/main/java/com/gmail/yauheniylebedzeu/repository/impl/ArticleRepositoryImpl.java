@@ -5,5 +5,5 @@ import com.gmail.yauheniylebedzeu.repository.model.Article;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class ArticleRepositoryImpl extends GenericRepositoryImpl<Article> implements ArticleRepository {
+public class ArticleRepositoryImpl extends GenericRepositoryImpl<Long, Article> implements ArticleRepository {
 }

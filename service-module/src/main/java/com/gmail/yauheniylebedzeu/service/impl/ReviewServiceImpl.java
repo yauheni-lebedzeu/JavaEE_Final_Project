@@ -34,12 +34,33 @@ public class ReviewServiceImpl implements ReviewService {
         Long countOfReviews = reviewRepository.getCountOfEntities();
         int countOfPages = getCountOfPages(countOfReviews, pageSize);
         page.setCountOfPages(countOfPages);
-        if (pageNumber > countOfPages) {
+        if (pageNumber > countOfPages && countOfPages != 0) {
             pageNumber = countOfPages;
         }
         page.setPageNumber(pageNumber);
         int startPosition = getStartPosition(pageNumber, pageSize);
         List<Review> reviews = reviewRepository.findEntitiesWithLimits(startPosition, pageSize, sortParameter);
+        List<ReviewDTO> reviewsDTOs = reviews.stream()
+                .map(reviewConverter::convertReviewToReviewDTO)
+                .collect(Collectors.toList());
+        List<ReviewDTO> reviewsOnPage = page.getObjects();
+        reviewsOnPage.addAll(reviewsDTOs);
+        return page;
+    }
+
+    @Override
+    @Transactional
+    public PageDTO<ReviewDTO> getVisibleReviewsPage(int pageNumber, int pageSize, String sortParameter) {
+        PageDTO<ReviewDTO> page = new PageDTO<>();
+        Long countOfReviews = reviewRepository.getCountOfVisible();
+        int countOfPages = getCountOfPages(countOfReviews, pageSize);
+        page.setCountOfPages(countOfPages);
+        if (pageNumber > countOfPages && countOfPages != 0) {
+            pageNumber = countOfPages;
+        }
+        page.setPageNumber(pageNumber);
+        int startPosition = getStartPosition(pageNumber, pageSize);
+        List<Review> reviews = reviewRepository.findVisibleReviews(startPosition, pageSize, sortParameter);
         List<ReviewDTO> reviewsDTOs = reviews.stream()
                 .map(reviewConverter::convertReviewToReviewDTO)
                 .collect(Collectors.toList());
@@ -89,27 +110,6 @@ public class ReviewServiceImpl implements ReviewService {
             }
         }
         return reviewDTOs;
-    }
-
-    @Override
-    @Transactional
-    public PageDTO<ReviewDTO> getVisibleReviewsPage(int pageNumber, int pageSize, String sortParameter) {
-        PageDTO<ReviewDTO> page = new PageDTO<>();
-        Long countOfReviews = reviewRepository.getCountOfVisible();
-        int countOfPages = getCountOfPages(countOfReviews, pageSize);
-        page.setCountOfPages(countOfPages);
-        if (pageNumber > countOfPages) {
-            pageNumber = countOfPages;
-        }
-        page.setPageNumber(pageNumber);
-        int startPosition = getStartPosition(pageNumber, pageSize);
-        List<Review> reviews = reviewRepository.findVisibleReviews(startPosition, pageSize, sortParameter);
-        List<ReviewDTO> reviewsDTOs = reviews.stream()
-                .map(reviewConverter::convertReviewToReviewDTO)
-                .collect(Collectors.toList());
-        List<ReviewDTO> reviewsOnPage = page.getObjects();
-        reviewsOnPage.addAll(reviewsDTOs);
-        return page;
     }
 
     private ReviewDTO changeVisibilityByUuid(String uuid) {
