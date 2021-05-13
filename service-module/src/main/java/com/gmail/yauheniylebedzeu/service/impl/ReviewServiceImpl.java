@@ -34,7 +34,7 @@ public class ReviewServiceImpl implements ReviewService {
         Long countOfReviews = reviewRepository.getCountOfEntities();
         int countOfPages = getCountOfPages(countOfReviews, pageSize);
         page.setCountOfPages(countOfPages);
-        if (pageNumber > countOfPages && countOfPages != 0) {
+        if (pageNumber > countOfPages) {
             pageNumber = countOfPages;
         }
         page.setPageNumber(pageNumber);
@@ -55,7 +55,7 @@ public class ReviewServiceImpl implements ReviewService {
         Long countOfReviews = reviewRepository.getCountOfVisible();
         int countOfPages = getCountOfPages(countOfReviews, pageSize);
         page.setCountOfPages(countOfPages);
-        if (pageNumber > countOfPages && countOfPages != 0) {
+        if (pageNumber > countOfPages) {
             pageNumber = countOfPages;
         }
         page.setPageNumber(pageNumber);

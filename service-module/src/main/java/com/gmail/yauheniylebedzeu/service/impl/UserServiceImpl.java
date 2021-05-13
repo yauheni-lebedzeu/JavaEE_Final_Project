@@ -128,7 +128,7 @@ public class UserServiceImpl implements UserService {
         Long countOfUsers = userRepository.getCountOfEntities();
         int countOfPages = getCountOfPages(countOfUsers, pageSize);
         page.setCountOfPages(countOfPages);
-        if (pageNumber > countOfPages && countOfPages != 0) {
+        if (pageNumber > countOfPages) {
             pageNumber = countOfPages;
         }
         page.setPageNumber(pageNumber);

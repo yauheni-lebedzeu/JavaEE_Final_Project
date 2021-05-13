@@ -35,7 +35,7 @@ public class ArticleServiceImpl implements ArticleService {
         Long countOfArticles = articleRepository.getCountOfEntities();
         int countOfPages = getCountOfPages(countOfArticles, pageSize);
         page.setCountOfPages(countOfPages);
-        if (pageNumber > countOfPages && countOfPages != 0) {
+        if (pageNumber > countOfPages) {
             pageNumber = countOfPages;
         }
         page.setPageNumber(pageNumber);
