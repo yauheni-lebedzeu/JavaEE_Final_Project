@@ -1,6 +1,5 @@
 package com.gmail.yauheniylebedzeu.web.controller.api;
 
-import com.gmail.yauheniylebedzeu.repository.model.User;
 import com.gmail.yauheniylebedzeu.service.UserService;
 import com.gmail.yauheniylebedzeu.service.converter.BindingResultConverter;
 import com.gmail.yauheniylebedzeu.service.model.ErrorsDTO;
@@ -13,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.API_CONTROLLER_URL;
@@ -36,13 +34,14 @@ public class UserAPIController {
         if (bindingResult.hasErrors()) {
             ErrorsDTO errors = bindingResultConverter.convertBindingResultToErrorsDTO(bindingResult);
             return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        } else {
+            userService.add(user);
+            return new ResponseEntity<>(HttpStatus.CREATED);
         }
-        userService.add(user);
-        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping(value = USERS_CONTROLLER_URL)
-    public List<User> getUsers() {
-        return Collections.emptyList();
+    public List<UserDTO> getUsers() {
+        return userService.findAll();
     }
 }

@@ -4,6 +4,8 @@ import com.gmail.yauheniylebedzeu.service.model.PageDTO;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import com.gmail.yauheniylebedzeu.service.model.UserUpdateDTO;
 
+import java.util.List;
+
 public interface UserService {
 
     UserDTO add(UserDTO userDTO);
@@ -23,4 +25,6 @@ public interface UserService {
     UserDTO changePasswordByUuid(String uuid);
 
     void sendPasswordToUser(UserDTO userDTO);
+
+    List<UserDTO> findAll();
 }

@@ -209,4 +209,10 @@ public class UserServiceImpl implements UserService {
             throw new UserServiceException(String.format("Couldn't send password to the \"%s\"", email));
         }
     }
+
+    @Override
+    public List<UserDTO> findAll() {
+        List<User> users = userRepository.findAll();
+        return userConverter.convertUserListToUserDTOList(users);
+    }
 }
