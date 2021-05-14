@@ -46,7 +46,8 @@ public class ArticleAPIControllerTest {
     @Test
     void shouldVerifyThatBusinessLogicIsCalledWhenWeRequestGetArticles() throws Exception {
         mockMvc.perform(
-                get(API_CONTROLLER_URL + ARTICLES_CONTROLLER_URL).contentType(MediaType.APPLICATION_JSON)
+                get(API_CONTROLLER_URL + ARTICLES_CONTROLLER_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
         );
         verify(articleService, times(1)).findAll();
     }
@@ -75,7 +76,8 @@ public class ArticleAPIControllerTest {
         List<ArticleDTO> articles = Collections.singletonList(article);
         when(articleService.findAll()).thenReturn(articles);
         MvcResult mvcResult = mockMvc.perform(
-                get(API_CONTROLLER_URL + ARTICLES_CONTROLLER_URL).contentType(MediaType.APPLICATION_JSON)
+                get(API_CONTROLLER_URL + ARTICLES_CONTROLLER_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
         ).andReturn();
         String contentAsString = mvcResult.getResponse().getContentAsString();
         assertThat(contentAsString).

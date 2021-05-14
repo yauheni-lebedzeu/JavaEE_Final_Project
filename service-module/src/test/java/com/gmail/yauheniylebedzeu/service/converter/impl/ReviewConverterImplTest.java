@@ -4,13 +4,17 @@ import com.gmail.yauheniylebedzeu.repository.model.Review;
 import com.gmail.yauheniylebedzeu.repository.model.User;
 import com.gmail.yauheniylebedzeu.service.exception.UserNotReceivedException;
 import com.gmail.yauheniylebedzeu.service.model.ReviewDTO;
+import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ReviewConverterImplTest {
 
@@ -100,6 +104,21 @@ class ReviewConverterImplTest {
         String fullName = lastName + " " + firstName + " " + patronymic;
         ReviewDTO reviewDTO = reviewConverter.convertReviewToReviewDTO(review);
         assertEquals(fullName, reviewDTO.getFullName());
+    }
+
+    @Test
+    void shouldConvertEmptyReviewListToReviewDTOList() {
+        List<Review> reviews = Collections.emptyList();
+        List<ReviewDTO> reviewDTOs = reviewConverter.convertReviewListToReviewDTOList(reviews);
+        assertTrue(reviewDTOs.isEmpty());
+    }
+
+    @Test
+    void shouldConvertReviewListToReviewDTOList() {
+        Review review = getTestReviewWithUser();
+        List<Review> reviews = Collections.singletonList(review);
+        List<ReviewDTO> reviewDTOs = reviewConverter.convertReviewListToReviewDTOList(reviews);
+        assertEquals(1, reviewDTOs.size());
     }
 
     private Review getTestReviewWithUser() {

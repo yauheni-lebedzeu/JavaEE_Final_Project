@@ -11,6 +11,7 @@ import com.gmail.yauheniylebedzeu.service.UserService;
 import com.gmail.yauheniylebedzeu.service.converter.UserConverter;
 import com.gmail.yauheniylebedzeu.service.enums.RoleDTOEnum;
 import com.gmail.yauheniylebedzeu.service.exception.RoleNotFoundException;
+import com.gmail.yauheniylebedzeu.service.exception.UserContactsNotReceivedException;
 import com.gmail.yauheniylebedzeu.service.exception.UserDeletedException;
 import com.gmail.yauheniylebedzeu.service.exception.UserNotFoundException;
 import com.gmail.yauheniylebedzeu.service.exception.UserServiceException;
@@ -161,9 +162,8 @@ public class UserServiceImpl implements UserService {
             }
             UserContacts contacts = user.getContacts();
             if (Objects.isNull(contacts)) {
-                contacts = new UserContacts();
-                contacts.setUser(user);
-                userContactsRepository.persist(contacts);
+                throw new UserContactsNotReceivedException("Couldn't receive the contacts of the user with id "
+                        + user.getId() + " from the database");
             }
             String address = userUpdateDTO.getAddress();
             contacts.setAddress(address);

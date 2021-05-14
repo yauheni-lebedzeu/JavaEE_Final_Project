@@ -19,11 +19,18 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.util.Collections;
+import java.util.List;
+
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.API_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.USERS_CONTROLLER_URL;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(excludeAutoConfiguration = UserDetailsServiceAutoConfiguration.class,
@@ -339,6 +346,43 @@ public class UserAPIControllerTest {
                 isEqualToIgnoringWhitespace(objectMapper.writeValueAsString(errors));
     }
 
+    @Test
+    void shouldRequestGetUsers() throws Exception {
+        mockMvc.perform(get(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldVerifyThatBusinessLogicIsCalledWhenWeRequestGetUsers() throws Exception {
+        mockMvc.perform(get(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
+                .contentType(MediaType.APPLICATION_JSON));
+        verify(userService, times(1)).findAll();
+    }
+
+    @Test
+    void shouldReturnEmptyCollectionWhenWeRequestGetUsers() throws Exception {
+        when(userService.findAll()).thenReturn(Collections.emptyList());
+        MvcResult mvcResult = mockMvc.perform(get(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andReturn();
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+        assertThat(contentAsString).
+                isEqualToIgnoringWhitespace(objectMapper.writeValueAsString(Collections.emptyList()));
+    }
+
+    @Test
+    void shouldReturnCollectionOfUsersWhenWeRequestGetUsers() throws Exception {
+        UserDTO user = getUserWithValidFields();
+        List<UserDTO> users = Collections.singletonList(user);
+        when(userService.findAll()).thenReturn(users);
+        MvcResult mvcResult = mockMvc.perform(get(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andReturn();
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+        assertThat(contentAsString).
+                isEqualToIgnoringWhitespace(objectMapper.writeValueAsString(users));
+    }
 
     private UserDTO getUserWithValidFields() {
         UserDTO user = new UserDTO();
@@ -352,5 +396,4 @@ public class UserAPIControllerTest {
         user.setPhoneNumber("+375291111111");
         return user;
     }
-
 }

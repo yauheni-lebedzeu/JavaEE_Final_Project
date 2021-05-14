@@ -31,13 +31,11 @@ public class UserConverterImpl implements UserConverter {
         user.setPassword(userDTO.getPassword());
         String address = userDTO.getAddress();
         String phoneNumber = userDTO.getPhoneNumber();
-        if (StringUtils.isNotBlank(address) || StringUtils.isNotBlank(phoneNumber)) {
-            UserContacts contacts = new UserContacts();
-            contacts.setAddress(address);
-            contacts.setPhoneNumber(phoneNumber);
-            contacts.setUser(user);
-            user.setContacts(contacts);
-        }
+        UserContacts contacts = new UserContacts();
+        contacts.setAddress(address);
+        contacts.setPhoneNumber(phoneNumber);
+        contacts.setUser(user);
+        user.setContacts(contacts);
         return user;
     }
 
@@ -54,7 +52,7 @@ public class UserConverterImpl implements UserConverter {
         userDTO.setIsDeleted(user.getIsDeleted());
         Role role = user.getRole();
         if (Objects.isNull(role)) {
-            throw new RoleNotReceivedException(String.format("Couldn't get the role from the database for the user" +
+            throw new RoleNotReceivedException(String.format("Couldn't receive the role from the database for the user" +
                     " with id = %d", user.getId()));
         }
         RoleEnum roleEnum = role.getName();

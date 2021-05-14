@@ -3,11 +3,18 @@ package com.gmail.yauheniylebedzeu.service.converter.impl;
 import com.gmail.yauheniylebedzeu.repository.enums.RoleEnum;
 import com.gmail.yauheniylebedzeu.repository.model.Role;
 import com.gmail.yauheniylebedzeu.repository.model.User;
+import com.gmail.yauheniylebedzeu.repository.model.UserContacts;
 import com.gmail.yauheniylebedzeu.service.exception.RoleNotReceivedException;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class UserConverterImplTest {
 
@@ -67,7 +74,7 @@ class UserConverterImplTest {
 
     @Test
     void shouldConvertUserToUserDTOAndGetNotNullObject() {
-        User user = getTestUserWithRole();
+        User user = getTestUserWithValidRole();
         UserDTO userDTO = userConverter.convertUserToUserDTO(user);
         assertNotNull(userDTO);
     }
@@ -80,7 +87,7 @@ class UserConverterImplTest {
 
     @Test
     void shouldConvertUserToUserDTOAndReturnRightId() {
-        User user = getTestUserWithRole();
+        User user = getTestUserWithValidRole();
         Long id = 1L;
         user.setId(id);
         UserDTO userDTO = userConverter.convertUserToUserDTO(user);
@@ -89,7 +96,7 @@ class UserConverterImplTest {
 
     @Test
     void shouldConvertUserToUserDTOAndReturnRightUuid() {
-        User user = getTestUserWithRole();
+        User user = getTestUserWithValidRole();
         String uuid = "6d4883c7-aa9c-11eb-a3ca-0242ac130002";
         user.setUuid(uuid);
         UserDTO userDTO = userConverter.convertUserToUserDTO(user);
@@ -98,7 +105,7 @@ class UserConverterImplTest {
 
     @Test
     void shouldConvertUserToUserDTOAndReturnRightFirstName() {
-        User user = getTestUserWithRole();
+        User user = getTestUserWithValidRole();
         String firstName = "test first name";
         user.setFirstName(firstName);
         UserDTO userDTO = userConverter.convertUserToUserDTO(user);
@@ -107,7 +114,7 @@ class UserConverterImplTest {
 
     @Test
     void shouldConvertUserToUserDTOAndReturnRightLastName() {
-        User user = getTestUserWithRole();
+        User user = getTestUserWithValidRole();
         String lastName = "test last name";
         user.setLastName(lastName);
         UserDTO userDTO = userConverter.convertUserToUserDTO(user);
@@ -116,7 +123,7 @@ class UserConverterImplTest {
 
     @Test
     void shouldConvertUserToUserDTOAndReturnRightPatronymic() {
-        User user = getTestUserWithRole();
+        User user = getTestUserWithValidRole();
         String patronymic = "test patronymic";
         user.setPatronymic(patronymic);
         UserDTO userDTO = userConverter.convertUserToUserDTO(user);
@@ -125,7 +132,7 @@ class UserConverterImplTest {
 
     @Test
     void shouldConvertUserToUserDTOAndReturnRightEmail() {
-        User user = getTestUserWithRole();
+        User user = getTestUserWithValidRole();
         String email = "test email";
         user.setEmail(email);
         UserDTO userDTO = userConverter.convertUserToUserDTO(user);
@@ -134,7 +141,7 @@ class UserConverterImplTest {
 
     @Test
     void shouldConvertUserToUserDTOAndReturnRightPassword() {
-        User user = getTestUserWithRole();
+        User user = getTestUserWithValidRole();
         String password = "test password";
         user.setPassword(password);
         UserDTO userDTO = userConverter.convertUserToUserDTO(user);
@@ -142,8 +149,17 @@ class UserConverterImplTest {
     }
 
     @Test
+    void shouldConvertUserToUserDTOAndReturnRightIsDeleted() {
+        User user = getTestUserWithValidRole();
+        Boolean isDeleted = false;
+        user.setIsDeleted(isDeleted);
+        UserDTO userDTO = userConverter.convertUserToUserDTO(user);
+        assertEquals(isDeleted, userDTO.getIsDeleted());
+    }
+
+    @Test
     void shouldConvertUserToUserDTOAndGetRightRole() {
-        User user = getTestUserWithRole();
+        User user = getTestUserWithValidRole();
         UserDTO userDTO = userConverter.convertUserToUserDTO(user);
         Role role = user.getRole();
         RoleEnum roleEnum = role.getName();
@@ -151,7 +167,53 @@ class UserConverterImplTest {
         assertEquals(stringRoleEnum, userDTO.getRole().name());
     }
 
-    private User getTestUserWithRole() {
+    @Test
+    void shouldConvertUserToUserDTOWithContactsAndGetNotNullObject() {
+        User user = getTestUserWithValidRole();
+        UserContacts userContacts = new UserContacts();
+        user.setContacts(userContacts);
+        UserDTO userDTO = userConverter.convertUserToUserDTOWithContacts(user);
+        assertNotNull(userDTO);
+    }
+
+    @Test
+    void shouldConvertUserToUserDTOWithContactsAndReturnRightAddress() {
+        User user = getTestUserWithValidRole();
+        UserContacts userContacts = new UserContacts();
+        String address = "Test address";
+        userContacts.setAddress(address);
+        user.setContacts(userContacts);
+        UserDTO userDTO = userConverter.convertUserToUserDTOWithContacts(user);
+        assertEquals(address, userDTO.getAddress());
+    }
+
+    @Test
+    void shouldConvertUserToUserDTOWithContactsAndReturnRightPhoneNumber() {
+        User user = getTestUserWithValidRole();
+        UserContacts userContacts = new UserContacts();
+        String phoneNumber = "+1111111111";
+        userContacts.setPhoneNumber(phoneNumber);
+        user.setContacts(userContacts);
+        UserDTO userDTO = userConverter.convertUserToUserDTOWithContacts(user);
+        assertEquals(phoneNumber, userDTO.getPhoneNumber());
+    }
+
+    @Test
+    void shouldConvertEmptyUserListToUserDTOList() {
+        List<User> users = Collections.emptyList();
+        List<UserDTO> userDTOs = userConverter.convertUserListToUserDTOList(users);
+        assertTrue(userDTOs.isEmpty());
+    }
+
+    @Test
+    void shouldConvertUserListToUserDTOList() {
+        User user = getTestUserWithValidRole();
+        List<User> users = Collections.singletonList(user);
+        List<UserDTO> userDTOs = userConverter.convertUserListToUserDTOList(users);
+        assertEquals(1, userDTOs.size());
+    }
+
+    private User getTestUserWithValidRole() {
         User user = new User();
         Role role = new Role();
         RoleEnum roleName = RoleEnum.ADMIN;

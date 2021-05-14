@@ -73,7 +73,6 @@ public class TestUserDetailsConfig {
                         return true;
                     }
                 };
-
             }
 
 
@@ -120,5 +119,4 @@ public class TestUserDetailsConfig {
             }
         };
     }
-
 }

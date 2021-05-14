@@ -7,7 +7,9 @@ import com.gmail.yauheniylebedzeu.service.exception.UserNotReceivedException;
 import com.gmail.yauheniylebedzeu.service.model.ReviewDTO;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Component
 public class ReviewConverterImpl implements ReviewConverter {
@@ -38,5 +40,12 @@ public class ReviewConverterImpl implements ReviewConverter {
         String fullName = lastName + " " + firstName + " " + patronymic;
         reviewDTO.setFullName(fullName);
         return reviewDTO;
+    }
+
+    @Override
+    public List<ReviewDTO> convertReviewListToReviewDTOList(List<Review> reviews) {
+        return reviews.stream()
+                .map(this::convertReviewToReviewDTO)
+                .collect(Collectors.toList());
     }
 }

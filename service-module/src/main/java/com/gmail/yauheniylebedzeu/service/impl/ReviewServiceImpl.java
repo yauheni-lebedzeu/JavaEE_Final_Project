@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.gmail.yauheniylebedzeu.service.util.ServiceUtil.getCountOfPages;
 import static com.gmail.yauheniylebedzeu.service.util.ServiceUtil.getStartPosition;
@@ -40,9 +39,7 @@ public class ReviewServiceImpl implements ReviewService {
         page.setPageNumber(pageNumber);
         int startPosition = getStartPosition(pageNumber, pageSize);
         List<Review> reviews = reviewRepository.findEntitiesWithLimits(startPosition, pageSize, sortParameter);
-        List<ReviewDTO> reviewsDTOs = reviews.stream()
-                .map(reviewConverter::convertReviewToReviewDTO)
-                .collect(Collectors.toList());
+        List<ReviewDTO> reviewsDTOs = reviewConverter.convertReviewListToReviewDTOList(reviews);
         List<ReviewDTO> reviewsOnPage = page.getObjects();
         reviewsOnPage.addAll(reviewsDTOs);
         return page;
@@ -61,9 +58,7 @@ public class ReviewServiceImpl implements ReviewService {
         page.setPageNumber(pageNumber);
         int startPosition = getStartPosition(pageNumber, pageSize);
         List<Review> reviews = reviewRepository.findVisibleReviews(startPosition, pageSize, sortParameter);
-        List<ReviewDTO> reviewsDTOs = reviews.stream()
-                .map(reviewConverter::convertReviewToReviewDTO)
-                .collect(Collectors.toList());
+        List<ReviewDTO> reviewsDTOs = reviewConverter.convertReviewListToReviewDTOList(reviews);
         List<ReviewDTO> reviewsOnPage = page.getObjects();
         reviewsOnPage.addAll(reviewsDTOs);
         return page;
