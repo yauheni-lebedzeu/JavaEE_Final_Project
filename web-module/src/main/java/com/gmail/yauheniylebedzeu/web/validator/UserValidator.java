@@ -1,6 +1,7 @@
 package com.gmail.yauheniylebedzeu.web.validator;
 
 import com.gmail.yauheniylebedzeu.service.UserService;
+import com.gmail.yauheniylebedzeu.service.exception.UserDeletedException;
 import com.gmail.yauheniylebedzeu.service.exception.UserNotFoundException;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import com.gmail.yauheniylebedzeu.web.validator.constant.ValidationConstant;
@@ -66,6 +67,8 @@ public class UserValidator implements Validator {
                     if (StringUtils.isNotBlank(phoneNumber) && !phoneNumber.matches(PHONE_NUMBER_REGEXP_PATTERN)) {
                         errors.rejectValue(PHONE_NUMBER_FIELD_NAME, WRONG_PHONE_NUMBER_FORMAT_MESSAGE_PROPERTY);
                     }
+                } catch (UserDeletedException e) {
+                    errors.rejectValue(EMAIL_FIELD_NAME, USER_EXISTS_MESSAGE_PROPERTY);
                 }
             } else {
                 errors.rejectValue(EMAIL_FIELD_NAME, WRONG_EMAIL_FORMAT_MESSAGE_PROPERTY);

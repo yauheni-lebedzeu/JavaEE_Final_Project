@@ -10,8 +10,6 @@ import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Optional;
 
-import static com.gmail.yauheniylebedzeu.repository.constant.ParameterNameConstant.UUID_PARAMETER_NAME;
-
 public abstract class GenericRepositoryImpl<I, T> implements GenericRepository<I, T> {
 
     @PersistenceContext
@@ -31,6 +29,16 @@ public abstract class GenericRepositoryImpl<I, T> implements GenericRepository<I
     }
 
     @Override
+    public void remove(T entity) {
+        entityManager.remove(entity);
+    }
+
+    @Override
+    public void merge(T entity) {
+        entityManager.merge(entity);
+    }
+
+    @Override
     public T findById(I id) {
         return entityManager.find(entityClass, id);
     }
@@ -40,7 +48,7 @@ public abstract class GenericRepositoryImpl<I, T> implements GenericRepository<I
     public Optional<T> findByUuid(String uuid) {
         String queryString = "select c from " + entityClass.getName() + " c where c.uuid=:uuid";
         Query query = entityManager.createQuery(queryString);
-        query.setParameter(UUID_PARAMETER_NAME, uuid);
+        query.setParameter("uuid", uuid);
         try {
             T object = (T) query.getSingleResult();
             return Optional.of(object);
@@ -50,13 +58,11 @@ public abstract class GenericRepositoryImpl<I, T> implements GenericRepository<I
     }
 
     @Override
-    public void remove(T entity) {
-        entityManager.remove(entity);
-    }
-
-    @Override
-    public void merge(T entity) {
-        entityManager.merge(entity);
+    @SuppressWarnings("unchecked")
+    public List<T> findAll() {
+        String queryString = "from " + entityClass.getName();
+        Query query = entityManager.createQuery(queryString);
+        return query.getResultList();
     }
 
     @Override
@@ -74,13 +80,5 @@ public abstract class GenericRepositoryImpl<I, T> implements GenericRepository<I
         String queryString = "select count(c.id) from " + entityClass.getName() + " c";
         Query query = entityManager.createQuery(queryString);
         return (Long) query.getSingleResult();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<T> findAll() {
-        String queryString = "from " + entityClass.getName();
-        Query query = entityManager.createQuery(queryString);
-        return query.getResultList();
     }
 }

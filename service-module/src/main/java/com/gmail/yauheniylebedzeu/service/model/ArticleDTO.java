@@ -25,7 +25,6 @@ public class ArticleDTO {
     @Size(min = 100, max = 1000)
     private String content;
     private LocalDate additionDate;
-    private String userFirstName;
-    private String userLastName;
+    private String firstAndLastName;
     private Set<CommentDTO> comments = new HashSet<>();
 }

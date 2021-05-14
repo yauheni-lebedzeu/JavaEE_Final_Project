@@ -26,7 +26,7 @@
         </thead>
         <tbody>
         <tr th:each="review: ${page.getObjects}">
-            <td th:text="${review.userLastName + ' ' + review.userFirstName + ' ' + review.userPatronymic}">
+            <td th:text="${review.fullName}">
                 User
             </td>
             <td>

@@ -32,9 +32,11 @@ public class ReviewConverterImpl implements ReviewConverter {
             throw new UserNotReceivedException(String.format("Couldn't get the user from the database for the review" +
                     " with id = %s", review.getId()));
         }
-        reviewDTO.setUserLastName(user.getLastName());
-        reviewDTO.setUserFirstName(user.getFirstName());
-        reviewDTO.setUserPatronymic(user.getPatronymic());
+        String firstName = user.getFirstName();
+        String lastName = user.getLastName();
+        String patronymic = user.getPatronymic();
+        String fullName = lastName + " " + firstName + " " + patronymic;
+        reviewDTO.setFullName(fullName);
         return reviewDTO;
     }
 }

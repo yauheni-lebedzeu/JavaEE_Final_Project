@@ -91,30 +91,15 @@ class ReviewConverterImplTest {
     }
 
     @Test
-    void shouldConvertReviewToReviewDTOAndGetRightUserFirstName() {
+    void shouldConvertReviewToReviewDTOAndGetRightUserFullName() {
         Review review = getTestReviewWithUser();
         User user = review.getUser();
         String firstName = user.getFirstName();
-        ReviewDTO reviewDTO = reviewConverter.convertReviewToReviewDTO(review);
-        assertEquals(firstName, reviewDTO.getUserFirstName());
-    }
-
-    @Test
-    void shouldConvertReviewToReviewDTOAndGetRightUserLastName() {
-        Review review = getTestReviewWithUser();
-        User user = review.getUser();
         String lastName = user.getLastName();
-        ReviewDTO reviewDTO = reviewConverter.convertReviewToReviewDTO(review);
-        assertEquals(lastName, reviewDTO.getUserLastName());
-    }
-
-    @Test
-    void shouldConvertReviewToReviewDTOAndGetRightUserPatronymic() {
-        Review review = getTestReviewWithUser();
-        User user = review.getUser();
         String patronymic = user.getPatronymic();
+        String fullName = lastName + " " + firstName + " " + patronymic;
         ReviewDTO reviewDTO = reviewConverter.convertReviewToReviewDTO(review);
-        assertEquals(patronymic, reviewDTO.getUserPatronymic());
+        assertEquals(fullName, reviewDTO.getFullName());
     }
 
     private Review getTestReviewWithUser() {

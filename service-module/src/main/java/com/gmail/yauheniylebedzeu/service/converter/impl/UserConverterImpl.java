@@ -51,6 +51,7 @@ public class UserConverterImpl implements UserConverter {
         userDTO.setPatronymic(user.getPatronymic());
         userDTO.setEmail(user.getEmail());
         userDTO.setPassword(user.getPassword());
+        userDTO.setIsDeleted(user.getIsDeleted());
         Role role = user.getRole();
         if (Objects.isNull(role)) {
             throw new RoleNotReceivedException(String.format("Couldn't get the role from the database for the user" +

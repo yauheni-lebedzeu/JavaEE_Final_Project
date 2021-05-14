@@ -11,6 +11,7 @@ import com.gmail.yauheniylebedzeu.service.UserService;
 import com.gmail.yauheniylebedzeu.service.converter.UserConverter;
 import com.gmail.yauheniylebedzeu.service.enums.RoleDTOEnum;
 import com.gmail.yauheniylebedzeu.service.exception.RoleNotFoundException;
+import com.gmail.yauheniylebedzeu.service.exception.UserDeletedException;
 import com.gmail.yauheniylebedzeu.service.exception.UserNotFoundException;
 import com.gmail.yauheniylebedzeu.service.exception.UserServiceException;
 import com.gmail.yauheniylebedzeu.service.generator.RandomPasswordGenerator;
@@ -75,6 +76,9 @@ public class UserServiceImpl implements UserService {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
+            if (user.getIsDeleted()) {
+                throw new UserDeletedException("User with email " + email + " was deleted from database");
+            }
             return userConverter.convertUserToUserDTOWithContacts(user);
         } else {
             throw new UserNotFoundException(String.format("User with email \"%s\" was not found in the database", email));

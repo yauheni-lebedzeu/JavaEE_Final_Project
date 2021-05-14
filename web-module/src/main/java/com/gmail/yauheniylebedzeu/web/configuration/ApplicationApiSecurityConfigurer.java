@@ -3,6 +3,7 @@ package com.gmail.yauheniylebedzeu.web.configuration;
 import com.gmail.yauheniylebedzeu.service.enums.RoleDTOEnum;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -15,6 +16,7 @@ import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlCo
 
 @Configuration
 @Order(Ordered.HIGHEST_PRECEDENCE)
+@Profile("!test")
 @AllArgsConstructor
 public class ApplicationApiSecurityConfigurer extends WebSecurityConfigurerAdapter {
 

@@ -17,6 +17,5 @@ public class CommentDTO {
     @Size(min = 3, max = 200)
     private String content;
     private LocalDate additionDate;
-    private String userFirstName;
-    private String userLastName;
+    private String firstAndLastName;
 }

@@ -10,6 +10,7 @@ import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import com.gmail.yauheniylebedzeu.web.validator.UserValidator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -25,7 +26,8 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = UserAPIController.class)
+@WebMvcTest(excludeAutoConfiguration = UserDetailsServiceAutoConfiguration.class,
+        controllers = UserAPIController.class)
 @Import({UserValidator.class, BindingResultConverterImpl.class})
 @ActiveProfiles(value = "test")
 public class UserAPIControllerTest {

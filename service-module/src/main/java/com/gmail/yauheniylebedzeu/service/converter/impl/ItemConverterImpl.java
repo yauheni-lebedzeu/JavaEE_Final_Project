@@ -41,7 +41,7 @@ public class ItemConverterImpl implements ItemConverter {
         ItemDTO itemDTO = convertItemToItemDTO(item);
         ItemDescription itemDescription = item.getItemDescription();
         if (Objects.isNull(itemDescription)) {
-            throw new ItemDescriptionNotReceivedException(String.format("Couldn't get the description from the database +" +
+            throw new ItemDescriptionNotReceivedException(String.format("Couldn't get the description from the database" +
                     " for the item with id = %s", item.getId()));
         }
         itemDTO.setDescription(itemDescription.getDescription());

@@ -13,4 +13,3 @@ public class AccessDeniedController {
         return "denied";
     }
 }
-

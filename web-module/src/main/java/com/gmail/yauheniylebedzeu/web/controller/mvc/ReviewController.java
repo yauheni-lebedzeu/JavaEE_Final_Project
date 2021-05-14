@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-import static com.gmail.yauheniylebedzeu.web.controller.constant.AttributeNameConstant.PAGE_ATTRIBUTE_NAME;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.*;
 
 @Controller
@@ -26,7 +25,7 @@ public class ReviewController {
     public String getReviews(@RequestParam(defaultValue = "1") int pageNumber,
                              @RequestParam(defaultValue = "10") int pageSize, Model model) {
         PageDTO<ReviewDTO> page = reviewService.getReviewPage(pageNumber, pageSize, "additionDate desc");
-        model.addAttribute(PAGE_ATTRIBUTE_NAME, page);
+        model.addAttribute("page", page);
         return "admin-reviews";
     }
 
@@ -50,7 +49,7 @@ public class ReviewController {
     public String getVisibleReviews(@RequestParam(defaultValue = "1") int pageNumber,
                                     @RequestParam(defaultValue = "10") int pageSize, Model model) {
         PageDTO<ReviewDTO> page = reviewService.getVisibleReviewsPage(pageNumber, pageSize, "additionDate desc");
-        model.addAttribute(PAGE_ATTRIBUTE_NAME, page);
+        model.addAttribute("page", page);
         return "reviews";
     }
 }

@@ -11,7 +11,6 @@ import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlCo
 
 @Profile("test")
 @Configuration
-@Order(Ordered.LOWEST_PRECEDENCE)
 public class TestApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override

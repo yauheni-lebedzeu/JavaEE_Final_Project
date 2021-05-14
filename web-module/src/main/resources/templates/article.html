@@ -15,7 +15,7 @@
                 <p>
                 <pre style="white-space: pre-wrap" th:text="${article.content}">Content</pre>
                 </p>
-                <p th:text="${article.userFirstName + ' ' + article.userLastName}">Author</p>
+                <p th:text="${article.firstAndLastName}">Author</p>
             </td>
         </tr>
         </tbody>
@@ -30,7 +30,7 @@
         <tbody>
         <tr th:each="comment : ${article.comments}">
             <td>
-                <p th:text="${comment.userFirstName + ' ' + comment.userLastName}">Author</p>
+                <p th:text="${comment.firstAndLastName}">Author</p>
                 <p th:text="${comment.additionDate}">Date</p>
                 <p th:text="${comment.content}">Content</p>
             </td>

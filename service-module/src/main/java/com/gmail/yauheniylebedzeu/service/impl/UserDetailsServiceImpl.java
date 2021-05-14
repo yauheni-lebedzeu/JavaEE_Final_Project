@@ -1,6 +1,7 @@
 package com.gmail.yauheniylebedzeu.service.impl;
 
 import com.gmail.yauheniylebedzeu.service.UserService;
+import com.gmail.yauheniylebedzeu.service.exception.UserDeletedException;
 import com.gmail.yauheniylebedzeu.service.exception.UserNotFoundException;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import com.gmail.yauheniylebedzeu.service.model.UserLogin;
@@ -27,7 +28,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         try {
             UserDTO user = userService.findByEmail(username);
             return new UserLogin(user);
-        } catch (UserNotFoundException e) {
+        } catch (UserNotFoundException | UserDeletedException e) {
             throw new UsernameNotFoundException(String.format("User with email %s was not found in the database",
                     username));
         }

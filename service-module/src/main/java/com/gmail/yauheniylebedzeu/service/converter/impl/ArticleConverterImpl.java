@@ -49,8 +49,10 @@ public class ArticleConverterImpl implements ArticleConverter {
             throw new UserNotReceivedException(String.format("Couldn't get the user from the database for the article" +
                     " with id = %d", article.getId()));
         }
-        articleDTO.setUserFirstName(user.getFirstName());
-        articleDTO.setUserLastName(user.getLastName());
+        String firstName = user.getFirstName();
+        String lastName = user.getLastName();
+        String firstAndLastName = firstName + " " + lastName;
+        articleDTO.setFirstAndLastName(firstAndLastName);
         return articleDTO;
     }
 
@@ -59,8 +61,8 @@ public class ArticleConverterImpl implements ArticleConverter {
         ArticleDTO articleDTO = convertArticleToArticleDTO(article);
         ArticleContent articleContent = article.getContent();
         if (Objects.isNull(articleContent)) {
-            throw new ArticleContentNotReceivedException(String.format("Couldn't get the content from the database for the article" +
-                    " with id = %d", article.getId()));
+            throw new ArticleContentNotReceivedException(String.format("Couldn't get the content from the database for" +
+                    " the article with id = %d", article.getId()));
         }
         articleDTO.setContent(articleContent.getContent());
         Set<Comment> comments = article.getComments();
@@ -77,7 +79,7 @@ public class ArticleConverterImpl implements ArticleConverter {
     @Override
     public List<ArticleDTO> convertArticleListToArticleDTOList(List<Article> articles) {
         return articles.stream()
-                .map(this::convertArticleToDetailedArticleDTO)
+                .map(this::convertArticleToArticleDTO)
                 .collect(Collectors.toList());
     }
 }

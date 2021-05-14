@@ -11,10 +11,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Root;
-
 import java.util.Optional;
-
-import static com.gmail.yauheniylebedzeu.repository.constant.ParameterNameConstant.NAME_PARAMETER_NAME;
 
 @Repository
 public class RoleRepositoryImpl extends GenericRepositoryImpl<Long, Role> implements RoleRepository {
@@ -26,7 +23,7 @@ public class RoleRepositoryImpl extends GenericRepositoryImpl<Long, Role> implem
         Root<Role> root = query.from(Role.class);
         ParameterExpression<RoleEnum> parameterExpression = criteriaBuilder.parameter(RoleEnum.class);
         query.select(root)
-                .where(criteriaBuilder.equal(root.get(NAME_PARAMETER_NAME), parameterExpression));
+                .where(criteriaBuilder.equal(root.get("name"), parameterExpression));
         TypedQuery<Role> typedQuery = entityManager.createQuery(query);
         typedQuery.setParameter(parameterExpression, name);
         try {

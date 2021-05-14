@@ -14,7 +14,6 @@ import java.util.Set;
 @Entity
 @Table(name = "user")
 @SQLDelete(sql = "UPDATE user SET is_deleted = 1 WHERE id = ?")
-@Where(clause = "is_deleted = 0")
 @DynamicInsert
 @Data
 public class User {
@@ -54,24 +53,21 @@ public class User {
 
     @OneToMany(mappedBy = "user",
             fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<Review> reviews = new HashSet<>();
 
     @OneToMany(mappedBy = "user",
             fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<Article> articles = new HashSet<>();
 
     @OneToMany(mappedBy = "user",
             fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<Comment> comments = new HashSet<>();

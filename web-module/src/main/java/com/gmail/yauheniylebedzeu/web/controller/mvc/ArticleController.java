@@ -6,11 +6,7 @@ import com.gmail.yauheniylebedzeu.service.enums.RoleDTOEnum;
 import com.gmail.yauheniylebedzeu.service.model.ArticleDTO;
 import com.gmail.yauheniylebedzeu.service.model.PageDTO;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
-import com.gmail.yauheniylebedzeu.service.model.UserLogin;
 import lombok.AllArgsConstructor;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,9 +16,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
-import static com.gmail.yauheniylebedzeu.web.controller.constant.AttributeNameConstant.*;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.*;
+import static com.gmail.yauheniylebedzeu.web.controller.util.ControllerUtil.getUserPrincipal;
 
 @Controller
 @AllArgsConstructor
@@ -34,15 +31,14 @@ public class ArticleController {
     @GetMapping(value = ARTICLES_CONTROLLER_URL)
     public String getArticles(@RequestParam(defaultValue = "1") int pageNumber,
                               @RequestParam(defaultValue = "10") int pageSize, Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            UserLogin userLogin = (UserLogin) authentication.getPrincipal();
-            UserDTO user = userLogin.getUser();
-            RoleDTOEnum role = user.getRole();
+        Optional<UserDTO> optionalUser = getUserPrincipal();
+        if (optionalUser.isPresent()) {
+            UserDTO loggedInUser = optionalUser.get();
+            RoleDTOEnum role = loggedInUser.getRole();
             String roleName = role.name();
-            model.addAttribute(ROLE_ATTRIBUTE_NAME, roleName);
+            model.addAttribute("role", roleName);
             PageDTO<ArticleDTO> page = articleService.getArticlesPage(pageNumber, pageSize, "additionDate desc");
-            model.addAttribute(PAGE_ATTRIBUTE_NAME, page);
+            model.addAttribute("page", page);
             return "articles";
         } else {
             return "redirect:/login";
@@ -52,7 +48,7 @@ public class ArticleController {
     @GetMapping(value = ARTICLES_CONTROLLER_URL + "/{uuid}")
     public String getArticle(@PathVariable String uuid, Model model) {
         ArticleDTO article = articleService.findByUuid(uuid);
-        model.addAttribute(ARTICLE_ATTRIBUTE_NAME, article);
+        model.addAttribute("article", article);
         return "article";
     }
 
@@ -73,12 +69,13 @@ public class ArticleController {
         if (errors.hasErrors()) {
             return "article-form";
         } else {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (!(authentication instanceof AnonymousAuthenticationToken)) {
-                UserLogin userLogin = (UserLogin) authentication.getPrincipal();
-                UserDTO loggedInUser = userLogin.getUser();
+            Optional<UserDTO> optionalUser = getUserPrincipal();
+            if (optionalUser.isPresent()) {
+                UserDTO loggedInUser = optionalUser.get();
                 String uuid = loggedInUser.getUuid();
                 articleService.add(uuid, article);
+            } else {
+                return "redirect:/login";
             }
             return "redirect:" + ARTICLES_CONTROLLER_URL;
         }

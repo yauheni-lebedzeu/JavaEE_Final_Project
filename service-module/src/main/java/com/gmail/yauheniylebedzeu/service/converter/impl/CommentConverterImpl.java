@@ -31,8 +31,10 @@ public class CommentConverterImpl implements CommentConverter {
             throw new UserNotReceivedException(String.format("Couldn't get the user from the database for the comment" +
                     " with id = %d", comment.getId()));
         }
-        commentDTO.setUserFirstName(user.getFirstName());
-        commentDTO.setUserLastName(user.getLastName());
+        String firstName = user.getFirstName();
+        String lastName = user.getLastName();
+        String firstAndLastName = firstName + " " + lastName;
+        commentDTO.setFirstAndLastName(firstAndLastName);
         return commentDTO;
     }
 }

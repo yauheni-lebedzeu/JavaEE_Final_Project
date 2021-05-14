@@ -12,8 +12,6 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Root;
 import java.util.Optional;
 
-import static com.gmail.yauheniylebedzeu.repository.constant.ParameterNameConstant.EMAIL_PARAMETER_NAME;
-
 @Repository
 public class UserRepositoryImpl extends GenericRepositoryImpl<Long, User> implements UserRepository {
 
@@ -24,7 +22,7 @@ public class UserRepositoryImpl extends GenericRepositoryImpl<Long, User> implem
         Root<User> root = query.from(User.class);
         ParameterExpression<String> parameterExpression = criteriaBuilder.parameter(String.class);
         query.select(root)
-                .where(criteriaBuilder.equal(root.get(EMAIL_PARAMETER_NAME), parameterExpression));
+                .where(criteriaBuilder.equal(root.get("email"), parameterExpression));
         TypedQuery<User> typedQuery = entityManager.createQuery(query);
         typedQuery.setParameter(parameterExpression, username);
         try {

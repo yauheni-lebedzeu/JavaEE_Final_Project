@@ -28,7 +28,7 @@
             <td th:text="${user.patronymic}">Patronymic</td>
             <td th:text="${user.email}">Email</td>
             <td>
-                <form action=#
+                <form th:unless="${user.isDeleted}" action=#
                       th:action="@{/admin/users/change-password/{uuid}/{sourcePageNumber}(sourcePageNumber=${page.pageNumber}, uuid = ${user.uuid})}"
                       method="post">
                     <button type="submit">Generate a new password</button>
@@ -36,7 +36,7 @@
             </td>
             <td th:text="${user.role.name}">Role</td>
             <td align="center" th:unless="${email.equals(user.email)}">
-                <form action=#
+                <form th:unless="${user.isDeleted}" action=#
                       th:action="@{/admin/users/change-role/{uuid}/{sourcePageNumber}(sourcePageNumber=${page.pageNumber}, uuid = ${user.uuid})}"
                       method="post">
                     <select name="roleName">
@@ -47,8 +47,11 @@
                     <input type="submit" value="Change role"/>
                 </form>
             </td>
-            <td align="center" th:unless="${email.equals(user.email)}">
-                <input type="checkbox" name="uuids" th:value="${user.uuid}" form="deletingForm"/>
+            <td align="center">
+                <span th:unless="${email.equals(user.email) or user.isDeleted}">
+                    <input type="checkbox" name="uuids" th:value="${user.uuid}" form="deletingForm"/>
+                </span>
+                <span style="color: red" th:if="${user.isDeleted}">Deleted</span>
             </td>
         </tr>
         </tbody>
@@ -56,7 +59,6 @@
     <p th:if="${page.getObjects.size() > 1}">
         <input type="submit" form="deletingForm" value="Delete checked users"/>
     </p>
-    </form>
 </div>
 </body>
 <footer>

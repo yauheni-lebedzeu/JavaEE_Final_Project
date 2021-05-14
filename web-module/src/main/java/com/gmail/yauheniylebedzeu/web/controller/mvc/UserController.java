@@ -4,18 +4,13 @@ import com.gmail.yauheniylebedzeu.service.UserService;
 import com.gmail.yauheniylebedzeu.service.enums.RoleDTOEnum;
 import com.gmail.yauheniylebedzeu.service.model.PageDTO;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
-import com.gmail.yauheniylebedzeu.service.model.UserLogin;
 import com.gmail.yauheniylebedzeu.service.model.UserUpdateDTO;
-import com.gmail.yauheniylebedzeu.web.controller.constant.AttributeNameConstant;
 import com.gmail.yauheniylebedzeu.web.controller.exception.UserControllerException;
 import com.gmail.yauheniylebedzeu.web.validator.UserUpdateValidator;
 import com.gmail.yauheniylebedzeu.web.validator.UserValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.junit.platform.commons.util.StringUtils;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,9 +20,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Optional;
 
-import static com.gmail.yauheniylebedzeu.web.controller.constant.AttributeNameConstant.*;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.*;
+import static com.gmail.yauheniylebedzeu.web.controller.util.ControllerUtil.getUserPrincipal;
 
 @Controller
 @AllArgsConstructor
@@ -42,25 +38,24 @@ public class UserController {
     public String getUsers(@RequestParam(defaultValue = "1") int pageNumber,
                            @RequestParam(defaultValue = "10") int pageSize, Model model) {
         PageDTO<UserDTO> page = userService.getUserPage(pageNumber, pageSize, "email");
-        model.addAttribute(PAGE_ATTRIBUTE_NAME, page);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            UserLogin userLogin = (UserLogin) authentication.getPrincipal();
-            UserDTO user = userLogin.getUser();
-            String email = user.getEmail();
-            model.addAttribute(EMAIL_ATTRIBUTE_NAME, email);
+        model.addAttribute("page", page);
+        Optional<UserDTO> optionalUser = getUserPrincipal();
+        if (optionalUser.isPresent()) {
+            UserDTO loggedInUser = optionalUser.get();
+            String email = loggedInUser.getEmail();
+            model.addAttribute("email", email);
         } else {
             return "redirect:/login";
         }
         RoleDTOEnum[] allRoles = RoleDTOEnum.values();
-        model.addAttribute(ROLES_ATTRIBUTE_NAME, allRoles);
+        model.addAttribute("roles", allRoles);
         return "users";
     }
 
     @GetMapping(value = ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL + ADD_CONTROLLER_URL)
     public String getUserForm(UserDTO user, Model model, BindingResult errors) {
         RoleDTOEnum[] allRoles = RoleDTOEnum.values();
-        model.addAttribute(ROLES_ATTRIBUTE_NAME, allRoles);
+        model.addAttribute("roles", allRoles);
         return "user-form";
     }
 
@@ -111,13 +106,12 @@ public class UserController {
 
     @GetMapping(value = CUSTOMER_CONTROLLER_URL + PROFILE_CONTROLLER_URL)
     public String GetProfile(UserUpdateDTO userUpdateDTO, BindingResult errors, Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            UserLogin userLogin = (UserLogin) authentication.getPrincipal();
-            UserDTO loggedInUser = userLogin.getUser();
+        Optional<UserDTO> optionalUser = getUserPrincipal();
+        if (optionalUser.isPresent()) {
+            UserDTO loggedInUser = optionalUser.get();
             String email = loggedInUser.getEmail();
             UserDTO user = userService.findByEmail(email);
-            model.addAttribute(AttributeNameConstant.USER_ATTRIBUTE_NAME, user);
+            model.addAttribute("user", user);
             return "profile";
         } else {
             return "redirect:/login";

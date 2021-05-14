@@ -71,8 +71,7 @@ public class ArticleAPIControllerTest {
         article.setTitle("test title");
         article.setContent("test content");
         article.setSynopsis("test synopsis");
-        article.setUserFirstName("test user first name");
-        article.setUserLastName("test user last name");
+        article.setFirstAndLastName("test user first name");
         List<ArticleDTO> articles = Collections.singletonList(article);
         when(articleService.findAll()).thenReturn(articles);
         MvcResult mvcResult = mockMvc.perform(
