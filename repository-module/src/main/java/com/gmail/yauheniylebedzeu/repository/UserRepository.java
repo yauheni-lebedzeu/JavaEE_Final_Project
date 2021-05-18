@@ -8,6 +8,4 @@ public interface UserRepository extends GenericRepository<Long, User> {
 
     Optional<User> findByEmail(String email);
 
-    Optional<User> findByUuid(String uuid);
-
 }

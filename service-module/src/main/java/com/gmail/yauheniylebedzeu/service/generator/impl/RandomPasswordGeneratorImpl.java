@@ -12,6 +12,9 @@ import static org.passay.CharacterCharacteristicsRule.ERROR_CODE;
 @Component
 public class RandomPasswordGeneratorImpl implements RandomPasswordGenerator {
 
+    private static final int LENGTH_OF_RANDOM_PASSWORD = 10;
+    private static final String SPECIAL_CHARS_OF_PASSWORD = "!@#&()";
+
     @Override
     public String getRandomPassword() {
         PasswordGenerator passwordGenerator = new PasswordGenerator();
@@ -33,13 +36,13 @@ public class RandomPasswordGeneratorImpl implements RandomPasswordGenerator {
             }
 
             public String getCharacters() {
-                return "!@#&()";
+                return SPECIAL_CHARS_OF_PASSWORD;
             }
         };
         CharacterRule splCharRule = new CharacterRule(specialCharacters);
         splCharRule.setNumberOfCharacters(2);
 
-        return passwordGenerator.generatePassword(10, splCharRule, lowerCaseRule,
+        return passwordGenerator.generatePassword(LENGTH_OF_RANDOM_PASSWORD, splCharRule, lowerCaseRule,
                 upperCaseRule, digitRule);
     }
 }

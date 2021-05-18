@@ -6,7 +6,7 @@
 </head>
 <body>
 <div align="center">
-    <form action="#" th:action="@{/users/add}" th:object="${userDTO}" method="post">
+    <form action="#" th:action="@{/admin/users/add}" th:object="${userDTO}" method="post">
         <label for="last_name">Last name</label><br>
         <input th:field="*{lastName}" id="last_name" type="text" pattern="^[A-Za-z]{1,40}+$"
                title="The last name must contain only Latin letters\n and be between 1 and 40 characters long!" required
@@ -27,8 +27,8 @@
             Patronymic error</p>
         <label for="roles">Roles</label><br>
         <select th:field="*{role}" id="roles">
-            <option th:each="role : ${allRoles}" th:value="${role}"
-                    th:text="${role.name()}">Role
+            <option th:each="role : ${roles}" th:value="${role}"
+                    th:text="${role.name}">Role
             </option>
         </select><br>
         <p style="color: red; white-space: pre" th:if="${#fields.hasErrors('role')}" th:errors="*{role}">Role error</p>
@@ -49,8 +49,9 @@
                required/>
         <p style="color: red; white-space: pre" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
             Password errors</p><br>
-        <input type="submit" value="Add user"><input type="reset" value="Reset">
+        <input type="submit" value="Add"><input type="reset" value="Reset">
     </form>
+    <h3 class="text-center"><a th:href="@{/admin/users}">Go back to the list of users</a></h3>
 </div>
 </body>
 </html>

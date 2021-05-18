@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Users</title>
 </head>
 <body>
 <div align="center">
-    <form action=# th:action="@{/users/del}" method="post" id="deletingForm"></form>
+    <form action=# th:action="@{/admin/users/del/{sourcePageNumber}(sourcePageNumber=${page.pageNumber})}" method="post"
+          id="deletingForm"></form>
     <table border="2">
         <thead>
         <tr>
@@ -21,44 +22,55 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="user: ${users}">
+        <tr th:each="user: ${page.getObjects}">
             <td th:text="${user.lastName}">Last name</td>
             <td th:text="${user.firstName}">First name</td>
             <td th:text="${user.patronymic}">Patronymic</td>
             <td th:text="${user.email}">Email</td>
             <td>
-                <form action=# th:action="@{/users/change-password/{uuid}(uuid = ${user.uuid})}" method="post">
+                <form th:unless="${user.isDeleted}" action=#
+                      th:action="@{/admin/users/change-password/{uuid}/{sourcePageNumber}(sourcePageNumber=${page.pageNumber}, uuid = ${user.uuid})}"
+                      method="post">
                     <button type="submit">Generate a new password</button>
                 </form>
             </td>
-            <td th:text="${user.role}">Role</td>
+            <td th:text="${user.role.name}">Role</td>
             <td align="center" th:unless="${email.equals(user.email)}">
-                <form action=# th:action="@{/users/change-role/{uuid}(uuid = ${user.uuid})}" method="post">
-                    <select name="role_name">
-                        <option th:each="role : ${allRoles}" th:value="${role.name()}"
-                                th:unless="${user.role} == ${role}" th:text="${role.name()}">Role
+                <form th:unless="${user.isDeleted}" action=#
+                      th:action="@{/admin/users/change-role/{uuid}/{sourcePageNumber}(sourcePageNumber=${page.pageNumber}, uuid = ${user.uuid})}"
+                      method="post">
+                    <select name="roleName">
+                        <option th:each="role : ${roles}" th:value="${role.name()}"
+                                th:unless="${user.role} == ${role}" th:text="${role.name}">Role
                         </option>
                     </select><br>
                     <input type="submit" value="Change role"/>
                 </form>
             </td>
-            <td align="center" th:unless="${email.equals(user.email)}">
-                <input type="checkbox" name="uuids" th:value="${user.uuid}" form="deletingForm"/>
+            <td align="center">
+                <span th:unless="${email.equals(user.email) or user.isDeleted}">
+                    <input type="checkbox" name="uuids" th:value="${user.uuid}" form="deletingForm"/>
+                </span>
+                <span style="color: red" th:if="${user.isDeleted}">Deleted</span>
             </td>
         </tr>
         </tbody>
     </table>
-    <p th:if="${users.size() > 1}">
+    <p th:if="${page.getObjects.size() > 1}">
         <input type="submit" form="deletingForm" value="Delete checked users"/>
     </p>
-    </form>
 </div>
 </body>
 <footer>
-    <div align="center" th:if="${countOfPages>1}">
-        <span style="white-space: nowrap;" th:each="i : ${#numbers.sequence(1,countOfPages)}">
-            <a th:href="@{/users/{id}/10(id=${i})}" th:text="'|' + ${i} + '|'"></a>
+    <div align="center" th:if="${page.countOfPages>1}">
+        <span style="white-space: nowrap;" th:each="i : ${#numbers.sequence(1,page.countOfPages)}">
+            <span th:unless="${page.pageNumber == i}">
+            <a th:href="@{'/users?pageNumber=' + ${i}}" th:text="'|' + ${i} + '|'"></a>
+            </span>
+            <span th:if="${page.pageNumber == i}" th:text="${i}"></span>
         </span>
     </div>
+    <h3 align="center" class="text-center"><a th:href="@{/admin/users/add}">Add new user</a></h3>
+    <h3 align="center" class="text-center"><a th:href="@{/main}">Go back to the main page</a></h3>
 </footer>
 </html>

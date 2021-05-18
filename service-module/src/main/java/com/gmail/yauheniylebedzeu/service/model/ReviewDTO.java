@@ -14,8 +14,5 @@ public class ReviewDTO {
     private String content;
     private LocalDate additionDate;
     private Boolean isVisible;
-    private String userLastName;
-    private String userFirstName;
-    private String userPatronymic;
-
+    private String fullName;
 }

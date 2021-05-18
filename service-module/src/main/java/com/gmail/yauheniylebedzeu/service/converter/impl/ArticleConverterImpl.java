@@ -1,0 +1,85 @@
+package com.gmail.yauheniylebedzeu.service.converter.impl;
+
+import com.gmail.yauheniylebedzeu.repository.model.Article;
+import com.gmail.yauheniylebedzeu.repository.model.ArticleContent;
+import com.gmail.yauheniylebedzeu.repository.model.Comment;
+import com.gmail.yauheniylebedzeu.repository.model.User;
+import com.gmail.yauheniylebedzeu.service.converter.ArticleConverter;
+import com.gmail.yauheniylebedzeu.service.converter.CommentConverter;
+import com.gmail.yauheniylebedzeu.service.exception.ArticleContentNotReceivedException;
+import com.gmail.yauheniylebedzeu.service.exception.UserNotReceivedException;
+import com.gmail.yauheniylebedzeu.service.model.ArticleDTO;
+import com.gmail.yauheniylebedzeu.service.model.CommentDTO;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Component
+@AllArgsConstructor
+public class ArticleConverterImpl implements ArticleConverter {
+
+    private final CommentConverter commentConverter;
+
+    @Override
+    public Article convertArticleDTOToArticle(ArticleDTO articleDTO) {
+        Article article = new Article();
+        article.setTitle(articleDTO.getTitle());
+        article.setSynopsis(articleDTO.getSynopsis());
+        ArticleContent articleContent = new ArticleContent();
+        articleContent.setContent(articleDTO.getContent());
+        articleContent.setArticle(article);
+        article.setContent(articleContent);
+        return article;
+    }
+
+    @Override
+    public ArticleDTO convertArticleToArticleDTO(Article article) {
+        ArticleDTO articleDTO = new ArticleDTO();
+        articleDTO.setId(article.getId());
+        articleDTO.setUuid(article.getUuid());
+        articleDTO.setTitle(article.getTitle());
+        articleDTO.setSynopsis(article.getSynopsis());
+        articleDTO.setAdditionDate(article.getAdditionDate());
+        User user = article.getUser();
+        if (Objects.isNull(user)) {
+            throw new UserNotReceivedException(String.format("Couldn't get the user from the database for the article" +
+                    " with id = %d", article.getId()));
+        }
+        String firstName = user.getFirstName();
+        String lastName = user.getLastName();
+        String firstAndLastName = firstName + " " + lastName;
+        articleDTO.setFirstAndLastName(firstAndLastName);
+        return articleDTO;
+    }
+
+    @Override
+    public ArticleDTO convertArticleToDetailedArticleDTO(Article article) {
+        ArticleDTO articleDTO = convertArticleToArticleDTO(article);
+        ArticleContent articleContent = article.getContent();
+        if (Objects.isNull(articleContent)) {
+            throw new ArticleContentNotReceivedException(String.format("Couldn't get the content from the database for" +
+                    " the article with id = %d", article.getId()));
+        }
+        articleDTO.setContent(articleContent.getContent());
+        Set<Comment> comments = article.getComments();
+        if (!comments.isEmpty()) {
+            Set<CommentDTO> commentDTOs = comments.stream()
+                    .map(commentConverter::convertCommentToCommentDTO)
+                    .collect(Collectors.toSet());
+            Set<CommentDTO> emptyCommentsDTOs = articleDTO.getComments();
+            emptyCommentsDTOs.addAll(commentDTOs);
+        }
+        return articleDTO;
+    }
+
+    @Override
+    public List<ArticleDTO> convertArticleListToArticleDTOList(List<Article> articles) {
+        return articles.stream()
+                .map(this::convertArticleToArticleDTO)
+                .collect(Collectors.toList());
+    }
+}

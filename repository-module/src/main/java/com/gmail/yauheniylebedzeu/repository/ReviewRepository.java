@@ -7,9 +7,7 @@ import java.util.Optional;
 
 public interface ReviewRepository extends GenericRepository<Long, Review> {
 
-    Optional<Review> findByUuid(String uuid);
-
-    List<Review> findAllVisible(int startPosition, int maxResult, String sortParameter);
+    List<Review> findVisibleReviews(int startPosition, int maxResult, String sortParameter);
 
     Long getCountOfVisible();
 

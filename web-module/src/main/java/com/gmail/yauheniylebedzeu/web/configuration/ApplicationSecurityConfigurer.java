@@ -1,35 +1,50 @@
 package com.gmail.yauheniylebedzeu.web.configuration;
 
+import com.gmail.yauheniylebedzeu.service.enums.RoleDTOEnum;
 import com.gmail.yauheniylebedzeu.web.configuration.handler.AppAccessHandler;
 import com.gmail.yauheniylebedzeu.web.configuration.handler.LoginAccessDeniedHandler;
-import com.gmail.yauheniylebedzeu.service.enums.RoleDTOEnum;
-import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.*;
+
 @Configuration
-@AllArgsConstructor
+@Profile("!test")
 public class ApplicationSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
-    private final PasswordEncoder passwordEncoder;
+
+    @Lazy
+    public ApplicationSecurityConfigurer(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder);
+                .passwordEncoder(encoder());
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/users/**", "/reviews/admin/**")
+                .antMatchers(ADMIN_CONTROLLER_URL + "/**")
                 .hasAuthority(RoleDTOEnum.ADMIN.name())
-                .antMatchers("/")
+                .antMatchers(CUSTOMER_CONTROLLER_URL + "/**")
+                .hasAuthority(RoleDTOEnum.CUSTOMER_USER.name())
+                .antMatchers( SELLER_CONTROLLER_URL + "/**")
+                .hasAuthority(RoleDTOEnum.SALE_USER.name())
+                .antMatchers(ARTICLES_CONTROLLER_URL + "/**", ITEMS_CONTROLLER_URL + "/**")
+                .hasAnyAuthority(RoleDTOEnum.CUSTOMER_USER.name(), RoleDTOEnum.SALE_USER.name())
+                .antMatchers(MAIN_PAGE_CONTROLLER_URL, REVIEWS_CONTROLLER_URL, ACCESS_DENIED_CONTROLLER_URL)
                 .permitAll()
                 .and()
                 .formLogin()
@@ -42,6 +57,11 @@ public class ApplicationSecurityConfigurer extends WebSecurityConfigurerAdapter 
                 .and()
                 .csrf()
                 .disable();
+    }
+
+    @Bean
+    public PasswordEncoder encoder() {
+        return new BCryptPasswordEncoder();
     }
 
 }

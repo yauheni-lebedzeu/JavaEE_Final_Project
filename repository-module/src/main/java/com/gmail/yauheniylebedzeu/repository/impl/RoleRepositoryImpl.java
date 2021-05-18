@@ -14,7 +14,7 @@ import javax.persistence.criteria.Root;
 import java.util.Optional;
 
 @Repository
-public class RoleRepositoryImpl extends GenericRepositoryImpl<Role, Long> implements RoleRepository {
+public class RoleRepositoryImpl extends GenericRepositoryImpl<Long, Role> implements RoleRepository {
 
     @Override
     public Optional<Role> findByName(RoleEnum name) {
@@ -28,7 +28,7 @@ public class RoleRepositoryImpl extends GenericRepositoryImpl<Role, Long> implem
         typedQuery.setParameter(parameterExpression, name);
         try {
             Role role = typedQuery.getSingleResult();
-            return Optional.ofNullable(role);
+            return Optional.of(role);
         } catch (NoResultException e) {
             return Optional.empty();
         }
