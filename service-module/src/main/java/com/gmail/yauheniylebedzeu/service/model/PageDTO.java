@@ -14,4 +14,7 @@ public class PageDTO<T> {
     private int pageNumber;
     private final List<T> objects = new ArrayList<>();
 
+    public void addObjects(List<T> objects) {
+        this.objects.addAll(objects);
+    }
 }

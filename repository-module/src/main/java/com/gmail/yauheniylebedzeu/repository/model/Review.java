@@ -15,7 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "review")
@@ -29,15 +29,14 @@ public class Review {
     private Long id;
 
     @Column
-    @EqualsAndHashCode.Exclude
     private String uuid;
 
     @Column
     private String content;
 
-    @Column(name = "addition_date")
+    @Column(name = "addition_date_time")
     @EqualsAndHashCode.Exclude
-    private LocalDate additionDate;
+    private LocalDateTime additionDateTime;
 
     @Column(name = "is_visible")
     private Boolean isVisible;

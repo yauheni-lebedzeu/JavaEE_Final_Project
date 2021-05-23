@@ -12,6 +12,5 @@ public enum RoleDTOEnum {
     CUSTOMER_USER("Customer"),
     SECURE_REST_API("Secure REST API");
 
-    private final String name;
-
+    private final String description;
 }

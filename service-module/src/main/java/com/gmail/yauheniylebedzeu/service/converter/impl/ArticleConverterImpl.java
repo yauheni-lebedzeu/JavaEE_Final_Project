@@ -6,17 +6,21 @@ import com.gmail.yauheniylebedzeu.repository.model.Comment;
 import com.gmail.yauheniylebedzeu.repository.model.User;
 import com.gmail.yauheniylebedzeu.service.converter.ArticleConverter;
 import com.gmail.yauheniylebedzeu.service.converter.CommentConverter;
-import com.gmail.yauheniylebedzeu.service.exception.ArticleContentNotReceivedException;
-import com.gmail.yauheniylebedzeu.service.exception.UserNotReceivedException;
 import com.gmail.yauheniylebedzeu.service.model.ArticleDTO;
 import com.gmail.yauheniylebedzeu.service.model.CommentDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.gmail.yauheniylebedzeu.service.util.EntitiesServiceUtil.getArticleContent;
+import static com.gmail.yauheniylebedzeu.service.util.EntitiesServiceUtil.getComments;
+import static com.gmail.yauheniylebedzeu.service.util.EntitiesServiceUtil.getUser;
+import static com.gmail.yauheniylebedzeu.service.util.ServiceUtil.formatDateTime;
+import static com.gmail.yauheniylebedzeu.service.util.ServiceUtil.getFirstAndLastNameString;
 
 @Component
 @AllArgsConstructor
@@ -29,6 +33,7 @@ public class ArticleConverterImpl implements ArticleConverter {
         Article article = new Article();
         article.setTitle(articleDTO.getTitle());
         article.setSynopsis(articleDTO.getSynopsis());
+        article.setAdditionDateTime(LocalDateTime.now());
         ArticleContent articleContent = new ArticleContent();
         articleContent.setContent(articleDTO.getContent());
         articleContent.setArticle(article);
@@ -43,15 +48,11 @@ public class ArticleConverterImpl implements ArticleConverter {
         articleDTO.setUuid(article.getUuid());
         articleDTO.setTitle(article.getTitle());
         articleDTO.setSynopsis(article.getSynopsis());
-        articleDTO.setAdditionDate(article.getAdditionDate());
-        User user = article.getUser();
-        if (Objects.isNull(user)) {
-            throw new UserNotReceivedException(String.format("Couldn't get the user from the database for the article" +
-                    " with id = %d", article.getId()));
-        }
-        String firstName = user.getFirstName();
-        String lastName = user.getLastName();
-        String firstAndLastName = firstName + " " + lastName;
+        LocalDateTime additionDateTime = article.getAdditionDateTime();
+        String formattedDateTime = formatDateTime(additionDateTime);
+        articleDTO.setAdditionDateTime(formattedDateTime);
+        User user = getUser(article);
+        String firstAndLastName = getFirstAndLastNameString(user);
         articleDTO.setFirstAndLastName(firstAndLastName);
         return articleDTO;
     }
@@ -59,13 +60,9 @@ public class ArticleConverterImpl implements ArticleConverter {
     @Override
     public ArticleDTO convertArticleToDetailedArticleDTO(Article article) {
         ArticleDTO articleDTO = convertArticleToArticleDTO(article);
-        ArticleContent articleContent = article.getContent();
-        if (Objects.isNull(articleContent)) {
-            throw new ArticleContentNotReceivedException(String.format("Couldn't get the content from the database for" +
-                    " the article with id = %d", article.getId()));
-        }
+        ArticleContent articleContent = getArticleContent(article);
         articleDTO.setContent(articleContent.getContent());
-        Set<Comment> comments = article.getComments();
+        Set<Comment> comments = getComments(article);
         if (!comments.isEmpty()) {
             Set<CommentDTO> commentDTOs = comments.stream()
                     .map(commentConverter::convertCommentToCommentDTO)

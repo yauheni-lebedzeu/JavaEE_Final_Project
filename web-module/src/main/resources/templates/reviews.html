@@ -22,7 +22,7 @@
         <tr th:each="review : ${page.getObjects}">
             <td th:text="${review.fullName}">Author</td>
             <td th:text="${review.content}">Content</td>
-            <td th:text="${review.additionDate}">Addition date</td>
+            <td th:text="${review.additionDateTime}">Addition date</td>
         </tr>
         </tbody>
     </table>

@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Optional;
 
-import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.*;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.DELETE_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.ITEMS_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.REPLICATE_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.SELLER_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.util.ControllerUtil.getUserPrincipal;
 
 @Controller
@@ -28,20 +31,16 @@ public class ItemController {
     public String getItems(@RequestParam(defaultValue = "1") int pageNumber,
                            @RequestParam(defaultValue = "10") int pageSize, Model model) {
         Optional<UserDTO> optionalUser = getUserPrincipal();
-        if (optionalUser.isPresent()) {
-            UserDTO loggedInUser = optionalUser.get();
-            RoleDTOEnum role = loggedInUser.getRole();
-            String roleName = role.name();
-            model.addAttribute("role", roleName);
-            PageDTO<ItemDTO> page = itemService.getItemPage(pageNumber, pageSize, "name asc");
-            model.addAttribute("page", page);
-            return "items";
-        } else {
-            return "redirect:/login";
-        }
+        UserDTO loggedInUser = optionalUser.get();
+        RoleDTOEnum role = loggedInUser.getRole();
+        String roleName = role.name();
+        model.addAttribute("role", roleName);
+        PageDTO<ItemDTO> page = itemService.getItemPage(pageNumber, pageSize, "name asc");
+        model.addAttribute("page", page);
+        return "items";
     }
 
-    @PostMapping(value = SELLER_CONTROLLER_URL + ITEMS_CONTROLLER_URL + DEL_CONTROLLER_URL + "/{uuid}/{sourcePageNumber}")
+    @PostMapping(value = SELLER_CONTROLLER_URL + ITEMS_CONTROLLER_URL + DELETE_CONTROLLER_URL + "/{uuid}/{sourcePageNumber}")
     public String delItem(@PathVariable String sourcePageNumber,
                           @PathVariable String uuid) {
         itemService.removeByUuid(uuid);
@@ -55,5 +54,12 @@ public class ItemController {
         model.addAttribute("page", sourcePageNumber);
         model.addAttribute("item", item);
         return "item";
+    }
+
+    @PostMapping(value = SELLER_CONTROLLER_URL + ITEMS_CONTROLLER_URL
+            + "/{uuid}" + REPLICATE_CONTROLLER_URL + "/{sourcePageNumber}")
+    public String replicateItem(@PathVariable String uuid, @PathVariable String sourcePageNumber) {
+        itemService.replicate(uuid);
+        return "redirect:" + ITEMS_CONTROLLER_URL + "?pageNumber=" + sourcePageNumber;
     }
 }

@@ -2,6 +2,8 @@ package com.gmail.yauheniylebedzeu.repository.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -16,6 +18,7 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name = "item")
+@DynamicInsert
 @Data
 public class Item {
 
@@ -25,7 +28,6 @@ public class Item {
     private Long id;
 
     @Column
-    @EqualsAndHashCode.Exclude
     private String uuid;
 
     @Column
@@ -39,7 +41,5 @@ public class Item {
             cascade = CascadeType.ALL,
             mappedBy = "item",
             orphanRemoval = true)
-    @EqualsAndHashCode.Exclude
     private ItemDescription itemDescription;
-
 }

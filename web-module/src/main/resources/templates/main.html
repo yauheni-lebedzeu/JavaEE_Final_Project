@@ -8,20 +8,23 @@
 <div align="center">
     <h1 sec:authorize="isAnonymous()"><a th:href="@{/login}">Log in</a></h1>
     <div sec:authorize="isAuthenticated()">
-        | Logged user: <span sec:authentication="name"></span>
-        | Role:<span sec:authentication="principal.authorities[0]"></span>
-        <a th:href="@{/logout}"> | Sign out</a>
+        <div style="font-size: large">
+        Logged user: <span style="color: blue"><b sec:authentication="name"></b></span>
+        | Role: <span style="color: blue"><b th:text="${role.description}"></b></span><br>
+        <a th:href="@{/logout}">Sign out</a>
+        </div>
         <div>
-            <h2 th:if="${role.equals('ADMIN')}">
+            <h2 th:if="${role.name()} == 'ADMIN'">
                 <a th:href="@{/admin/users}">Go to the list of users</a><br>
                 <a th:href="@{/admin/reviews}">Go to the admin list of reviews</a>
             </h2>
-            <h2 th:if="${role.equals('CUSTOMER_USER') or role.equals('SALE_USER')}">
+            <h2 th:if="${role.name()} == 'CUSTOMER_USER'  or ${role.name()} == 'SALE_USER'">
                 <a th:href="@{/articles}">Go to the the news page</a><br>
                 <a th:href="@{/items}">Go to the page of items</a><br>
             </h2>
-            <h2 th:if="${role.equals('CUSTOMER_USER')}">
-                <a th:href="@{/customer/profile}">Go to the profile</a>
+            <h2 th:if="${role.name()} == 'CUSTOMER_USER'">
+                <a th:href="@{/customer/profile}">Go to the profile</a><br>
+                <a th:href="@{/customer/reviews/add}">Leave a review about the site</a>
             </h2>
         </div>
     </div>

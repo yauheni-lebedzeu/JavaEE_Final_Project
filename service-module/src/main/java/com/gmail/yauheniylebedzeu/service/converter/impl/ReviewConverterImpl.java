@@ -3,13 +3,16 @@ package com.gmail.yauheniylebedzeu.service.converter.impl;
 import com.gmail.yauheniylebedzeu.repository.model.Review;
 import com.gmail.yauheniylebedzeu.repository.model.User;
 import com.gmail.yauheniylebedzeu.service.converter.ReviewConverter;
-import com.gmail.yauheniylebedzeu.service.exception.UserNotReceivedException;
 import com.gmail.yauheniylebedzeu.service.model.ReviewDTO;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static com.gmail.yauheniylebedzeu.service.util.EntitiesServiceUtil.getUser;
+import static com.gmail.yauheniylebedzeu.service.util.ServiceUtil.formatDateTime;
+import static com.gmail.yauheniylebedzeu.service.util.ServiceUtil.getFullName;
 
 @Component
 public class ReviewConverterImpl implements ReviewConverter {
@@ -17,6 +20,7 @@ public class ReviewConverterImpl implements ReviewConverter {
     @Override
     public Review convertReviewDTOToReview(ReviewDTO reviewDTO) {
         Review review = new Review();
+        review.setAdditionDateTime(LocalDateTime.now());
         review.setContent(reviewDTO.getContent());
         return review;
     }
@@ -26,18 +30,13 @@ public class ReviewConverterImpl implements ReviewConverter {
         ReviewDTO reviewDTO = new ReviewDTO();
         reviewDTO.setId(review.getId());
         reviewDTO.setUuid(review.getUuid());
-        reviewDTO.setAdditionDate(review.getAdditionDate());
+        LocalDateTime additionDateTime = review.getAdditionDateTime();
+        String formattedDateTime = formatDateTime(additionDateTime);
+        reviewDTO.setAdditionDateTime(formattedDateTime);
         reviewDTO.setContent(review.getContent());
         reviewDTO.setIsVisible(review.getIsVisible());
-        User user = review.getUser();
-        if (Objects.isNull(user)) {
-            throw new UserNotReceivedException(String.format("Couldn't get the user from the database for the review" +
-                    " with id = %s", review.getId()));
-        }
-        String firstName = user.getFirstName();
-        String lastName = user.getLastName();
-        String patronymic = user.getPatronymic();
-        String fullName = lastName + " " + firstName + " " + patronymic;
+        User user = getUser(review);
+        String fullName = getFullName(user);
         reviewDTO.setFullName(fullName);
         return reviewDTO;
     }

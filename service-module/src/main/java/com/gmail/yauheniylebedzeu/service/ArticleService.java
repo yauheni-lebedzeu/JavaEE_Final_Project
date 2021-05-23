@@ -1,5 +1,6 @@
 package com.gmail.yauheniylebedzeu.service;
 
+import com.gmail.yauheniylebedzeu.repository.model.Article;
 import com.gmail.yauheniylebedzeu.service.model.ArticleDTO;
 import com.gmail.yauheniylebedzeu.service.model.PageDTO;
 
@@ -15,5 +16,9 @@ public interface ArticleService {
 
     ArticleDTO add(String userUuid, ArticleDTO articleDTO);
 
-    void removeByUuid(String uuid);
+    ArticleDTO edit(ArticleDTO articleDTO);
+
+    boolean removeByUuid(String uuid);
+
+    Article getSafeArticle(String articleUuid);
 }

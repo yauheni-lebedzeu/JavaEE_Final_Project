@@ -31,6 +31,18 @@
                       method="post">
                     <button type="submit">Delete</button>
                 </form>
+                <form action=#
+                      th:action="@{/seller/items/{uuid}/replicate/{sourcePageNumber}(uuid = ${item.uuid}, sourcePageNumber=${page.pageNumber})}"
+                      method="post">
+                    <button type="submit">Replicate</button>
+                </form>
+            </td>
+            <td th:if="${role.equals('CUSTOMER_USER')}">
+                <form action=#
+                      th:action="@{/customer/cart/add/{itemUuid}/{sourcePageNumber}(itemUuid = ${item.uuid}, sourcePageNumber=${page.pageNumber})}"
+                      method="post">
+                    <button type="submit">Add to the cart</button>
+                </form>
             </td>
         </tr>
         </tbody>
@@ -46,7 +58,7 @@
         </span>
     </div>
     <div align="center">
-        <h3 class="text-center"><a th:href="@{/main}">Go back to the main page</a></h3>
+        <h3 class="text-center"><a th:href="@{/main}">Go to the main page</a></h3>
     </div>
 </footer>
 </body>

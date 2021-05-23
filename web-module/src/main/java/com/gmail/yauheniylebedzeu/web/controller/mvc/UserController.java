@@ -1,16 +1,15 @@
 package com.gmail.yauheniylebedzeu.web.controller.mvc;
 
+import com.gmail.yauheniylebedzeu.service.MailSendingService;
 import com.gmail.yauheniylebedzeu.service.UserService;
 import com.gmail.yauheniylebedzeu.service.enums.RoleDTOEnum;
 import com.gmail.yauheniylebedzeu.service.model.PageDTO;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import com.gmail.yauheniylebedzeu.service.model.UserUpdateDTO;
-import com.gmail.yauheniylebedzeu.web.controller.exception.UserControllerException;
 import com.gmail.yauheniylebedzeu.web.validator.UserUpdateValidator;
 import com.gmail.yauheniylebedzeu.web.validator.UserValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.junit.platform.commons.util.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,7 +21,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 import java.util.Optional;
 
-import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.*;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.ADD_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.ADMIN_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.CHANGE_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.CHANGE_PASSWORD_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.CHANGE_ROLE_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.CUSTOMER_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.DELETE_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.PROFILE_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.USERS_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.util.ControllerUtil.getUserPrincipal;
 
 @Controller
@@ -33,6 +40,7 @@ public class UserController {
     private final UserService userService;
     private final UserValidator userValidator;
     private final UserUpdateValidator userUpdateValidator;
+    private final MailSendingService mailSendingService;
 
     @GetMapping(value = ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL)
     public String getUsers(@RequestParam(defaultValue = "1") int pageNumber,
@@ -40,13 +48,9 @@ public class UserController {
         PageDTO<UserDTO> page = userService.getUserPage(pageNumber, pageSize, "email");
         model.addAttribute("page", page);
         Optional<UserDTO> optionalUser = getUserPrincipal();
-        if (optionalUser.isPresent()) {
-            UserDTO loggedInUser = optionalUser.get();
-            String email = loggedInUser.getEmail();
-            model.addAttribute("email", email);
-        } else {
-            return "redirect:/login";
-        }
+        UserDTO loggedInUser = optionalUser.get();
+        String email = loggedInUser.getEmail();
+        model.addAttribute("email", email);
         RoleDTOEnum[] allRoles = RoleDTOEnum.values();
         model.addAttribute("roles", allRoles);
         return "users";
@@ -75,31 +79,27 @@ public class UserController {
     public String changePassword(@PathVariable String uuid,
                                  @PathVariable String sourcePageNumber) {
         UserDTO userWithUnencodedPassword = userService.changePasswordByUuid(uuid);
-        userService.sendPasswordToUser(userWithUnencodedPassword);
+        mailSendingService.sendPasswordToUser(userWithUnencodedPassword);
         return "redirect:" + ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL + "?pageNumber=" + sourcePageNumber;
     }
 
-    @PostMapping(value = ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL + DEL_CONTROLLER_URL + "/{sourcePageNumber}")
+    @PostMapping(value = ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL + DELETE_CONTROLLER_URL + "/{sourcePageNumber}")
     public String delUsers(@PathVariable String sourcePageNumber,
-                           @RequestParam(required = false) List<String> uuids) {
-        if (uuids != null) {
-            uuids.forEach(userService::removeByUuid);
-        }
+                           @RequestParam List<String> uuids) {
+        uuids.forEach(userService::removeByUuid);
         return "redirect:" + ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL + "?pageNumber=" + sourcePageNumber;
     }
 
     @PostMapping(value = ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL + CHANGE_ROLE_CONTROLLER_URL + "/{uuid}/{sourcePageNumber}")
     public String changeRole(@PathVariable String uuid,
                              @PathVariable String sourcePageNumber,
-                             @RequestParam(required = false) String roleName) {
-        if (StringUtils.isNotBlank(roleName)) {
-            try {
-                RoleDTOEnum.valueOf(roleName);
-                userService.changeRoleByUuid(uuid, roleName);
-            } catch (IllegalArgumentException e) {
-                log.error(e.getMessage(), e);
-                throw new UserControllerException(String.format("A role named %s does not exist", roleName), e);
-            }
+                             @RequestParam String roleName) {
+        try {
+            RoleDTOEnum.valueOf(roleName);
+            userService.changeRoleByUuid(uuid, roleName);
+        } catch (IllegalArgumentException e) {
+            log.error(e.getMessage(), e);
+            throw new IllegalArgumentException(String.format("A role named %s does not exist", roleName), e);
         }
         return "redirect:" + ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL + "?pageNumber=" + sourcePageNumber;
     }
@@ -107,15 +107,11 @@ public class UserController {
     @GetMapping(value = CUSTOMER_CONTROLLER_URL + PROFILE_CONTROLLER_URL)
     public String GetProfile(UserUpdateDTO userUpdateDTO, BindingResult errors, Model model) {
         Optional<UserDTO> optionalUser = getUserPrincipal();
-        if (optionalUser.isPresent()) {
-            UserDTO loggedInUser = optionalUser.get();
-            String email = loggedInUser.getEmail();
-            UserDTO user = userService.findByEmail(email);
-            model.addAttribute("user", user);
-            return "profile";
-        } else {
-            return "redirect:/login";
-        }
+        UserDTO loggedInUser = optionalUser.get();
+        String email = loggedInUser.getEmail();
+        UserDTO user = userService.findByEmail(email);
+        model.addAttribute("user", user);
+        return "profile";
     }
 
     @PostMapping(value = CUSTOMER_CONTROLLER_URL + PROFILE_CONTROLLER_URL + CHANGE_CONTROLLER_URL + "/{uuid}")

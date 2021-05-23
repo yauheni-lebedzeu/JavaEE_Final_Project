@@ -5,6 +5,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,6 +19,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
@@ -26,6 +29,7 @@ import java.util.Set;
 @SQLDelete(sql = "UPDATE user SET is_deleted = 1 WHERE id = ?")
 @DynamicInsert
 @Data
+@Audited
 public class User {
 
     @Id
@@ -34,7 +38,7 @@ public class User {
     private Long id;
 
     @Column
-    @EqualsAndHashCode.Exclude
+    @NotAudited
     private String uuid;
 
     @Column(name = "last_name")
@@ -52,18 +56,20 @@ public class User {
     private String email;
 
     @Column
+    @NotAudited
     private String password;
 
-    @OneToOne(fetch = FetchType.LAZY,
+    @OneToOne(mappedBy = "user",
+            fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
-            mappedBy = "user",
             orphanRemoval = true)
-    @EqualsAndHashCode.Exclude
+    @NotAudited
     private UserContacts contacts;
 
     @OneToMany(mappedBy = "user",
             fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @NotAudited
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<Review> reviews = new HashSet<>();
@@ -71,6 +77,7 @@ public class User {
     @OneToMany(mappedBy = "user",
             fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @NotAudited
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<Article> articles = new HashSet<>();
@@ -78,16 +85,35 @@ public class User {
     @OneToMany(mappedBy = "user",
             fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @NotAudited
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<Comment> comments = new HashSet<>();
 
+    @OneToMany(mappedBy = "user",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    @OrderBy("quantity DESC")
+    @NotAudited
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<CartDetail> cart = new HashSet<>();
+
+    @OneToMany(mappedBy = "user",
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @NotAudited
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<Order> orders = new HashSet<>();
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id")
-    @EqualsAndHashCode.Exclude
+    @NotAudited
     private Role role;
 
     @Column(name = "is_deleted")
-    @EqualsAndHashCode.Exclude
+    @NotAudited
     private Boolean isDeleted;
 }

@@ -14,5 +14,4 @@ public interface ItemConverter {
     ItemDTO convertItemToItemDTOWithDescription(Item item);
 
     List<ItemDTO> convertItemListToItemDTOList(List<Item> items);
-
 }

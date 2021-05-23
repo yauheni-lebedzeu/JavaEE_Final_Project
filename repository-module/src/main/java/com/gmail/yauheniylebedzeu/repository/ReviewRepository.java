@@ -10,5 +10,4 @@ public interface ReviewRepository extends GenericRepository<Long, Review> {
     List<Review> findVisibleReviews(int startPosition, int maxResult, String sortParameter);
 
     Long getCountOfVisible();
-
 }

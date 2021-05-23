@@ -5,6 +5,5 @@ import org.springframework.validation.BindingResult;
 
 public interface BindingResultConverter {
 
-    public ErrorsDTO convertBindingResultToErrorsDTO(BindingResult bindingResult);
-
+    ErrorsDTO convertBindingResultToErrorsDTO(BindingResult bindingResult);
 }

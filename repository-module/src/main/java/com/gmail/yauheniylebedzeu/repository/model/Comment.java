@@ -15,7 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "comment")
@@ -29,15 +29,14 @@ public class Comment {
     private Long id;
 
     @Column
-    @EqualsAndHashCode.Exclude
     private String uuid;
 
     @Column
     private String content;
 
-    @Column(name = "addition_date")
+    @Column(name = "addition_date_time")
     @EqualsAndHashCode.Exclude
-    private LocalDate additionDate;
+    private LocalDateTime additionDateTime;
 
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})

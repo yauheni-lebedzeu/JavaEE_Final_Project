@@ -8,6 +8,8 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -41,7 +43,6 @@ public class UserContacts {
     private String phoneNumber;
 
     @Column(name = "is_deleted")
-    @EqualsAndHashCode.Exclude
     private Boolean isDeleted;
 
     @OneToOne(fetch = FetchType.LAZY)

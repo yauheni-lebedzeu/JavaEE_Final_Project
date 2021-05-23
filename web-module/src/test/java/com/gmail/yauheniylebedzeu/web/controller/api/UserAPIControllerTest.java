@@ -19,18 +19,18 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.API_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.USERS_CONTROLLER_URL;
 import static org.assertj.core.api.Assertions.assertThat;
-
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(excludeAutoConfiguration = UserDetailsServiceAutoConfiguration.class,
@@ -84,7 +84,9 @@ public class UserAPIControllerTest {
         UserDTO user = getUserWithValidFields();
         user.setEmail(null);
         ErrorsDTO errors = new ErrorsDTO();
-        errors.addError("email", "This field cannot be empty!");
+        ArrayList<String> errorMessages = new ArrayList<>();
+        errorMessages.add("This field cannot be empty or consist of only spaces!");
+        errors.addError("email", errorMessages);
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -101,7 +103,9 @@ public class UserAPIControllerTest {
         String email = "@WrongEmail";
         user.setEmail(email);
         ErrorsDTO errors = new ErrorsDTO();
-        errors.addError("email", "Email was entered in the wrong format!");
+        ArrayList<String> errorMessages = new ArrayList<>();
+        errorMessages.add("Email was entered in the wrong format!");
+        errors.addError("email", errorMessages);
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -116,7 +120,9 @@ public class UserAPIControllerTest {
     void shouldNotAddUserWithEmailThatAlreadyExistsInDatabase() throws Exception {
         UserDTO user = getUserWithValidFields();
         ErrorsDTO errors = new ErrorsDTO();
-        errors.addError("email", "User with such an email address already exists!");
+        ArrayList<String> errorMessages = new ArrayList<>();
+        errorMessages.add("User with such an email address already exists!");
+        errors.addError("email", errorMessages);
         String email = user.getEmail();
         UserDTO anotherUser = new UserDTO();
         when(userService.findByEmail(email)).thenReturn(anotherUser);
@@ -135,7 +141,9 @@ public class UserAPIControllerTest {
         UserDTO user = getUserWithValidFields();
         user.setPassword(null);
         ErrorsDTO errors = new ErrorsDTO();
-        errors.addError("password", "This field cannot be empty!");
+        ArrayList<String> errorMessages = new ArrayList<>();
+        errorMessages.add("This field cannot be empty or consist of only spaces!");
+        errors.addError("password", errorMessages);
         String email = user.getEmail();
         when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
@@ -154,10 +162,12 @@ public class UserAPIControllerTest {
         String password = "Wrong test password";
         user.setPassword(password);
         ErrorsDTO errors = new ErrorsDTO();
-        errors.addError("password", "Password was entered in the wrong format!\n Password must " +
+        ArrayList<String> errorMessages = new ArrayList<>();
+        errorMessages.add("Password was entered in the wrong format!\n Password must " +
                 "contain at least one digit (0-9),\n at least one lowercase Latin character (a-z),\n at least one " +
                 "uppercase Latin character (A-Z),\n at least one special character like ! @ # & ( ).\n And must be " +
                 "between 8 and 20 characters long.");
+        errors.addError("password", errorMessages);
         String email = user.getEmail();
         when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
@@ -175,7 +185,9 @@ public class UserAPIControllerTest {
         UserDTO user = getUserWithValidFields();
         user.setFirstName(null);
         ErrorsDTO errors = new ErrorsDTO();
-        errors.addError("firstName", "This field cannot be empty!");
+        ArrayList<String> errorMessages = new ArrayList<>();
+        errorMessages.add("This field cannot be empty or consist of only spaces!");
+        errors.addError("firstName", errorMessages);
         String email = user.getEmail();
         when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
@@ -194,7 +206,9 @@ public class UserAPIControllerTest {
         String firstName = "(((WrongTestFirstName)))";
         user.setFirstName(firstName);
         ErrorsDTO errors = new ErrorsDTO();
-        errors.addError("firstName", "The first name must contain only Latin letters\n and be between 1 and 20 characters long!");
+        ArrayList<String> errorMessages = new ArrayList<>();
+        errorMessages.add("The first name must contain only Latin letters\n and be between 1 and 20 characters long!");
+        errors.addError("firstName", errorMessages);
         String email = user.getEmail();
         when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
@@ -212,7 +226,9 @@ public class UserAPIControllerTest {
         UserDTO user = getUserWithValidFields();
         user.setLastName(null);
         ErrorsDTO errors = new ErrorsDTO();
-        errors.addError("lastName", "This field cannot be empty!");
+        ArrayList<String> errorMessages = new ArrayList<>();
+        errorMessages.add("This field cannot be empty or consist of only spaces!");
+        errors.addError("lastName", errorMessages);
         String email = user.getEmail();
         when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
@@ -231,7 +247,9 @@ public class UserAPIControllerTest {
         String lastName = "(((WrongTestLastName)))";
         user.setLastName(lastName);
         ErrorsDTO errors = new ErrorsDTO();
-        errors.addError("lastName", "The last name must contain only Latin letters\n and be between 1 and 40 characters long!");
+        ArrayList<String> errorMessages = new ArrayList<>();
+        errorMessages.add("The last name must contain only Latin letters\n and be between 1 and 40 characters long!");
+        errors.addError("lastName", errorMessages);
         String email = user.getEmail();
         when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
@@ -249,7 +267,9 @@ public class UserAPIControllerTest {
         UserDTO user = getUserWithValidFields();
         user.setPatronymic(null);
         ErrorsDTO errors = new ErrorsDTO();
-        errors.addError("patronymic", "This field cannot be empty!");
+        ArrayList<String> errorMessages = new ArrayList<>();
+        errorMessages.add("This field cannot be empty or consist of only spaces!");
+        errors.addError("patronymic", errorMessages);
         String email = user.getEmail();
         when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
@@ -265,10 +285,12 @@ public class UserAPIControllerTest {
     @Test
     void shouldNotAddUserWithPatronymicInWrongFormat() throws Exception {
         UserDTO user = getUserWithValidFields();
-        String lastName = "(((WrongTestPatronymic)))";
-        user.setLastName(lastName);
+        String patronymic = "(((WrongTestPatronymic)))";
+        user.setPatronymic(patronymic);
         ErrorsDTO errors = new ErrorsDTO();
-        errors.addError("lastName", "The last name must contain only Latin letters\n and be between 1 and 40 characters long!");
+        ArrayList<String> errorMessages = new ArrayList<>();
+        errorMessages.add("The patronymic must contain only Latin letters\n and be between 1 and 40 characters long!");
+        errors.addError("patronymic", errorMessages);
         String email = user.getEmail();
         when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
@@ -300,7 +322,9 @@ public class UserAPIControllerTest {
         String address = "too long address, too long address, too long address";
         user.setAddress(address);
         ErrorsDTO errors = new ErrorsDTO();
-        errors.addError("address", "The maximum length of the address must be 40 characters!");
+        ArrayList<String> errorMessages = new ArrayList<>();
+        errorMessages.add("The maximum length of the address must be 40 characters!");
+        errors.addError("address", errorMessages);
         String email = user.getEmail();
         when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
@@ -332,8 +356,9 @@ public class UserAPIControllerTest {
         String phoneNumber = "111-11-hg";
         user.setPhoneNumber(phoneNumber);
         ErrorsDTO errors = new ErrorsDTO();
-        errors.addError("phoneNumber", "The phone number must match the following pattern:\n " +
-                "+375(XX)XXX-XX-XX or +375XXXXXXXXX");
+        ArrayList<String> errorMessages = new ArrayList<>();
+        errorMessages.add("The phone number must match the following pattern:\n +375(XX)XXX-XX-XX or +375XXXXXXXXX");
+        errors.addError("phoneNumber", errorMessages);
         String email = user.getEmail();
         when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(

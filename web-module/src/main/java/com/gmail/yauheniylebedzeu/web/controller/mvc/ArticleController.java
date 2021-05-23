@@ -1,9 +1,11 @@
 package com.gmail.yauheniylebedzeu.web.controller.mvc;
 
+import com.gmail.yauheniylebedzeu.repository.model.Article;
 import com.gmail.yauheniylebedzeu.service.ArticleService;
-import com.gmail.yauheniylebedzeu.service.UserService;
+import com.gmail.yauheniylebedzeu.service.CommentService;
 import com.gmail.yauheniylebedzeu.service.enums.RoleDTOEnum;
 import com.gmail.yauheniylebedzeu.service.model.ArticleDTO;
+import com.gmail.yauheniylebedzeu.service.model.CommentDTO;
 import com.gmail.yauheniylebedzeu.service.model.PageDTO;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import lombok.AllArgsConstructor;
@@ -11,50 +13,60 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
-import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.*;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.ADD_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.ARTICLES_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.COMMENTS_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.CUSTOMER_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.DELETE_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.SELLER_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.util.ControllerUtil.getUserPrincipal;
 
 @Controller
 @AllArgsConstructor
 public class ArticleController {
 
+    public static final String EDIT_CONTROLLER_URL = "/edit";
     private final ArticleService articleService;
-    private final UserService userService;
+    private final CommentService commentService;
 
     @GetMapping(value = ARTICLES_CONTROLLER_URL)
     public String getArticles(@RequestParam(defaultValue = "1") int pageNumber,
                               @RequestParam(defaultValue = "10") int pageSize, Model model) {
         Optional<UserDTO> optionalUser = getUserPrincipal();
-        if (optionalUser.isPresent()) {
-            UserDTO loggedInUser = optionalUser.get();
-            RoleDTOEnum role = loggedInUser.getRole();
-            String roleName = role.name();
-            model.addAttribute("role", roleName);
-            PageDTO<ArticleDTO> page = articleService.getArticlesPage(pageNumber, pageSize, "additionDate desc");
-            model.addAttribute("page", page);
-            return "articles";
-        } else {
-            return "redirect:/login";
-        }
+        UserDTO loggedInUser = optionalUser.get();
+        RoleDTOEnum role = loggedInUser.getRole();
+        String roleName = role.name();
+        model.addAttribute("role", roleName);
+        PageDTO<ArticleDTO> page = articleService.getArticlesPage(pageNumber, pageSize, "additionDateTime desc");
+        model.addAttribute("page", page);
+        return "articles";
     }
 
-    @GetMapping(value = ARTICLES_CONTROLLER_URL + "/{uuid}")
-    public String getArticle(@PathVariable String uuid, Model model) {
-        ArticleDTO article = articleService.findByUuid(uuid);
+    @GetMapping(value = ARTICLES_CONTROLLER_URL + "/{articleUuid}")
+    public String getArticle(@PathVariable String articleUuid, CommentDTO commentDTO,
+                             BindingResult errors, Model model) {
+        Optional<UserDTO> optionalUser = getUserPrincipal();
+        UserDTO loggedInUser = optionalUser.get();
+        RoleDTOEnum role = loggedInUser.getRole();
+        model.addAttribute("role", role.name());
+        ArticleDTO article = articleService.findByUuid(articleUuid);
         model.addAttribute("article", article);
         return "article";
     }
 
-    @PostMapping(value = SELLER_CONTROLLER_URL + ARTICLES_CONTROLLER_URL + DEL_CONTROLLER_URL + "/{uuid}/{sourcePageNumber}")
-    public String delArticle(@PathVariable String sourcePageNumber,
-                             @PathVariable String uuid) {
+    @PostMapping(value = SELLER_CONTROLLER_URL + ARTICLES_CONTROLLER_URL + DELETE_CONTROLLER_URL + "/{uuid}/{sourcePageNumber}")
+    public String deleteArticle(@PathVariable String sourcePageNumber,
+                                @PathVariable String uuid) {
         articleService.removeByUuid(uuid);
         return "redirect:" + ARTICLES_CONTROLLER_URL + "?pageNumber=" + sourcePageNumber;
     }
@@ -70,14 +82,51 @@ public class ArticleController {
             return "article-form";
         } else {
             Optional<UserDTO> optionalUser = getUserPrincipal();
-            if (optionalUser.isPresent()) {
-                UserDTO loggedInUser = optionalUser.get();
-                String uuid = loggedInUser.getUuid();
-                articleService.add(uuid, article);
-            } else {
-                return "redirect:/login";
-            }
+            UserDTO loggedInUser = optionalUser.get();
+            String uuid = loggedInUser.getUuid();
+            articleService.add(uuid, article);
             return "redirect:" + ARTICLES_CONTROLLER_URL;
+        }
+    }
+
+    @PostMapping(value = CUSTOMER_CONTROLLER_URL + ARTICLES_CONTROLLER_URL + "/{articleUuid}"
+            + ADD_CONTROLLER_URL + COMMENTS_CONTROLLER_URL)
+    public String addComment(@PathVariable String articleUuid, @Valid CommentDTO commentDTO,
+                             BindingResult errors, Model model) {
+        if (errors.hasErrors()) {
+            return getArticle(articleUuid, commentDTO, errors, model);
+        } else {
+            Optional<UserDTO> optionalUser = getUserPrincipal();
+            UserDTO loggedInUser = optionalUser.get();
+            String userUuid = loggedInUser.getUuid();
+            commentService.addCommentToArticle(userUuid, articleUuid, commentDTO);
+            return "redirect:" + ARTICLES_CONTROLLER_URL + "/" + articleUuid;
+        }
+    }
+
+    @PostMapping(value = SELLER_CONTROLLER_URL + ARTICLES_CONTROLLER_URL + "/{articleUuid}"
+            + COMMENTS_CONTROLLER_URL + DELETE_CONTROLLER_URL)
+    public String deleteComment(@PathVariable String articleUuid,
+                                @RequestParam List<String> commentUuids) {
+        commentUuids.forEach(commentService::deleteComment);
+        return "redirect:" + ARTICLES_CONTROLLER_URL + "/" + articleUuid;
+    }
+
+    @GetMapping(value = SELLER_CONTROLLER_URL + ARTICLES_CONTROLLER_URL + "/{articleUuid}" + EDIT_CONTROLLER_URL)
+    public String getArticleEditor(@PathVariable String articleUuid, ArticleDTO articleDTO, Model model) {
+        articleDTO = articleService.findByUuid(articleUuid);
+        model.addAttribute("articleDTO", articleDTO);
+        return "article-editor";
+    }
+
+    @PostMapping(value = SELLER_CONTROLLER_URL + ARTICLES_CONTROLLER_URL + EDIT_CONTROLLER_URL)
+    public String editArticle(@Valid ArticleDTO articleDTO, BindingResult errors, Model model) {
+        if(errors.hasErrors()) {
+            model.addAttribute("originalArticle", articleDTO);
+            return "article-editor";
+        } else {
+            ArticleDTO editedArticle = articleService.edit(articleDTO);
+            return "redirect:" + ARTICLES_CONTROLLER_URL + "/" + editedArticle.getUuid();
         }
     }
 }
