@@ -5,20 +5,24 @@ import com.gmail.yauheniylebedzeu.repository.model.Order;
 import com.gmail.yauheniylebedzeu.service.model.OrderDTO;
 import com.gmail.yauheniylebedzeu.service.model.PageDTO;
 
+import java.util.List;
+
 
 public interface OrderService {
 
-    void makeOrder(String userUuid);
+    OrderDTO makeOrder(String userUuid);
 
     PageDTO<OrderDTO> getUserOrdersPage(String userUuid, int pageNumber, int pageSize, String sortParameter);
 
-    OrderDTO rejectOrder(String orderUuid);
+    OrderDTO reject(String orderUuid);
 
     PageDTO<OrderDTO> getOrdersPage(int pageNumber, int pageSize, String sortParameter);
 
-    OrderDTO findOrderByUuid(String orderUuid);
+    OrderDTO findByUuid(String orderUuid);
 
-    OrderDTO changeOrderStatus(String orderUuid, String status);
+    OrderDTO changeStatus(String orderUuid, String status);
 
     Order getSafeOrder(String orderUuid);
+
+    List<OrderDTO> findAll();
 }

@@ -36,7 +36,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void makeOrder(String userUuid) {
+    public OrderDTO makeOrder(String userUuid) {
         User user = userService.getSafeUser(userUuid);
         Set<CartDetail> cart = getCart(user);
         Order order = orderConverter.convertCartToOrder(cart);
@@ -44,6 +44,7 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.persist(order);
         cart.clear();
         userRepository.merge(user);
+        return orderConverter.convertOrderToDetailedOrderDTO(order);
     }
 
     @Override
@@ -81,14 +82,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public OrderDTO findOrderByUuid(String orderUuid) {
+    public OrderDTO findByUuid(String orderUuid) {
         Order order = getSafeOrder(orderUuid);
         return orderConverter.convertOrderToDetailedOrderDTO(order);
     }
 
     @Override
     @Transactional
-    public OrderDTO changeOrderStatus(String orderUuid, String newStatus) {
+    public OrderDTO changeStatus(String orderUuid, String newStatus) {
         Order order = getSafeOrder(orderUuid);
         OrderStatusEnum status = order.getStatus();
         OrderStatusEnum orderNewStatusEnum = OrderStatusEnum.valueOf(newStatus);
@@ -102,7 +103,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public OrderDTO rejectOrder(String orderUuid) {
+    public OrderDTO reject(String orderUuid) {
         Order order = getSafeOrder(orderUuid);
         order.setStatus(OrderStatusEnum.REJECTED);
         orderRepository.merge(order);
@@ -118,5 +119,12 @@ public class OrderServiceImpl implements OrderService {
         } else {
             throw new OrderNotFoundException(String.format("Couldn't find the order with uuid = %s", orderUuid));
         }
+    }
+
+    @Override
+    @Transactional
+    public List<OrderDTO> findAll() {
+        List<Order> orders = orderRepository.findAll();
+        return orderConverter.convertOrderListToOrderDTOList(orders);
     }
 }

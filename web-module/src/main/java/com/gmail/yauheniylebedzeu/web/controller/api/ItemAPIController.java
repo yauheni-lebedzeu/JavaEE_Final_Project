@@ -51,9 +51,8 @@ public class ItemAPIController {
         if (bindingResult.hasErrors()) {
             ErrorsDTO errors = bindingResultConverter.convertBindingResultToErrorsDTO(bindingResult);
             return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
-        } else {
-            itemService.add(item);
-            return new ResponseEntity<>(HttpStatus.CREATED);
         }
+        itemService.add(item);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

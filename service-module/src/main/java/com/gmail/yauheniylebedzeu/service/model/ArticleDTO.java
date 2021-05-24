@@ -1,7 +1,7 @@
 package com.gmail.yauheniylebedzeu.service.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -15,8 +15,7 @@ import static com.gmail.yauheniylebedzeu.service.constant.ValidationConstant.MIN
 import static com.gmail.yauheniylebedzeu.service.constant.ValidationConstant.MIN_LENGTH_OF_ARTICLE_SYNOPSIS;
 import static com.gmail.yauheniylebedzeu.service.constant.ValidationConstant.MIN_LENGTH_OF_ARTICLE_TITLE;
 
-@Getter
-@Setter
+@Data
 public class ArticleDTO {
 
     private Long id;
@@ -39,5 +38,7 @@ public class ArticleDTO {
     private String additionDateTime;
     private String firstAndLastName;
     private Boolean isAuthorDeleted;
+
+    @ToString.Exclude
     private Set<CommentDTO> comments = new HashSet<>();
 }

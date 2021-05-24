@@ -4,7 +4,6 @@ import com.gmail.yauheniylebedzeu.service.OrderService;
 import com.gmail.yauheniylebedzeu.service.enums.OrderStatusDTOEnum;
 import com.gmail.yauheniylebedzeu.service.model.OrderDTO;
 import com.gmail.yauheniylebedzeu.service.model.PageDTO;
-import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
@@ -14,15 +13,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Optional;
-
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.CHANGE_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.CUSTOMER_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.MAKE_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.ORDERS_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.SELLER_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.util.ControllerUtil.getLoggedUserUuid;
-import static com.gmail.yauheniylebedzeu.web.controller.util.ControllerUtil.getUserPrincipal;
 
 @Controller
 @AllArgsConstructor
@@ -60,7 +56,7 @@ public class OrderController {
 
     @GetMapping(value = SELLER_CONTROLLER_URL + ORDERS_CONTROLLER_URL + "/{orderUuid}")
     public String getOrder(@PathVariable String orderUuid, Model model) {
-        OrderDTO order = orderService.findOrderByUuid(orderUuid);
+        OrderDTO order = orderService.findByUuid(orderUuid);
         model.addAttribute("order", order);
         OrderStatusDTOEnum[] orderStatuses = OrderStatusDTOEnum.values();
         model.addAttribute("statuses", orderStatuses);
@@ -73,7 +69,7 @@ public class OrderController {
         try {
             OrderStatusDTOEnum.valueOf(newStatus);
             if (!newStatus.equals("NEW")) {
-                orderService.changeOrderStatus(orderUuid, newStatus);
+                orderService.changeStatus(orderUuid, newStatus);
             }
         } catch (IllegalArgumentException e) {
             log.error(e.getMessage(), e);
@@ -84,7 +80,7 @@ public class OrderController {
 
     @PostMapping(value = CUSTOMER_CONTROLLER_URL + ORDERS_CONTROLLER_URL + REJECT_CONTROLLER_URL + "/{orderUuid}")
     public String rejectOrder(@PathVariable String orderUuid) {
-        orderService.rejectOrder(orderUuid);
+        orderService.reject(orderUuid);
         return "redirect:" + CUSTOMER_CONTROLLER_URL + ORDERS_CONTROLLER_URL;
     }
 }

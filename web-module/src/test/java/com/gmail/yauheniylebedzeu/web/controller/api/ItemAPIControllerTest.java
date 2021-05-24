@@ -5,7 +5,6 @@ import com.gmail.yauheniylebedzeu.service.ItemService;
 import com.gmail.yauheniylebedzeu.service.converter.impl.BindingResultConverterImpl;
 import com.gmail.yauheniylebedzeu.service.model.ErrorsDTO;
 import com.gmail.yauheniylebedzeu.service.model.ItemDTO;
-import com.gmail.yauheniylebedzeu.web.constant.TestConstant;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
@@ -44,11 +43,11 @@ public class ItemAPIControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
-    private ItemService itemService;
-
     @Autowired
     private ObjectMapper objectMapper;
+
+    @MockBean
+    private ItemService itemService;
 
     @Test
     void shouldRequestGetItems() throws Exception {
