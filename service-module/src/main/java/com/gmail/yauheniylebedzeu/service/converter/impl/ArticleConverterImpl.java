@@ -54,6 +54,7 @@ public class ArticleConverterImpl implements ArticleConverter {
         User user = getUser(article);
         String firstAndLastName = getFirstAndLastNameString(user);
         articleDTO.setFirstAndLastName(firstAndLastName);
+        articleDTO.setIsAuthorDeleted(user.getIsDeleted());
         return articleDTO;
     }
 

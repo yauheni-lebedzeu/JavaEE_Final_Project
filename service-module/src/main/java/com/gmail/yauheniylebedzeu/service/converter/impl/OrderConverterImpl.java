@@ -54,16 +54,19 @@ public class OrderConverterImpl implements OrderConverter {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.setOrderNumber(order.getId());
         orderDTO.setUuid(order.getUuid());
+
         LocalDateTime orderDateTime = order.getOrderDateTime();
         String formattedDateTime = formatDateTime(orderDateTime);
         orderDTO.setOrderDateTime(formattedDateTime);
+
         OrderStatusEnum orderStatusEnum = order.getStatus();
         String statusName = orderStatusEnum.name();
         OrderStatusDTOEnum orderStatusDTOEnum = OrderStatusDTOEnum.valueOf(statusName);
         orderDTO.setStatus(orderStatusDTOEnum);
-        Set<OrderDetail> orderDetails = getOrderDetails(order);
+
         int totalQuantity = 0;
         BigDecimal totalAmount = new BigDecimal("0");
+        Set<OrderDetail> orderDetails = getOrderDetails(order);
         for (OrderDetail orderDetail : orderDetails) {
             OrderDetailDTO orderDetailDTO = covertOrderDetailToOrderDetailDTO(orderDetail);
             totalQuantity += orderDetailDTO.getQuantity();

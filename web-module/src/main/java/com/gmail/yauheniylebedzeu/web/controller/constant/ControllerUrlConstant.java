@@ -26,4 +26,5 @@ public interface ControllerUrlConstant {
     String MAKE_CONTROLLER_URL = "/make";
     String ACTUATOR_CONTROLLER_URL = "/actuator";
     String COMMENTS_CONTROLLER_URL = "/comments";
+    String EDIT_CONTROLLER_URL = "/edit";
 }

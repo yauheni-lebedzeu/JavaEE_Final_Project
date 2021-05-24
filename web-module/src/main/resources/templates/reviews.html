@@ -20,7 +20,10 @@
         </thead>
         <tbody>
         <tr th:each="review : ${page.getObjects}">
-            <td th:text="${review.fullName}">Author</td>
+            <td>
+                <span th:text="${review.fullName}">Author</span>
+                <span th:if="${review.isAuthorDeleted}"><i>deleted</i></span>
+            </td>
             <td th:text="${review.content}">Content</td>
             <td th:text="${review.additionDateTime}">Addition date</td>
         </tr>

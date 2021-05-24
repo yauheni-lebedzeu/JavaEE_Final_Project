@@ -169,7 +169,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    protected Role getSafeRole(String roleName) {
+    private Role getSafeRole(String roleName) {
         RoleEnum roleEnum = RoleEnum.valueOf(roleName);
         Optional<Role> optionalRole = roleRepository.findByName(roleEnum);
         if (optionalRole.isPresent()) {

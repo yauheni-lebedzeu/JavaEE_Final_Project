@@ -21,6 +21,7 @@ import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlCo
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.MAKE_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.ORDERS_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.SELLER_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.util.ControllerUtil.getLoggedUserUuid;
 import static com.gmail.yauheniylebedzeu.web.controller.util.ControllerUtil.getUserPrincipal;
 
 @Controller
@@ -33,7 +34,7 @@ public class OrderController {
 
     @PostMapping(value = CUSTOMER_CONTROLLER_URL + ORDERS_CONTROLLER_URL + MAKE_CONTROLLER_URL)
     public String makeOrder() {
-        String userUuid = getUserUuid();
+        String userUuid = getLoggedUserUuid();
         orderService.makeOrder(userUuid);
         return "redirect:" + CUSTOMER_CONTROLLER_URL + ORDERS_CONTROLLER_URL;
     }
@@ -50,7 +51,7 @@ public class OrderController {
     @GetMapping(value = CUSTOMER_CONTROLLER_URL + ORDERS_CONTROLLER_URL)
     public String getUserOrders(@RequestParam(defaultValue = "1") int pageNumber,
                                 @RequestParam(defaultValue = "10") int pageSize, Model model) {
-        String userUuid = getUserUuid();
+        String userUuid = getLoggedUserUuid();
         PageDTO<OrderDTO> page = orderService.getUserOrdersPage(userUuid, pageNumber,
                 pageSize, "orderDateTime desc");
         model.addAttribute("page", page);
@@ -85,11 +86,5 @@ public class OrderController {
     public String rejectOrder(@PathVariable String orderUuid) {
         orderService.rejectOrder(orderUuid);
         return "redirect:" + CUSTOMER_CONTROLLER_URL + ORDERS_CONTROLLER_URL;
-    }
-
-    private String getUserUuid() {
-        Optional<UserDTO> optionalUser = getUserPrincipal();
-        UserDTO user = optionalUser.get();
-        return user.getUuid();
     }
 }

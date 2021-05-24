@@ -30,6 +30,7 @@ import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlCo
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.DELETE_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.PROFILE_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.USERS_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.util.ControllerUtil.getLoggedUserEmail;
 import static com.gmail.yauheniylebedzeu.web.controller.util.ControllerUtil.getUserPrincipal;
 
 @Controller
@@ -47,9 +48,7 @@ public class UserController {
                            @RequestParam(defaultValue = "10") int pageSize, Model model) {
         PageDTO<UserDTO> page = userService.getUserPage(pageNumber, pageSize, "email");
         model.addAttribute("page", page);
-        Optional<UserDTO> optionalUser = getUserPrincipal();
-        UserDTO loggedInUser = optionalUser.get();
-        String email = loggedInUser.getEmail();
+        String email = getLoggedUserEmail();
         model.addAttribute("email", email);
         RoleDTOEnum[] allRoles = RoleDTOEnum.values();
         model.addAttribute("roles", allRoles);
@@ -106,9 +105,7 @@ public class UserController {
 
     @GetMapping(value = CUSTOMER_CONTROLLER_URL + PROFILE_CONTROLLER_URL)
     public String GetProfile(UserUpdateDTO userUpdateDTO, BindingResult errors, Model model) {
-        Optional<UserDTO> optionalUser = getUserPrincipal();
-        UserDTO loggedInUser = optionalUser.get();
-        String email = loggedInUser.getEmail();
+        String email = getLoggedUserEmail();
         UserDTO user = userService.findByEmail(email);
         model.addAttribute("user", user);
         return "profile";

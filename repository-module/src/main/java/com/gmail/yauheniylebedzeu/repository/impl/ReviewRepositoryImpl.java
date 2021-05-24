@@ -13,7 +13,7 @@ public class ReviewRepositoryImpl extends GenericRepositoryImpl<Long, Review> im
     @Override
     @SuppressWarnings("unchecked")
     public List<Review> findVisibleReviews(int startPosition, int maxResult, String sortParameter) {
-        String queryString = "select c from Review as c where c.isVisible = true order by c." + sortParameter;
+        String queryString = "select r from Review as r where r.isVisible = true order by r." + sortParameter;
         Query query = entityManager.createQuery(queryString);
         query.setFirstResult(startPosition);
         query.setMaxResults(maxResult);
@@ -22,7 +22,7 @@ public class ReviewRepositoryImpl extends GenericRepositoryImpl<Long, Review> im
 
     @Override
     public Long getCountOfVisible() {
-        String queryString = "select count(c.id) from Review as c where c.isVisible = true ";
+        String queryString = "select count(r.id) from Review as r where r.isVisible = true ";
         Query query = entityManager.createQuery(queryString);
         return (Long) query.getSingleResult();
 

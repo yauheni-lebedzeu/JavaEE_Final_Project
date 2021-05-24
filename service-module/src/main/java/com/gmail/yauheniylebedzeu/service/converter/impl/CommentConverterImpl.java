@@ -35,6 +35,7 @@ public class CommentConverterImpl implements CommentConverter {
         User user = getUser(comment);
         String firstAndLastName = getFirstAndLastNameString(user);
         commentDTO.setFirstAndLastName(firstAndLastName);
+        commentDTO.setIsAuthorDeleted(user.getIsDeleted());
         return commentDTO;
     }
 }

@@ -2,7 +2,6 @@ package com.gmail.yauheniylebedzeu.repository.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.hibernate.envers.Audited;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

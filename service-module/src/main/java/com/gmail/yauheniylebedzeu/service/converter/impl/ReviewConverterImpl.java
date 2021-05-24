@@ -38,6 +38,7 @@ public class ReviewConverterImpl implements ReviewConverter {
         User user = getUser(review);
         String fullName = getFullName(user);
         reviewDTO.setFullName(fullName);
+        reviewDTO.setIsAuthorDeleted(user.getIsDeleted());
         return reviewDTO;
     }
 

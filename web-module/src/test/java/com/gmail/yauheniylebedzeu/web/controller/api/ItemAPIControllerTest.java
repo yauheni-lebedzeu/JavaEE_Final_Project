@@ -177,7 +177,7 @@ public class ItemAPIControllerTest {
         item.setName(null);
         ErrorsDTO errors = new ErrorsDTO();
         ArrayList<String> errorMessages = new ArrayList<>();
-        errorMessages.add("{not.empty.field}");
+        errorMessages.add("This field cannot be empty or consist of only spaces!");
         errors.addError("name", errorMessages);
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + ITEMS_CONTROLLER_URL)
@@ -199,7 +199,8 @@ public class ItemAPIControllerTest {
                         .content(objectMapper.writeValueAsString(item))
         ).andExpect(status().isBadRequest()).andReturn();
         String contentAsString = mvcResult.getResponse().getContentAsString();
-        assertThat(contentAsString).contains("name", "{not.empty.field}", "{wrong.item.name.format}");
+        assertThat(contentAsString).contains("name", "This field cannot be empty or consist of only spaces!",
+                "The item name must be between 2 and 50 characters long!");
     }
 
     @Test
@@ -208,7 +209,7 @@ public class ItemAPIControllerTest {
         item.setName("     ");
         ErrorsDTO errors = new ErrorsDTO();
         ArrayList<String> errorMessages = new ArrayList<>();
-        errorMessages.add("{not.empty.field}");
+        errorMessages.add("This field cannot be empty or consist of only spaces!");
         errors.addError("name", errorMessages);
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + ITEMS_CONTROLLER_URL)
@@ -226,7 +227,7 @@ public class ItemAPIControllerTest {
         item.setDescription(null);
         ErrorsDTO errors = new ErrorsDTO();
         ArrayList<String> errorMessages = new ArrayList<>();
-        errorMessages.add("{not.empty.field}");
+        errorMessages.add("This field cannot be empty or consist of only spaces!");
         errors.addError("description", errorMessages);
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + ITEMS_CONTROLLER_URL)
@@ -248,7 +249,8 @@ public class ItemAPIControllerTest {
                         .content(objectMapper.writeValueAsString(item))
         ).andExpect(status().isBadRequest()).andReturn();
         String contentAsString = mvcResult.getResponse().getContentAsString();
-        assertThat(contentAsString).contains("description", "{not.empty.field}", "{wrong.item.description.format}");
+        assertThat(contentAsString).contains("description", "This field cannot be empty or consist of only spaces!",
+                "The item description must be between 5 and 200 characters long!");
     }
 
     @Test
@@ -257,7 +259,7 @@ public class ItemAPIControllerTest {
         item.setDescription("     ");
         ErrorsDTO errors = new ErrorsDTO();
         ArrayList<String> errorMessages = new ArrayList<>();
-        errorMessages.add("{not.empty.field}");
+        errorMessages.add("This field cannot be empty or consist of only spaces!");
         errors.addError("description", errorMessages);
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + ITEMS_CONTROLLER_URL)
@@ -275,7 +277,7 @@ public class ItemAPIControllerTest {
         item.setPrice(null);
         ErrorsDTO errors = new ErrorsDTO();
         ArrayList<String> errorMessages = new ArrayList<>();
-        errorMessages.add("{not.empty.field}");
+        errorMessages.add("This field cannot be empty!");
         errors.addError("price", errorMessages);
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + ITEMS_CONTROLLER_URL)
@@ -293,7 +295,25 @@ public class ItemAPIControllerTest {
         item.setPrice(new BigDecimal("0"));
         ErrorsDTO errors = new ErrorsDTO();
         ArrayList<String> errorMessages = new ArrayList<>();
-        errorMessages.add("{wrong.min.item.price}");
+        errorMessages.add("The item price must be greater than 0.00!");
+        errors.addError("price", errorMessages);
+        MvcResult mvcResult = mockMvc.perform(
+                post(API_CONTROLLER_URL + ITEMS_CONTROLLER_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(item))
+        ).andExpect(status().isBadRequest()).andReturn();
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+        assertThat(contentAsString).
+                isEqualToIgnoringWhitespace(objectMapper.writeValueAsString(errors));
+    }
+
+    @Test
+    void shouldAddItemWithWrongMaxPrice() throws Exception {
+        ItemDTO item = getItemDTOWithValidFields();
+        item.setPrice(new BigDecimal("10000.01"));
+        ErrorsDTO errors = new ErrorsDTO();
+        ArrayList<String> errorMessages = new ArrayList<>();
+        errorMessages.add("The item price must not be greater than 10000.00!");
         errors.addError("price", errorMessages);
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + ITEMS_CONTROLLER_URL)
@@ -311,7 +331,7 @@ public class ItemAPIControllerTest {
         item.setPrice(new BigDecimal("100.333"));
         ErrorsDTO errors = new ErrorsDTO();
         ArrayList<String> errorMessages = new ArrayList<>();
-        errorMessages.add("{wrong.item.price.format}");
+        errorMessages.add("The price of the item must contain no more than 5 integers and no more than 2 fractions!");
         errors.addError("price", errorMessages);
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + ITEMS_CONTROLLER_URL)

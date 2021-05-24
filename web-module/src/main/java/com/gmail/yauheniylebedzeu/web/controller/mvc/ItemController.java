@@ -1,10 +1,8 @@
 package com.gmail.yauheniylebedzeu.web.controller.mvc;
 
 import com.gmail.yauheniylebedzeu.service.ItemService;
-import com.gmail.yauheniylebedzeu.service.enums.RoleDTOEnum;
 import com.gmail.yauheniylebedzeu.service.model.ItemDTO;
 import com.gmail.yauheniylebedzeu.service.model.PageDTO;
-import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,13 +11,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Optional;
-
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.DELETE_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.ITEMS_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.REPLICATE_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.SELLER_CONTROLLER_URL;
-import static com.gmail.yauheniylebedzeu.web.controller.util.ControllerUtil.getUserPrincipal;
+import static com.gmail.yauheniylebedzeu.web.controller.util.ControllerUtil.getLoggedUserRoleName;
 
 @Controller
 @AllArgsConstructor
@@ -30,10 +26,7 @@ public class ItemController {
     @GetMapping(value = ITEMS_CONTROLLER_URL)
     public String getItems(@RequestParam(defaultValue = "1") int pageNumber,
                            @RequestParam(defaultValue = "10") int pageSize, Model model) {
-        Optional<UserDTO> optionalUser = getUserPrincipal();
-        UserDTO loggedInUser = optionalUser.get();
-        RoleDTOEnum role = loggedInUser.getRole();
-        String roleName = role.name();
+        String roleName = getLoggedUserRoleName();
         model.addAttribute("role", roleName);
         PageDTO<ItemDTO> page = itemService.getItemPage(pageNumber, pageSize, "name asc");
         model.addAttribute("page", page);

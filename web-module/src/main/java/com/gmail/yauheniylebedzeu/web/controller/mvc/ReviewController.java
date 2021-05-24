@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.*;
+import static com.gmail.yauheniylebedzeu.web.controller.util.ControllerUtil.getLoggedUserUuid;
 import static com.gmail.yauheniylebedzeu.web.controller.util.ControllerUtil.getUserPrincipal;
 
 @Controller
@@ -68,9 +69,7 @@ public class ReviewController {
         if (errors.hasErrors()) {
             return "review-form";
         }
-        Optional<UserDTO> optionalUser = getUserPrincipal();
-        UserDTO loggedInUser = optionalUser.get();
-        String userUuid = loggedInUser.getUuid();
+        String userUuid = getLoggedUserUuid();
         reviewService.addReview(userUuid, reviewDTO);
         return "redirect:" + REVIEWS_CONTROLLER_URL;
     }

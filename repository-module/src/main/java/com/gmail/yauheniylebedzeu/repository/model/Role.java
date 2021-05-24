@@ -3,7 +3,6 @@ package com.gmail.yauheniylebedzeu.repository.model;
 import com.gmail.yauheniylebedzeu.repository.enums.RoleEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.hibernate.envers.Audited;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

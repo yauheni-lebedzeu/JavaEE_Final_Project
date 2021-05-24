@@ -13,9 +13,10 @@
                 <p th:text="${article.additionDateTime}">Date</p>
                 <p th:text="${article.title}">Article title</p>
                 <p>
-                <pre style="white-space: pre-wrap" th:text="${article.content}">Content</pre>
+                    <pre style="white-space: pre-wrap" th:text="${article.content}">Content</pre>
                 </p>
-                <p th:text="${article.firstAndLastName}">Author</p>
+                <span th:text="${article.firstAndLastName}">Author</span><br>
+                <span th:if="${article.isAuthorDeleted}"><i>deleted</i></span>
             </td>
         </tr>
         </tbody>
@@ -52,7 +53,8 @@
                 <tbody>
                 <tr th:each="comment : ${article.comments}">
                     <td>
-                        <p th:text="${comment.firstAndLastName}">Author</p>
+                        <span th:text="${comment.firstAndLastName}">Author</span><br>
+                        <span th:if="${article.isAuthorDeleted}"> <i>&lt;deleted&gt;</i></span>
                         <p th:text="${comment.additionDateTime}">Date</p>
                         <p th:text="${comment.content}">Content</p>
                     </td>
