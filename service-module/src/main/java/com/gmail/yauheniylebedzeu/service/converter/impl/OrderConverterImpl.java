@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.gmail.yauheniylebedzeu.service.util.EntitiesServiceUtil.getItem;
@@ -34,6 +35,7 @@ public class OrderConverterImpl implements OrderConverter {
     @Override
     public Order convertCartToOrder(Set<CartDetail> cart) {
         Order order = new Order();
+        order.setUuid(UUID.randomUUID().toString());
         order.setOrderDateTime(LocalDateTime.now());
         for (CartDetail cartDetail : cart) {
             Item item = getItem(cartDetail);

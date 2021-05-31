@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.gmail.yauheniylebedzeu.service.util.EntitiesServiceUtil.getUser;
@@ -20,6 +21,7 @@ public class ReviewConverterImpl implements ReviewConverter {
     @Override
     public Review convertReviewDTOToReview(ReviewDTO reviewDTO) {
         Review review = new Review();
+        review.setUuid(UUID.randomUUID().toString());
         review.setAdditionDateTime(LocalDateTime.now());
         review.setContent(reviewDTO.getContent());
         return review;

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.gmail.yauheniylebedzeu.service.util.EntitiesServiceUtil.getArticleContent;
@@ -31,9 +32,10 @@ public class ArticleConverterImpl implements ArticleConverter {
     @Override
     public Article convertArticleDTOToArticle(ArticleDTO articleDTO) {
         Article article = new Article();
+        article.setUuid(UUID.randomUUID().toString());
         article.setTitle(articleDTO.getTitle());
         article.setSynopsis(articleDTO.getSynopsis());
-        article.setAdditionDateTime(LocalDateTime.now().withNano(0));
+        article.setAdditionDateTime(LocalDateTime.now());
         ArticleContent articleContent = new ArticleContent();
         articleContent.setContent(articleDTO.getContent());
         articleContent.setArticle(article);

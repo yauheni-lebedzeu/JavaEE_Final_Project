@@ -20,7 +20,7 @@
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="uuid" type="UUID" defaultValueComputed="(UUID())">
+            <column name="uuid" type="varchar(36)">
                 <constraints unique="true" nullable="false"/>
             </column>
             <column name="last_name" type="VARCHAR(40)">
@@ -52,7 +52,7 @@
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="uuid" type="UUID" defaultValueComputed="(UUID())">
+            <column name="uuid" type="varchar(36)">
                 <constraints unique="true" nullable="false"/>
             </column>
             <column name="content" type="VARCHAR(1000)">
@@ -96,6 +96,7 @@
 
     <changeSet id="9" author="yauheniylebedzeu@gmail.com">
         <insert tableName="user">
+            <column name="uuid"  valueComputed="(UUID())"/>
             <column name="last_name" value="Ivanov"/>
             <column name="first_name" value="Ivan"/>
             <column name="patronymic" value="Ivanovich"/>
@@ -136,7 +137,7 @@
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="uuid" type="UUID" defaultValueComputed="(UUID())">
+            <column name="uuid" type="varchar(36)">
                 <constraints unique="true" nullable="false"/>
             </column>
             <column name="title" type="VARCHAR(50)">
@@ -171,7 +172,7 @@
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="uuid" type="UUID" defaultValueComputed="(UUID())">
+            <column name="uuid" type="varchar(36)">
                 <constraints unique="true" nullable="false"/>
             </column>
             <column name="content" type="VARCHAR(200)">
@@ -194,7 +195,7 @@
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="uuid" type="UUID" defaultValueComputed="(UUID())">
+            <column name="uuid" type="varchar(36)">
                 <constraints unique="true" nullable="false"/>
             </column>
             <column name="name" type="VARCHAR(50)">
@@ -235,7 +236,7 @@
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="uuid" type="UUID" defaultValueComputed="(UUID())">
+            <column name="uuid" type="varchar(36)">
                 <constraints unique="true" nullable="false"/>
             </column>
             <column name="order_date_time" type="DATETIME">

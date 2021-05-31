@@ -7,6 +7,7 @@ import com.gmail.yauheniylebedzeu.service.model.ItemDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.gmail.yauheniylebedzeu.service.util.EntitiesServiceUtil.getItemDescription;
@@ -17,6 +18,7 @@ public class ItemConverterImpl implements ItemConverter {
     @Override
     public Item convertItemDTOToItem(ItemDTO itemDTO) {
         Item item = new Item();
+        item.setUuid(UUID.randomUUID().toString());
         item.setName(itemDTO.getName());
         item.setPrice(itemDTO.getPrice());
         item.setQuantityInStock(itemDTO.getQuantityInStock());
