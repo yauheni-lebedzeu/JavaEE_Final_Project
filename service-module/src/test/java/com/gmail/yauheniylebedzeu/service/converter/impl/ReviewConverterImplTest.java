@@ -32,14 +32,6 @@ class ReviewConverterImplTest {
     }
 
     @Test
-    void shouldConvertReviewDTOToReviewAndGetRightAdditionDateTime() {
-        ReviewDTO reviewDTO = new ReviewDTO();
-        LocalDateTime dateTime = LocalDateTime.now();
-        Review review = reviewConverter.convertReviewDTOToReview(reviewDTO);
-        assertEquals(dateTime, review.getAdditionDateTime());
-    }
-
-    @Test
     void shouldConvertReviewDTOToReviewAndGetRightContent() {
         ReviewDTO reviewDTO = new ReviewDTO();
         String content = "test content";
