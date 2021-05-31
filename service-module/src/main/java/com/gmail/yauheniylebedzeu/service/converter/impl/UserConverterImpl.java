@@ -10,6 +10,7 @@ import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.gmail.yauheniylebedzeu.service.util.EntitiesServiceUtil.getRole;
@@ -21,6 +22,7 @@ public class UserConverterImpl implements UserConverter {
     @Override
     public User convertUserDTOToUser(UserDTO userDTO) {
         User user = new User();
+        user.setUuid(UUID.randomUUID().toString());
         user.setLastName(userDTO.getLastName());
         user.setFirstName(userDTO.getFirstName());
         user.setPatronymic(userDTO.getPatronymic());

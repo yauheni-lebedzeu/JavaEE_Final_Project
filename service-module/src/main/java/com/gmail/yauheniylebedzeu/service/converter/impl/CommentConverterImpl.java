@@ -7,6 +7,7 @@ import com.gmail.yauheniylebedzeu.service.model.CommentDTO;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static com.gmail.yauheniylebedzeu.service.util.EntitiesServiceUtil.getUser;
 import static com.gmail.yauheniylebedzeu.service.util.ServiceUtil.formatDateTime;
@@ -18,6 +19,7 @@ public class CommentConverterImpl implements CommentConverter {
     @Override
     public Comment convertCommentDTOToComment(CommentDTO commentDTO) {
         Comment comment = new Comment();
+        comment.setUuid(UUID.randomUUID().toString());
         comment.setContent(commentDTO.getContent());
         comment.setAdditionDateTime(LocalDateTime.now());
         return comment;
