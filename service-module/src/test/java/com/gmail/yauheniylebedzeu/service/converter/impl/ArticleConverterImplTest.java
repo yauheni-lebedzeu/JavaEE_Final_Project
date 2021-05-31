@@ -58,14 +58,6 @@ public class ArticleConverterImplTest {
     }
 
     @Test
-    void shouldConvertArticleDTOToArticleAndReturnRightAdditionDateTime() {
-        ArticleDTO articleDTO = new ArticleDTO();
-        LocalDateTime dateTime = LocalDateTime.now().withNano(0);
-        Article article = articleConverter.convertArticleDTOToArticle(articleDTO);
-        assertEquals(dateTime, article.getAdditionDateTime());
-    }
-
-    @Test
     void shouldConvertArticleDTOToArticleAndReturnNotNullContent() {
         ArticleDTO articleDTO = new ArticleDTO();
         Article article = articleConverter.convertArticleDTOToArticle(articleDTO);
