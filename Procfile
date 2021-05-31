@@ -1,0 +1,1 @@
+web: java $JAVA_OPTS -jar web-module/target/app.jar -Dserver.port=$PORT
