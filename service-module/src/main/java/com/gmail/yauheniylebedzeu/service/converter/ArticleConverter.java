@@ -14,5 +14,4 @@ public interface ArticleConverter {
     ArticleDTO convertArticleToDetailedArticleDTO(Article newsItem);
 
     List<ArticleDTO> convertArticleListToArticleDTOList(List<Article> articles);
-
 }

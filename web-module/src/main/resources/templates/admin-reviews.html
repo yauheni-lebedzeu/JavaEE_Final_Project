@@ -32,7 +32,7 @@
             <td>
                 <pre th:text="${review.content}">Review content</pre>
             </td>
-            <td align="center" th:text="${review.additionDate}">Addition date</td>
+            <td align="center" th:text="${review.getAdditionDateTime}">Addition date</td>
             <td align="center">
                 <span style="font-style: italic" th:if="${review.isVisible}"> visible</span>
                 <span style="font-style: italic" th:unless="${review.isVisible}"> invisible</span>

@@ -18,7 +18,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,7 +34,6 @@ public class Article {
     private Long id;
 
     @Column
-    @EqualsAndHashCode.Exclude
     private String uuid;
 
     @Column
@@ -43,9 +42,8 @@ public class Article {
     @Column
     private String synopsis;
 
-    @Column(name = "addition_date")
-    @EqualsAndHashCode.Exclude
-    private LocalDate additionDate;
+    @Column(name = "addition_date_time")
+    private LocalDateTime additionDateTime;
 
     @OneToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
@@ -57,7 +55,7 @@ public class Article {
             cascade = CascadeType.ALL,
             mappedBy = "article",
             orphanRemoval = true)
-    @OrderBy("additionDate DESC")
+    @OrderBy("additionDateTime DESC")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<Comment> comments = new HashSet<>();
@@ -66,6 +64,5 @@ public class Article {
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "user_id")
     @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private User user;
 }

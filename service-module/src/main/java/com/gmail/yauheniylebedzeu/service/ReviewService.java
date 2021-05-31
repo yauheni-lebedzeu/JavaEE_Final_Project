@@ -1,10 +1,10 @@
 package com.gmail.yauheniylebedzeu.service;
 
+import com.gmail.yauheniylebedzeu.repository.model.Review;
 import com.gmail.yauheniylebedzeu.service.model.PageDTO;
 import com.gmail.yauheniylebedzeu.service.model.ReviewDTO;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ReviewService {
 
@@ -15,4 +15,8 @@ public interface ReviewService {
     List<ReviewDTO> changeVisibilityByUuids(List<String> checkedUuids, List<String> previouslyCheckedUuids);
 
     PageDTO<ReviewDTO> getVisibleReviewsPage(int pageNumber, int pageSize, String sortParameter);
+
+    Review getSafeReview(String reviewUuid);
+
+    ReviewDTO addReview(String userUuid, ReviewDTO review);
 }

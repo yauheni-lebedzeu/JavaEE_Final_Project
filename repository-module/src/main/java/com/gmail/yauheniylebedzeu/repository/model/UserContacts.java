@@ -41,7 +41,6 @@ public class UserContacts {
     private String phoneNumber;
 
     @Column(name = "is_deleted")
-    @EqualsAndHashCode.Exclude
     private Boolean isDeleted;
 
     @OneToOne(fetch = FetchType.LAZY)

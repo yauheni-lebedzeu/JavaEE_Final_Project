@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -24,7 +25,13 @@ public class BindingResultConverterImpl implements BindingResultConverter {
         for (FieldError fieldError : fieldErrors) {
             String fieldName = fieldError.getField();
             String errorMessage = messageSource.getMessage(fieldError, Locale.ENGLISH);
-            errors.addError(fieldName, errorMessage);
+            if (errors.isContainError(fieldName)) {
+                errors.addErrorMessage(fieldName, errorMessage);
+            } else {
+                ArrayList<String> errorMessages = new ArrayList<>();
+                errorMessages.add(errorMessage);
+                errors.addError(fieldName, errorMessages);
+            }
         }
         return errors;
     }

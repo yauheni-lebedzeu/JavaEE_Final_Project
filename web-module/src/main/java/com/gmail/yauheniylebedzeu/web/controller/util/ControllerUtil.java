@@ -1,5 +1,6 @@
 package com.gmail.yauheniylebedzeu.web.controller.util;
 
+import com.gmail.yauheniylebedzeu.service.enums.RoleDTOEnum;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import com.gmail.yauheniylebedzeu.service.model.UserLogin;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -19,6 +20,25 @@ public class ControllerUtil {
         } else {
             return Optional.empty();
         }
+    }
+
+    public static String getLoggedUserUuid() {
+        Optional<UserDTO> optionalUser = getUserPrincipal();
+        UserDTO loggedInUser = optionalUser.get();
+        return loggedInUser.getUuid();
+    }
+
+    public static String getLoggedUserRoleName() {
+        Optional<UserDTO> optionalUser = getUserPrincipal();
+        UserDTO loggedInUser = optionalUser.get();
+        RoleDTOEnum role = loggedInUser.getRole();
+        return role.name();
+    }
+
+    public static String getLoggedUserEmail() {
+        Optional<UserDTO> optionalUser = getUserPrincipal();
+        UserDTO loggedInUser = optionalUser.get();
+        return loggedInUser.getEmail();
     }
 
 }

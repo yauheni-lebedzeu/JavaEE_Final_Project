@@ -1,5 +1,6 @@
 package com.gmail.yauheniylebedzeu.service;
 
+import com.gmail.yauheniylebedzeu.repository.model.User;
 import com.gmail.yauheniylebedzeu.service.model.PageDTO;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import com.gmail.yauheniylebedzeu.service.model.UserUpdateDTO;
@@ -24,7 +25,7 @@ public interface UserService {
 
     UserDTO changePasswordByUuid(String uuid);
 
-    void sendPasswordToUser(UserDTO userDTO);
-
     List<UserDTO> findAll();
+
+    User getSafeUser(String userUuid);
 }

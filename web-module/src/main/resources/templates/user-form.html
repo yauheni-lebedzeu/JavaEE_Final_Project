@@ -28,7 +28,7 @@
         <label for="roles">Roles</label><br>
         <select th:field="*{role}" id="roles">
             <option th:each="role : ${roles}" th:value="${role}"
-                    th:text="${role.name}">Role
+                    th:text="${role.description}">Role
             </option>
         </select><br>
         <p style="color: red; white-space: pre" th:if="${#fields.hasErrors('role')}" th:errors="*{role}">Role error</p>

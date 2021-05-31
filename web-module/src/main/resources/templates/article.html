@@ -10,33 +10,65 @@
         <tbody>
         <tr>
             <td>
-                <p th:text="${article.additionDate}">Date</p>
+                <p th:text="${article.additionDateTime}">Date</p>
                 <p th:text="${article.title}">Article title</p>
                 <p>
-                <pre style="white-space: pre-wrap" th:text="${article.content}">Content</pre>
+                    <pre style="white-space: pre-wrap" th:text="${article.content}">Content</pre>
                 </p>
-                <p th:text="${article.firstAndLastName}">Author</p>
+                <span th:text="${article.firstAndLastName}">Author</span><br>
+                <span th:if="${article.isAuthorDeleted}"><i>deleted</i></span>
             </td>
         </tr>
         </tbody>
     </table>
-    <h3><a th:href="@{/articles}">Go back to the page of the news</a></h3>
-    <table th:unless="${article.comments.isEmpty()}">
-        <thead>
-        <tr>
-            <th>Comments</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="comment : ${article.comments}">
-            <td>
-                <p th:text="${comment.firstAndLastName}">Author</p>
-                <p th:text="${comment.additionDate}">Date</p>
-                <p th:text="${comment.content}">Content</p>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <form th:if="${role} == 'SALE_USER'" action=#
+          th:action="@{/seller/articles/{articleUuid}/edit(articleUuid = ${article.uuid})}"
+          method="get">
+        <button type="submit">Edit the article</button>
+    </form>
+    <div th:if="${article.comments.isEmpty()}"><h2>There are no comments here yet</h2></div>
+    <div th:if="${role} == 'CUSTOMER_USER'">
+        <form action="#" th:action="@{/customer/articles/{articleUuid}/add/comments(articleUuid = ${article.uuid})}"
+              th:object="${commentDTO}"
+              method="post">
+            <label for="content"><h3>Leave a comment</h3></label>
+            <textarea th:field="*{content}" id="content" rows="5" cols="40"
+                      placeholder="Enter a text of a comment..."
+                      title="A comment text must be between 3 and 200 characters long">
+            </textarea>
+            <p style="color: red; white-space: pre" th:if="${#fields.hasErrors('content')}" th:errors="*{content}">
+                Content errors</p><br>
+            <input type="submit" value="Leave"><input type="reset" value="Reset">
+        </form>
+    </div>
+    <div th:unless="${article.comments.isEmpty()}">
+        <form action=# th:action="@{/seller/articles/{articleUuid}/comments/delete(articleUuid=${article.uuid})}"
+              method="post">
+            <table>
+                <thead>
+                <tr>
+                    <th><h2>Comments</h2></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="comment : ${article.comments}">
+                    <td>
+                        <span th:text="${comment.firstAndLastName}">Author</span><br>
+                        <span th:if="${article.isAuthorDeleted}"> <i>&lt;deleted&gt;</i></span>
+                        <p th:text="${comment.additionDateTime}">Date</p>
+                        <p th:text="${comment.content}">Content</p>
+                    </td>
+                    <td th:if="${role} == 'SALE_USER'" align="center">
+                        <input type="checkbox" name="commentUuids" th:value="${comment.uuid}"/>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <p th:if="${role} == 'SALE_USER'">
+                <input type="submit" value="Delete the comments"/>
+            </p>
+        </form>
+    </div>
 </div>
 </body>
 </html>

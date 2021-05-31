@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cart</title>
+</head>
+<body>
+<h1 align="center">Your cart</h1>
+<div align="center" th:if="${cart.cartDetails.isEmpty()}">
+    <h2>You don't have any items in your cart yet</h2>
+</div>
+<div align="center" th:unless="${cart.cartDetails.isEmpty()}">
+    <table border="1">
+        <thead>
+        <tr>
+            <th>Item</th>
+            <th>Quantity</th>
+            <th>Amount</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="cartDetail : ${cart.cartDetails}">
+            <td align="left">
+                <p>
+                    <a th:href="@{/items/{uuid}/1(uuid = ${cartDetail.item.uuid})}" th:text="${cartDetail.item.name}">Item
+                        name</a>
+                </p>
+                <p th:text="'$' + ${cartDetail.item.price}">Item price</p>
+            </td>
+            <td>
+                <form action=# th:action="@{/customer/cart/update/{itemUuid}(itemUuid = ${cartDetail.item.uuid})}"
+                      method="post">
+                    <input type="number" min="0" max="99" th:value="${cartDetail.quantity}" name="newQuantity"/>
+                    <button type="submit">Update quantity</button>
+                </form>
+            </td>
+            <td th:text="${cartDetail.amount}"></td>
+            <td>
+                <form action=# th:action="@{/customer/cart/update/{itemUuid}(itemUuid = ${cartDetail.item.uuid})}"
+                      method="post">
+                    <input type="hidden" value="0" name="newQuantity"/>
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <p align="center" th:text="'Total quantity: ' + ${cart.totalQuantity} + ' pcs.'"></p>
+    <p align="center" th:text="'Total amount: $' + ${cart.totalAmount}"></p>
+    <p>
+    <form action=# th:action="@{/customer/cart/clear}"
+          method="post">
+        <button type="submit">Clear the cart</button>
+    </form>
+    <form action=# th:action="@{/customer/orders/make}"
+          method="post">
+        <button type="submit">Confirm the order</button>
+    </form>
+    </p>
+</div>
+</body>
+</html>

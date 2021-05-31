@@ -6,7 +6,7 @@
 </head>
 <body>
 <div align="center">
-    <form action=# th:action="@{/admin/users/del/{sourcePageNumber}(sourcePageNumber=${page.pageNumber})}" method="post"
+    <form action=# th:action="@{/admin/users/delete/{sourcePageNumber}(sourcePageNumber=${page.pageNumber})}" method="post"
           id="deletingForm"></form>
     <table border="2">
         <thead>
@@ -22,7 +22,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="user: ${page.getObjects}">
+        <tr th:each="user: ${page.objects}">
             <td th:text="${user.lastName}">Last name</td>
             <td th:text="${user.firstName}">First name</td>
             <td th:text="${user.patronymic}">Patronymic</td>
@@ -34,14 +34,14 @@
                     <button type="submit">Generate a new password</button>
                 </form>
             </td>
-            <td th:text="${user.role.name}">Role</td>
+            <td th:text="${user.role.description}">Role</td>
             <td align="center" th:unless="${email.equals(user.email)}">
                 <form th:unless="${user.isDeleted}" action=#
                       th:action="@{/admin/users/change-role/{uuid}/{sourcePageNumber}(sourcePageNumber=${page.pageNumber}, uuid = ${user.uuid})}"
                       method="post">
                     <select name="roleName">
                         <option th:each="role : ${roles}" th:value="${role.name()}"
-                                th:unless="${user.role} == ${role}" th:text="${role.name}">Role
+                                th:unless="${user.role} == ${role}" th:text="${role.description}">Role
                         </option>
                     </select><br>
                     <input type="submit" value="Change role"/>
@@ -56,7 +56,7 @@
         </tr>
         </tbody>
     </table>
-    <p th:if="${page.getObjects.size() > 1}">
+    <p th:if="${page.objects.size() > 1}">
         <input type="submit" form="deletingForm" value="Delete checked users"/>
     </p>
 </div>

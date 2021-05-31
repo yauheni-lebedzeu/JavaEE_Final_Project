@@ -4,11 +4,12 @@ import com.gmail.yauheniylebedzeu.repository.model.Review;
 import com.gmail.yauheniylebedzeu.repository.model.User;
 import com.gmail.yauheniylebedzeu.service.exception.UserNotReceivedException;
 import com.gmail.yauheniylebedzeu.service.model.ReviewDTO;
-import com.gmail.yauheniylebedzeu.service.model.UserDTO;
+import com.gmail.yauheniylebedzeu.service.util.ServiceUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,7 +46,8 @@ class ReviewConverterImplTest {
 
     @Test
     void shouldConvertReviewWithoutUserToReviewDTO() {
-        Review review = new Review();
+        Review review = getTestReviewWithUser();
+        review.setUser(null);
         Assertions.assertThrows(UserNotReceivedException.class, () -> reviewConverter.convertReviewToReviewDTO(review));
     }
 
@@ -79,10 +81,9 @@ class ReviewConverterImplTest {
     @Test
     void shouldConvertReviewToReviewDTOAndGetRightAdditionDate() {
         Review review = getTestReviewWithUser();
-        LocalDate additionDate = LocalDate.now();
-        review.setAdditionDate(additionDate);
+        String formattedDateTime = ServiceUtil.formatDateTime(review.getAdditionDateTime());
         ReviewDTO reviewDTO = reviewConverter.convertReviewToReviewDTO(review);
-        assertEquals(additionDate, reviewDTO.getAdditionDate());
+        assertEquals(formattedDateTime, reviewDTO.getAdditionDateTime());
     }
 
     @Test
@@ -130,6 +131,7 @@ class ReviewConverterImplTest {
         String patronymic = "test patronymic";
         user.setPatronymic(patronymic);
         Review review = new Review();
+        review.setAdditionDateTime(LocalDateTime.now());
         review.setUser(user);
         return review;
     }

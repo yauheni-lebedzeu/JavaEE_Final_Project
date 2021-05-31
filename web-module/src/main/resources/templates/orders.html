@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Orders</title>
+</head>
+<body>
+<h1 align="center">Orders</h1>
+<div align="center" th:if="${page.objects.isEmpty()}">
+    <h2>There are no orders</h2>
+</div>
+<div align="center" th:unless="${page.objects.isEmpty()}" th:each="order : ${page.objects}">
+    <table border="1">
+        <thead>
+        <tr>
+            <th th:text="'Order number: ' + ${order.orderNumber} +
+             ' | Date: ' + ${order.orderDateTime} +
+              ' | Status: ' + ${order.status.description}">Order info
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                <div th:each="orderDetail : ${order.orderDetails}">
+                    <p>
+                        <a th:href="@{/items/{uuid}/1(uuid = ${orderDetail.itemUuid})}"
+                           th:text="${orderDetail.itemName}">Item name</a>
+                        <span th:text="' —  $' + ${orderDetail.price}"></span>
+                        <span th:text="' x ' + ${orderDetail.quantity}"></span>
+                        <span th:text="' pcs. — $' + ${orderDetail.amount}"></span>
+                    </p>
+                </div>
+                <a th:href="@{/seller/orders/{orderUuid}(orderUuid = ${order.uuid})}">More detailed...</a>
+            </td>
+        </tr>
+        <tr>
+            <td th:text="'Total quantity: ' + ${order.totalQuantity} +
+                     ' | Total amount: $' + ${order.totalAmount}">Total
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <p>***</p>
+</div>
+<footer>
+    <div align="center" th:if="${page.countOfPages > 1}">
+        <span th:each="i : ${#numbers.sequence(1,page.countOfPages)}">
+            <span th:unless="${page.pageNumber == i}">
+            <a th:href="@{'/customer/orders?pageNumber=' + ${i}}" th:text="'|' + ${i} + '|'"></a>
+            </span>
+            <span th:if="${page.pageNumber == i}" th:text="${i}"></span>
+        </span>
+    </div>
+    <h3 align="center" class="text-center"><a th:href="@{/main}">Go back to the main page</a></h3>
+</footer>
+</body>
+</html>

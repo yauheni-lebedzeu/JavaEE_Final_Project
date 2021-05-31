@@ -5,6 +5,7 @@ import com.gmail.yauheniylebedzeu.repository.model.Role;
 import com.gmail.yauheniylebedzeu.repository.model.User;
 import com.gmail.yauheniylebedzeu.repository.model.UserContacts;
 import com.gmail.yauheniylebedzeu.service.exception.RoleNotReceivedException;
+import com.gmail.yauheniylebedzeu.service.exception.UserContactsNotReceivedException;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import org.junit.jupiter.api.Test;
 
@@ -165,6 +166,12 @@ class UserConverterImplTest {
         RoleEnum roleEnum = role.getName();
         String stringRoleEnum = roleEnum.name();
         assertEquals(stringRoleEnum, userDTO.getRole().name());
+    }
+
+    @Test
+    void shouldConvertUserToUserDTOWithContactsAndGetNullContacts() {
+        User user = getTestUserWithValidRole();
+        assertThrows(UserContactsNotReceivedException.class, () -> userConverter.convertUserToUserDTOWithContacts(user));
     }
 
     @Test

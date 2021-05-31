@@ -24,6 +24,8 @@
         <repository.module.version>1.0</repository.module.version>
         <service.module.version>1.0</service.module.version>
         <passay.version>1.6.0</passay.version>
+        <mysql.testcontainers.version>1.15.3</mysql.testcontainers.version>
+        <hibernate.envers.version>5.4.27.Final</hibernate.envers.version>
     </properties>
 
     <dependencies>
@@ -44,10 +46,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-test</artifactId>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

@@ -3,15 +3,16 @@ package com.gmail.yauheniylebedzeu.web.configuration;
 import com.gmail.yauheniylebedzeu.service.enums.RoleDTOEnum;
 import com.gmail.yauheniylebedzeu.web.configuration.handler.AppAccessHandler;
 import com.gmail.yauheniylebedzeu.web.configuration.handler.LoginAccessDeniedHandler;
-import org.springframework.context.annotation.Bean;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.*;
@@ -21,22 +22,24 @@ import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlCo
 public class ApplicationSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
+    private final PasswordEncoder passwordEncoder;
 
     @Lazy
-    public ApplicationSecurityConfigurer(UserDetailsService userDetailsService) {
+    public ApplicationSecurityConfigurer(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
         this.userDetailsService = userDetailsService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService)
-                .passwordEncoder(encoder());
+                .passwordEncoder(passwordEncoder);
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers(ADMIN_CONTROLLER_URL + "/**")
+                .antMatchers(ADMIN_CONTROLLER_URL + "/**", ACTUATOR_CONTROLLER_URL + "/**")
                 .hasAuthority(RoleDTOEnum.ADMIN.name())
                 .antMatchers(CUSTOMER_CONTROLLER_URL + "/**")
                 .hasAuthority(RoleDTOEnum.CUSTOMER_USER.name())
@@ -59,9 +62,19 @@ public class ApplicationSecurityConfigurer extends WebSecurityConfigurerAdapter 
                 .disable();
     }
 
-    @Bean
-    public PasswordEncoder encoder() {
-        return new BCryptPasswordEncoder();
-    }
+    @Configuration
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    @AllArgsConstructor
+    public static class ApplicationApiSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http.antMatcher(API_CONTROLLER_URL + "/**")
+                    .authorizeRequests(a -> a.anyRequest().hasAnyAuthority(RoleDTOEnum.SECURE_REST_API.name()))
+                    .httpBasic()
+                    .and()
+                    .csrf()
+                    .disable();
+        }
+    }
 }

@@ -29,8 +29,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             UserDTO user = userService.findByEmail(username);
             return new UserLogin(user);
         } catch (UserNotFoundException | UserDeletedException e) {
-            throw new UsernameNotFoundException(String.format("User with email %s was not found in the database",
-                    username));
+            throw new UsernameNotFoundException(String.format("User with email %s was not found", username));
         }
     }
 }

@@ -20,8 +20,7 @@ public class MainPageController {
         if (optionalUser.isPresent()) {
             UserDTO loggedInUser = optionalUser.get();
             RoleDTOEnum role = loggedInUser.getRole();
-            String roleName = role.name();
-            model.addAttribute("role", roleName);
+            model.addAttribute("role", role);
         }
         return "main";
     }

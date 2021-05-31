@@ -6,17 +6,14 @@ import com.gmail.yauheniylebedzeu.repository.model.User;
 import com.gmail.yauheniylebedzeu.repository.model.UserContacts;
 import com.gmail.yauheniylebedzeu.service.converter.UserConverter;
 import com.gmail.yauheniylebedzeu.service.enums.RoleDTOEnum;
-import com.gmail.yauheniylebedzeu.service.exception.RoleNotReceivedException;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
-import org.junit.platform.commons.util.StringUtils;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static com.gmail.yauheniylebedzeu.service.util.EntitiesServiceUtil.getRole;
+import static com.gmail.yauheniylebedzeu.service.util.EntitiesServiceUtil.getUserContacts;
 
 @Component
 public class UserConverterImpl implements UserConverter {
@@ -50,11 +47,7 @@ public class UserConverterImpl implements UserConverter {
         userDTO.setEmail(user.getEmail());
         userDTO.setPassword(user.getPassword());
         userDTO.setIsDeleted(user.getIsDeleted());
-        Role role = user.getRole();
-        if (Objects.isNull(role)) {
-            throw new RoleNotReceivedException(String.format("Couldn't receive the role from the database for the user" +
-                    " with id = %d", user.getId()));
-        }
+        Role role = getRole(user);
         RoleEnum roleEnum = role.getName();
         String roleName = roleEnum.name();
         RoleDTOEnum roleDTOEnum = RoleDTOEnum.valueOf(roleName);
@@ -65,11 +58,9 @@ public class UserConverterImpl implements UserConverter {
     @Override
     public UserDTO convertUserToUserDTOWithContacts(User user) {
         UserDTO userDTO = convertUserToUserDTO(user);
-        UserContacts contacts = user.getContacts();
-        if (!Objects.isNull(contacts)) {
-            userDTO.setAddress(contacts.getAddress());
-            userDTO.setPhoneNumber(contacts.getPhoneNumber());
-        }
+        UserContacts contacts = getUserContacts(user);
+        userDTO.setAddress(contacts.getAddress());
+        userDTO.setPhoneNumber(contacts.getPhoneNumber());
         return userDTO;
     }
 
