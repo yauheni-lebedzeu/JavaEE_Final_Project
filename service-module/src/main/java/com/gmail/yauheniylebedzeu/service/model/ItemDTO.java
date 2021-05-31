@@ -1,10 +1,13 @@
 package com.gmail.yauheniylebedzeu.service.model;
 
+import com.gmail.yauheniylebedzeu.service.constant.ValidationConstant;
 import lombok.Data;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -40,4 +43,10 @@ public class ItemDTO {
     @Digits(integer = COUNT_OF_INTEGERS_IN_PRICE, fraction = COUNT_OF_FRACTIONS_IN_PRICE,
             message = "The price of the item must contain no more than {integer} integers and no more than {fraction} fractions!")
     private BigDecimal price;
+
+    @NotNull(message = "This field cannot be empty!")
+    @Min(value = ValidationConstant.MIN_ITEM_QUANTITY_IN_STOCK, message = "Minimum allowed quantity is {value}!")
+    @Max(value = ValidationConstant.MAX_ITEM_QUANTITY_IN_STOCK, message = "Maximum allowed quantity is {value}!")
+    private Integer quantityInStock;
+    private Boolean isDeleted;
 }

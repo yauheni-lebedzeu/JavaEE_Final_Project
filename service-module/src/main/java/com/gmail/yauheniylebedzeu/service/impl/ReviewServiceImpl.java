@@ -6,7 +6,7 @@ import com.gmail.yauheniylebedzeu.repository.model.User;
 import com.gmail.yauheniylebedzeu.service.ReviewService;
 import com.gmail.yauheniylebedzeu.service.UserService;
 import com.gmail.yauheniylebedzeu.service.converter.ReviewConverter;
-import com.gmail.yauheniylebedzeu.service.exception.ReviewNotFoundException;
+import com.gmail.yauheniylebedzeu.service.exception.ReviewNotFoundModuleException;
 import com.gmail.yauheniylebedzeu.service.model.PageDTO;
 import com.gmail.yauheniylebedzeu.service.model.ReviewDTO;
 import lombok.AllArgsConstructor;
@@ -108,7 +108,7 @@ public class ReviewServiceImpl implements ReviewService {
         if (optionalReview.isPresent()) {
             return optionalReview.get();
         } else {
-            throw new ReviewNotFoundException(String.format("Review with uuid %s was not found", reviewUuid));
+            throw new ReviewNotFoundModuleException(String.format("Review with uuid %s was not found", reviewUuid));
         }
     }
 

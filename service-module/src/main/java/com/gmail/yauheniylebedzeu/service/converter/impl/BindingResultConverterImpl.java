@@ -25,13 +25,7 @@ public class BindingResultConverterImpl implements BindingResultConverter {
         for (FieldError fieldError : fieldErrors) {
             String fieldName = fieldError.getField();
             String errorMessage = messageSource.getMessage(fieldError, Locale.ENGLISH);
-            if (errors.isContainError(fieldName)) {
-                errors.addErrorMessage(fieldName, errorMessage);
-            } else {
-                ArrayList<String> errorMessages = new ArrayList<>();
-                errorMessages.add(errorMessage);
-                errors.addError(fieldName, errorMessages);
-            }
+            errors.addErrorMessage(fieldName, errorMessage);
         }
         return errors;
     }

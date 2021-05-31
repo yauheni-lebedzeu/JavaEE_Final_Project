@@ -5,7 +5,9 @@ import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static com.gmail.yauheniylebedzeu.service.constant.ValidationConstant.MAX_LENGTH_OF_ARTICLE_CONTENT;
@@ -40,5 +42,9 @@ public class ArticleDTO {
     private Boolean isAuthorDeleted;
 
     @ToString.Exclude
-    private Set<CommentDTO> comments = new HashSet<>();
+    private List<CommentDTO> comments = new ArrayList<>();
+
+    public void addComments(List<CommentDTO> comments) {
+        this.comments.addAll(comments);
+    }
 }

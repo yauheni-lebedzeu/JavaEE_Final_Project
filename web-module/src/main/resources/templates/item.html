@@ -2,31 +2,53 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
     <title th:text="${item.name}">Item</title>
 </head>
 <body>
-<div align="center">
-    <table border="1">
+<header th:include="fragments/header::header"></header>
+<h1 style="margin-top: 2%" align="center" th:text="${item.name}">Item name</h1>
+<div class="container text-center" style="margin-top: 3%">
+    <table class="table" style="margin-top: 3%; table-layout: fixed">
         <thead>
         <tr>
-            <th>Name</th>
             <th>Unique number</th>
             <th>Price</th>
             <th>Description</th>
+            <th th:if="${role.equals('CUSTOMER_USER')}">Add to the cart</th>
+            <th th:if="${role.equals('SALE_USER')}">Info</th>
         </tr>
         </thead>
         <tbody>
         <tr>
-            <td width="15%" th:text="${item.name}">Name</td>
-            <td width="10%" th:text="${item.uniqueNumber}">Number</td>
-            <td width="10%" th:text="'$' + ${item.price}">Price</td>
-            <td width="30%">
-                <pre th:text="${item.description}">Description</pre>
+            <td th:text="${item.uniqueNumber}">Number</td>
+            <td th:text="'$' + ${item.price}">Price</td>
+            <td>
+                <pre style="white-space:pre-wrap; word-break: break-word"
+                     th:text="${item.description}">Description</pre>
+            </td>
+            <td th:if="${role.equals('CUSTOMER_USER')}">
+                <form th:unless="${item.isDeleted}" action=#
+                      th:action="@{/customer/cart/add/{itemUuid}/item(itemUuid = ${item.uuid})}"
+                      method="post">
+                    <button class="btn btn-warning" type="submit">Add</button>
+                </form>
+                <span th:if="${item.isDeleted}" style="color: red"><b>The item is not available for order</b></span>
+                <span th:if="${item.getQuantityInStock} == 0" th:unless="${item.isDeleted}">
+                    <b style="color: red">The item is out of stock</b>
+                </span>
+            </td>
+            <td th:if="${role.equals('SALE_USER')}">
+                <span th:if="${item.isDeleted}" style="color: red"><b>Deleted</b></span>
+                <span th:unless="${item.isDeleted}">
+                    <span>Stock balance is </span>
+                    <b th:text="${item.quantityInStock}"></b><span> pcs.</span>
+                </span>
             </td>
         </tr>
         </tbody>
     </table>
-    <h3><a th:href="@{'/items?pageNumber=' + ${page}}">Go to the list of items</a></h3>
 </div>
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
 </body>
 </html>

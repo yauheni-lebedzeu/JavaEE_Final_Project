@@ -2,34 +2,40 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Editor</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
+    <title>Article editor</title>
 </head>
 <body>
+<header th:include="fragments/header::header"></header>
 <div align="center">
     <h1>Editing the article</h1>
-    <form action="#" th:action="@{/seller/articles/edit}" th:object="${articleDTO}" method="post">
-        <label for="title">Title</label><br>
+    <form style="margin-top: 2%" class="form-text" action="#" th:action="@{/seller/articles/edit}" th:object="${articleDTO}" method="post">
+        <label for="title"><h4>Title</h4></label><br>
         <input th:field="*{title}" id="title" type="text" minlength="3" maxlength="50"
-               title="An article title must be between 3 and 50 characters long" th:placeholder="${articleDTO.title}"/><br>
+               title="An article title must be between 3 and 50 characters long"
+               th:placeholder="${articleDTO.title}"/><br>
         <p style="color: red; white-space: pre" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Title
             errors</p><br>
-        <label for="synopsis">Synopsis</label><br>
-        <textarea th:field="*{synopsis}" id="synopsis" rows="4" cols="50"
+        <label for="synopsis"><h4>Synopsis</h4></label><br>
+        <textarea th:field="*{synopsis}" id="synopsis" rows="3" cols="77"
                   th:placeholder="${articleDTO.synopsis}"
                   title="An article synopsis must be between 3 and 50 characters long">
             </textarea><br>
         <p style="color: red; white-space: pre" th:if="${#fields.hasErrors('synopsis')}" th:errors="*{synopsis}">
-            Synopsis errors</p><br>
-        <label for="content">Article text</label><br>
-        <textarea th:field="*{content}" id="content" rows="20" cols="50"
+            Synopsis errors</p>
+        <label for="content"><h4>Text</h4></label><br>
+        <textarea th:field="*{content}" id="content" rows="13" cols="77"
                   th:placeholder="${articleDTO.content}"
                   title="An article text must be between 100 and 1000 characters long">
         </textarea>
         <p style="color: red; white-space: pre" th:if="${#fields.hasErrors('content')}" th:errors="*{content}">Content
             errors</p><br>
         <input type="hidden" name="uuid" th:value="${articleDTO.uuid}">
-        <input type="submit" value="Save"><input type="reset" value="Reset">
+        <input class="btn btn-warning" type="submit" value="Save"/>
+        <span> </span>
+        <input class="btn btn-warning" type="reset" value="Reset"/>
     </form>
 </div>
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
 </body>
 </html>

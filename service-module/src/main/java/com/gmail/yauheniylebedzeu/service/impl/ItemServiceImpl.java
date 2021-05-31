@@ -2,10 +2,9 @@ package com.gmail.yauheniylebedzeu.service.impl;
 
 import com.gmail.yauheniylebedzeu.repository.ItemRepository;
 import com.gmail.yauheniylebedzeu.repository.model.Item;
-import com.gmail.yauheniylebedzeu.repository.model.ItemDescription;
 import com.gmail.yauheniylebedzeu.service.ItemService;
 import com.gmail.yauheniylebedzeu.service.converter.ItemConverter;
-import com.gmail.yauheniylebedzeu.service.exception.ItemNotFoundException;
+import com.gmail.yauheniylebedzeu.service.exception.ItemNotFoundModuleException;
 import com.gmail.yauheniylebedzeu.service.model.ItemDTO;
 import com.gmail.yauheniylebedzeu.service.model.PageDTO;
 import lombok.AllArgsConstructor;
@@ -15,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static com.gmail.yauheniylebedzeu.service.util.EntitiesServiceUtil.getItemDescription;
 import static com.gmail.yauheniylebedzeu.service.util.ServiceUtil.checkPageNumber;
 import static com.gmail.yauheniylebedzeu.service.util.ServiceUtil.getCountOfPages;
 import static com.gmail.yauheniylebedzeu.service.util.ServiceUtil.getStartPosition;
@@ -55,6 +53,7 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public void removeByUuid(String uuid) {
         Item item = getSafeItem(uuid);
+
         itemRepository.remove(item);
 
     }
@@ -77,32 +76,38 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public ItemDTO replicate(String uuid) {
-        Item item = getSafeItem(uuid);
-        Item itemCopy = getItemCopy(item);
+        Item copiedItem = getSafeItem(uuid);
+        copiedItem.incrementCopyNumber();
+        itemRepository.merge(copiedItem);
+        Item itemCopy = getSafeItem(uuid);
+        itemRepository.detach(itemCopy);
+        String name = itemCopy.getName();
+        String copyName = name + "[" + copiedItem.getCopyNumber() + "]";
+        itemCopy.setName(copyName);
+        itemCopy.setCopyNumber(0);
+        itemCopy.setId(null);
+        itemCopy.setUuid(null);
         itemRepository.persist(itemCopy);
-        return itemConverter.convertItemToItemDTO(item);
+        return itemConverter.convertItemToItemDTO(itemCopy);
     }
 
     @Override
     @Transactional
-    public Item getSafeItem(String userUuid) {
-        Optional<Item> optionalItem = itemRepository.findByUuid(userUuid);
+    public Item getSafeItem(String itemUuid) {
+        Optional<Item> optionalItem = itemRepository.findByUuid(itemUuid);
         if (optionalItem.isPresent()) {
             return optionalItem.get();
         } else {
-            throw new ItemNotFoundException(String.format("An item with uuid %s was not found", userUuid));
+            throw new ItemNotFoundModuleException(String.format("An item with uuid %s was not found", itemUuid));
         }
     }
 
-    private Item getItemCopy(Item item) {
-        Item itemCopy = new Item();
-        itemCopy.setName(item.getName());
-        ItemDescription itemDescription = getItemDescription(item);
-        ItemDescription copyItemDescription = new ItemDescription();
-        copyItemDescription.setDescription(itemDescription.getDescription());
-        copyItemDescription.setItem(itemCopy);
-        itemCopy.setItemDescription(copyItemDescription);
-        itemCopy.setPrice(item.getPrice());
-        return itemCopy;
+    @Override
+    @Transactional
+    public ItemDTO restore(String itemUuid) {
+        Item item = getSafeItem(itemUuid);
+        item.setIsDeleted(false);
+        itemRepository.merge(item);
+        return itemConverter.convertItemToItemDTO(item);
     }
 }

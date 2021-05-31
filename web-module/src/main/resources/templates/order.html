@@ -2,27 +2,45 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet"/>
     <title th:text="'Order # ' + ${order.orderNumber}">Order</title>
 </head>
 <body>
-<div align="center">
-    <h1 th:text="'Order # ' + ${order.orderNumber}"></h1>
-    <form action="#" th:action="@{/seller/orders/{orderUuid}/change(orderUuid = ${order.uuid})}" method="post">
-        <table border="1">
+<header th:include="fragments/header::header"></header>
+<div class="container" style="margin: auto">
+    <h1 style="margin-top: 2%" th:text="'Order # ' + ${order.orderNumber}"></h1>
+    <form style="margin-top: 1%" action="#" th:action="@{/seller/orders/{orderUuid}/change(orderUuid = ${order.uuid})}"
+          method="post">
+        <table class="table table-borderless" style="table-layout: fixed; width: 80%">
             <thead>
             <tr>
-                <th>
-                    <span th:text="'Order number: ' + ${order.orderNumber} +
-                            ' | Date: ' + ${order.orderDateTime} +
-                            ' | Status: ' + ${order.status.description}">
-                    </span>
+                <th style="text-align: center">
+                    <span>Number: </span>
+                    <b th:text="${order.orderNumber}"></b>
+                    <span> || Date: </span>
+                    <i th:text="${order.orderDateTime}"></i>
+                    <span> || Status: </span>
+                    <b th:text="${order.status.description}"></b>
+                    <div th:unless="${order.status.name()} == 'REJECTED' or ${order.status.name()} == 'DELIVERED'">
+                        <span>
+                            <select class="form-select-sm" name="newStatus">
+                                <option th:unless="${order.status.name() == 'IN_PROGRESS'}" value="IN_PROGRESS">In progress</option>
+                                <option value="DELIVERED">Delivered</option>
+                                <option value="REJECTED">Rejected</option>
+                            </select>
+                        </span>
+                        <button class="btn btn-warning" type="submit">Change</button>
+                    </div>
+                </th>
+                <th style="text-align: center; font-size: large">
+                    <b style="padding-bottom: 0">Customer Info</b>
                 </th>
             </tr>
             </thead>
             <tbody>
             <tr>
                 <td>
-                    <table align="center" border="1">
+                    <table class="table table-bordered" style="table-layout: fixed">
                         <thead>
                         <tr>
                             <th>Item</th>
@@ -38,28 +56,18 @@
                                    th:text="${orderDetail.itemName}">Item name</a>
                             </td>
                             <td th:text="'$' + ${orderDetail.price}">Price</td>
-                            <td align="center" th:text="${orderDetail.quantity}">Quantity</td>
+                            <td style="text-align: center" th:text="${orderDetail.quantity}">Quantity</td>
                             <td th:text="'$' + ${orderDetail.amount}">Amount</td>
                         </tr>
                         </tbody>
                     </table>
-                    <div th:unless="${order.status.name()} == 'REJECTED' or ${order.status.name()} == 'DELIVERED'"
-                         align="center">
-                        <span>
-                            <select name="newStatus">
-                                <option th:disabled="${order.status.name() == 'IN_PROGRESS'}" value="IN_PROGRESS">In progress</option>
-                                <option value="DELIVERED">Delivered</option>
-                                <option value="REJECTED">Rejected</option>
-                            </select>
-                        </span>
-                        <input type="submit" value="Change status"/>
-                    </div>
                 </td>
-            </tr>
-            <tr>
-                <td>
-                    <h3 align="center">Customer Info</h3>
-                    <p><span><b>Full name:</b></span> <span th:text="${order.customerFullName}">User name</span></p>
+                <td style="text-align: center">
+                    <p>
+                        <span><b>Full name: </b></span>
+                        <span th:text="${order.customerFullName}">User name</span>
+                        <span th:if="${order.isCustomerDeleted}"><i style="color: red"> (deleted)</i></span><br>
+                    </p>
                     <p>
                         <span><b>Address:</b></span>
                         <span th:unless="${order.customerAddress == null or order.customerAddress.isEmpty()}"
@@ -70,19 +78,24 @@
                         <span><b>Phone number:</b></span>
                         <span th:unless="${order.customerPhoneNumber == null or order.customerPhoneNumber.isEmpty()}"
                               th:text="${order.customerPhoneNumber}">Phone number</span>
-                        <span th:if="${order.customerPhoneNumber == null or order.customerPhoneNumber.isEmpty()}"><i>&lt;not specified&gt;</i></span>
+                        <span th:if="${order.customerPhoneNumber == null or order.customerPhoneNumber.isEmpty()}">
+                            <i>&lt;not specified&gt;</i></span>
                     </p>
-                    <p><span><b>Email:</b></span><span th:text="${order.customerEmail}">User email</span></p>
+                    <span><b>Email: </b></span><span th:text="${order.customerEmail}">User email</span>
                 </td>
             </tr>
             <tr>
-                <td th:text="'Total quantity: ' + ${order.totalQuantity} +
-                     ' | Total amount: $' + ${order.totalAmount}">Total
+                <td style="padding-top: 0; text-align: center">
+                    <span>Total quantity: </span>
+                    <b th:text="${order.totalQuantity}"></b>
+                    <span>Total amount: </span>
+                    <b th:text="'$' + ${order.totalAmount}"></b>
                 </td>
             </tr>
             </tbody>
         </table>
     </form>
 </div>
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
 </body>
 </html>

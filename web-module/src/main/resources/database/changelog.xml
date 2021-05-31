@@ -203,6 +203,15 @@
             <column name="price" type="DECIMAL(7,2)">
                 <constraints nullable="false"/>
             </column>
+            <column name="quantity" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="copy_number" type="INTEGER" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_deleted" type="BOOL" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
 
@@ -213,6 +222,9 @@
                              references="item(id)" nullable="false"/>
             </column>
             <column name="description" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_deleted" type="BOOL" defaultValue="false">
                 <constraints nullable="false"/>
             </column>
         </createTable>

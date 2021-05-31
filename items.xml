@@ -1,0 +1,20 @@
+<ArrayList>
+    <item>
+        <name>Ghhhh</name>
+        <description>descr</description>
+        <price>1.00</price>
+        <quantityInStock>99</quantityInStock>
+    </item>
+    <item>
+        <name>name2</name>
+        <description>description2</description>
+        <price>0.77</price>
+        <quantityInStock>59</quantityInStock>
+    </item>
+    <item>
+        <name>Item456</name>
+        <description>rthrthtrhtrh</description>
+        <price>1000.50</price>
+        <quantityInStock>99</quantityInStock>
+    </item>
+</ArrayList>

@@ -20,5 +20,7 @@ public interface ItemService {
 
     ItemDTO replicate(String uuid);
 
-    Item getSafeItem(String userUuid);
+    Item getSafeItem(String itemUuid);
+
+    ItemDTO restore(String itemUuid);
 }

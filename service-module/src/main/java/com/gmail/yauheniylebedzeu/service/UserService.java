@@ -28,4 +28,6 @@ public interface UserService {
     List<UserDTO> findAll();
 
     User getSafeUser(String userUuid);
+
+    UserDTO restore(String userUuid);
 }

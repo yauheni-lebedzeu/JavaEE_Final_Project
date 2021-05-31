@@ -2,73 +2,86 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${article.title}">Title</title>
+    <title>Reviews</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
 </head>
 <body>
-<div align="center">
-    <table width="80%" border="1">
-        <tbody>
+<header th:include="fragments/header::header"></header>
+<div class="container text-center">
+    <table class="table" style="margin-top: 3%; table-layout: fixed">
         <tr>
             <td>
-                <p th:text="${article.additionDateTime}">Date</p>
-                <p th:text="${article.title}">Article title</p>
-                <p>
-                    <pre style="white-space: pre-wrap" th:text="${article.content}">Content</pre>
-                </p>
-                <span th:text="${article.firstAndLastName}">Author</span><br>
-                <span th:if="${article.isAuthorDeleted}"><i>deleted</i></span>
+                <h1 style="font-family: 'Comic Sans MS',serif" th:text="${article.title}"></h1>
             </td>
         </tr>
-        </tbody>
+        <tr>
+            <td align="justify">
+                <pre style="white-space:pre-wrap; word-break: break-word"
+                     th:text="${article.content}">Content</pre>
+                <span th:text="${article.firstAndLastName}">Author</span>
+                <span th:if="${article.isAuthorDeleted}"><i style="color: red"> (deleted)</i></span><br>
+                <i th:text="${article.additionDateTime}">Date</i>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <form th:if="${role} == 'SALE_USER'" action=#
+                      th:action="@{/seller/articles/{articleUuid}/edit(articleUuid = ${article.uuid})}"
+                      method="get">
+                    <button class="btn btn-primary" type="submit">Edit the article</button>
+                </form>
+            </td>
+        </tr>
     </table>
-    <form th:if="${role} == 'SALE_USER'" action=#
-          th:action="@{/seller/articles/{articleUuid}/edit(articleUuid = ${article.uuid})}"
-          method="get">
-        <button type="submit">Edit the article</button>
-    </form>
-    <div th:if="${article.comments.isEmpty()}"><h2>There are no comments here yet</h2></div>
-    <div th:if="${role} == 'CUSTOMER_USER'">
-        <form action="#" th:action="@{/customer/articles/{articleUuid}/add/comments(articleUuid = ${article.uuid})}"
-              th:object="${commentDTO}"
-              method="post">
-            <label for="content"><h3>Leave a comment</h3></label>
-            <textarea th:field="*{content}" id="content" rows="5" cols="40"
-                      placeholder="Enter a text of a comment..."
-                      title="A comment text must be between 3 and 200 characters long">
+    <div style="display: flex; justify-content: space-around">
+        <div th:unless="${article.comments.isEmpty()}">
+            <form class="form-check-inline" action=#
+                  th:action="@{/seller/articles/{articleUuid}/comments/delete(articleUuid=${article.uuid})}"
+                  method="post">
+                <table class="table table-striped" style="table-layout: fixed">
+                    <thead>
+                    <tr style="text-align: center">
+                        <th><h3><b>Comments</b></h3></th>
+                        <th th:if="${role} == 'SALE_USER'"><h6 style="color: red">Check for deletion</h6></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="comment : ${article.comments}">
+                        <td align="justify">
+                        <pre style="white-space:pre-wrap; word-break: break-word"
+                             th:text="${comment.content}">Content</pre>
+                            <span th:text="${comment.firstAndLastName}">Author</span>
+                            <span th:if="${article.isAuthorDeleted}"><i style="color: red"> (deleted)</i></span><br>
+                            <i th:text="${comment.additionDateTime}">Date</i>
+                        </td>
+                        <td th:if="${role} == 'SALE_USER'" align="center">
+                            <input type="checkbox" name="commentUuids" th:value="${comment.uuid}"/>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p th:if="${role} == 'SALE_USER'">
+                    <input class="btn btn-danger" type="submit" value="Delete"/>
+                </p>
+            </form>
+        </div>
+        <div style="margin-top: 1.1%" th:if="${role} == 'CUSTOMER_USER'">
+            <form action="#" th:action="@{/customer/articles/{articleUuid}/add/comments(articleUuid = ${article.uuid})}"
+                  th:object="${commentDTO}"
+                  method="post">
+                <label for="content"><h3>Leave a comment</h3></label><br>
+                <textarea th:field="*{content}" id="content" rows="3" cols="67"
+                          placeholder="Enter a text of a comment..."
+                          title="A comment text must be between 3 and 200 characters long" required>
             </textarea>
-            <p style="color: red; white-space: pre" th:if="${#fields.hasErrors('content')}" th:errors="*{content}">
-                Content errors</p><br>
-            <input type="submit" value="Leave"><input type="reset" value="Reset">
-        </form>
-    </div>
-    <div th:unless="${article.comments.isEmpty()}">
-        <form action=# th:action="@{/seller/articles/{articleUuid}/comments/delete(articleUuid=${article.uuid})}"
-              method="post">
-            <table>
-                <thead>
-                <tr>
-                    <th><h2>Comments</h2></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="comment : ${article.comments}">
-                    <td>
-                        <span th:text="${comment.firstAndLastName}">Author</span><br>
-                        <span th:if="${article.isAuthorDeleted}"> <i>&lt;deleted&gt;</i></span>
-                        <p th:text="${comment.additionDateTime}">Date</p>
-                        <p th:text="${comment.content}">Content</p>
-                    </td>
-                    <td th:if="${role} == 'SALE_USER'" align="center">
-                        <input type="checkbox" name="commentUuids" th:value="${comment.uuid}"/>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            <p th:if="${role} == 'SALE_USER'">
-                <input type="submit" value="Delete the comments"/>
-            </p>
-        </form>
+                <p style="color: red; white-space: pre" th:if="${#fields.hasErrors('content')}" th:errors="*{content}">
+                    Content errors</p><br>
+                <input class="btn btn-warning" type="submit" value="Leave"><span> </span>
+                <input class="btn btn-warning" type="reset" value="Reset">
+            </form>
+        </div>
     </div>
 </div>
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
 </body>
 </html>

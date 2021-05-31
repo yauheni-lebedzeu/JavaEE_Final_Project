@@ -2,30 +2,41 @@ package com.gmail.yauheniylebedzeu.service.converter.impl;
 
 import com.gmail.yauheniylebedzeu.repository.model.Review;
 import com.gmail.yauheniylebedzeu.repository.model.User;
-import com.gmail.yauheniylebedzeu.service.exception.UserNotReceivedException;
+import com.gmail.yauheniylebedzeu.service.converter.ReviewConverter;
 import com.gmail.yauheniylebedzeu.service.model.ReviewDTO;
 import com.gmail.yauheniylebedzeu.service.util.ServiceUtil;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
+import static com.gmail.yauheniylebedzeu.service.util.ServiceUtil.getFullName;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ReviewConverterImplTest {
 
-    private final ReviewConverterImpl reviewConverter = new ReviewConverterImpl();
+    private final ReviewConverter reviewConverter;
+
+    ReviewConverterImplTest() {
+        reviewConverter = new ReviewConverterImpl();
+    }
 
     @Test
     void shouldConvertReviewDTOToReviewAndGetNotNullObject() {
         ReviewDTO reviewDTO = new ReviewDTO();
         Review review = reviewConverter.convertReviewDTOToReview(reviewDTO);
         assertNotNull(review);
+    }
+
+    @Test
+    void shouldConvertReviewDTOToReviewAndGetRightAdditionDateTime() {
+        ReviewDTO reviewDTO = new ReviewDTO();
+        LocalDateTime dateTime = LocalDateTime.now();
+        Review review = reviewConverter.convertReviewDTOToReview(reviewDTO);
+        assertEquals(dateTime, review.getAdditionDateTime());
     }
 
     @Test
@@ -42,13 +53,6 @@ class ReviewConverterImplTest {
         Review review = getTestReviewWithUser();
         ReviewDTO reviewDTO = reviewConverter.convertReviewToReviewDTO(review);
         assertNotNull(reviewDTO);
-    }
-
-    @Test
-    void shouldConvertReviewWithoutUserToReviewDTO() {
-        Review review = getTestReviewWithUser();
-        review.setUser(null);
-        Assertions.assertThrows(UserNotReceivedException.class, () -> reviewConverter.convertReviewToReviewDTO(review));
     }
 
     @Test
@@ -89,22 +93,27 @@ class ReviewConverterImplTest {
     @Test
     void shouldConvertReviewToReviewDTOAndGetRightIsVisible() {
         Review review = getTestReviewWithUser();
-        Boolean isVisible = true;
-        review.setIsVisible(isVisible);
+        review.setIsVisible(true);
         ReviewDTO reviewDTO = reviewConverter.convertReviewToReviewDTO(review);
-        assertEquals(isVisible, reviewDTO.getIsVisible());
+        assertEquals(true, reviewDTO.getIsVisible());
     }
 
     @Test
     void shouldConvertReviewToReviewDTOAndGetRightUserFullName() {
         Review review = getTestReviewWithUser();
         User user = review.getUser();
-        String firstName = user.getFirstName();
-        String lastName = user.getLastName();
-        String patronymic = user.getPatronymic();
-        String fullName = lastName + " " + firstName + " " + patronymic;
+        String fullName = getFullName(user);
         ReviewDTO reviewDTO = reviewConverter.convertReviewToReviewDTO(review);
         assertEquals(fullName, reviewDTO.getFullName());
+    }
+
+    @Test
+    void shouldConvertReviewToReviewDTOAndGetRightIsAuthorDeleted() {
+        Review review = getTestReviewWithUser();
+        User user = review.getUser();
+        user.setIsDeleted(true);
+        ReviewDTO reviewDTO = reviewConverter.convertReviewToReviewDTO(review);
+        assertEquals(true, reviewDTO.getIsAuthorDeleted());
     }
 
     @Test
@@ -115,11 +124,11 @@ class ReviewConverterImplTest {
     }
 
     @Test
-    void shouldConvertReviewListToReviewDTOList() {
+    void shouldConvertNotEmptyReviewListToReviewDTOList() {
         Review review = getTestReviewWithUser();
         List<Review> reviews = Collections.singletonList(review);
         List<ReviewDTO> reviewDTOs = reviewConverter.convertReviewListToReviewDTOList(reviews);
-        assertEquals(1, reviewDTOs.size());
+        assertEquals(reviews.size(), reviewDTOs.size());
     }
 
     private Review getTestReviewWithUser() {

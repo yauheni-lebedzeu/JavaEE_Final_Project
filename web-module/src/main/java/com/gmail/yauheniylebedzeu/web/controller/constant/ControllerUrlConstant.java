@@ -27,4 +27,6 @@ public interface ControllerUrlConstant {
     String ACTUATOR_CONTROLLER_URL = "/actuator";
     String COMMENTS_CONTROLLER_URL = "/comments";
     String EDIT_CONTROLLER_URL = "/edit";
+    String UPLOAD_CONTROLLER_URL = "/upload";
+    String RESTORE_CONTROLLER_URL = "/restore";
 }

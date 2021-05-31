@@ -24,7 +24,7 @@ public class CartConverterImpl implements CartConverter {
     @Override
     public CartDTO convertCartToCartDTO(Set<CartDetail> cart) {
         CartDTO cartDTO = new CartDTO();
-        BigDecimal totalAmount = new BigDecimal("0");
+        BigDecimal totalAmount = BigDecimal.ZERO;
         Integer totalQuantity = 0;
         for (CartDetail cartDetail : cart) {
             CartDetailDTO cartDetailDTO = convertCartDetailToCartDetailDTO(cartDetail);
@@ -46,6 +46,7 @@ public class CartConverterImpl implements CartConverter {
         BigDecimal itemPrice = item.getPrice();
         BigDecimal amount = itemPrice.multiply(BigDecimal.valueOf(quantity));
         cartDetailDTO.setAmount(amount);
+        cartDetailDTO.setQuantityInStock(item.getQuantityInStock());
         ItemDTO itemDTO = itemConverter.convertItemToItemDTO(item);
         cartDetailDTO.setItem(itemDTO);
         return cartDetailDTO;
