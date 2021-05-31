@@ -19,6 +19,7 @@ public class ItemConverterImpl implements ItemConverter {
         Item item = new Item();
         item.setName(itemDTO.getName());
         item.setPrice(itemDTO.getPrice());
+        item.setQuantityInStock(itemDTO.getQuantityInStock());
         ItemDescription itemDescription = new ItemDescription();
         itemDescription.setDescription(itemDTO.getDescription());
         itemDescription.setItem(item);
@@ -33,6 +34,8 @@ public class ItemConverterImpl implements ItemConverter {
         itemDTO.setUuid(item.getUuid());
         itemDTO.setName(item.getName());
         itemDTO.setPrice(item.getPrice());
+        itemDTO.setQuantityInStock(item.getQuantityInStock());
+        itemDTO.setIsDeleted((item.getIsDeleted()));
         return itemDTO;
     }
 

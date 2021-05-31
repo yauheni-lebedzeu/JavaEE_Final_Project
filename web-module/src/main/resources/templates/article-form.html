@@ -2,11 +2,12 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Article publication</title>
+    <title>Article posting</title>
 </head>
 <body>
+<header th:include="fragments/header::header"></header>
 <div align="center">
-    <h1>Publish a new article</h1>
+    <h1>Post a new article</h1>
     <form action="#" th:action="@{/seller/articles/add}" th:object="${articleDTO}" method="post">
         <label for="title">Title</label><br>
         <input th:field="*{title}" id="title" type="text" minlength="3" maxlength="50"
@@ -27,9 +28,8 @@
         </textarea>
         <p style="color: red; white-space: pre" th:if="${#fields.hasErrors('content')}" th:errors="*{content}">Content
             errors</p><br>
-        <input type="submit" value="Publish"><input type="reset" value="Reset">
+        <input type="submit" value="Post"><input type="reset" value="Reset">
     </form>
-    <h3><a th:href="@{/articles}">Go back to the page of the news</a></h3>
 </div>
 </body>
 <footer>

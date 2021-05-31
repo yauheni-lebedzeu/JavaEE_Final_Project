@@ -15,6 +15,8 @@ public interface GenericRepository<I, T> {
 
     void merge(T entity);
 
+    void detach(T entity);
+
     List<T> findEntitiesWithLimits(int startPosition, int maxResult, String sortParameter);
 
     Long getCountOfEntities();

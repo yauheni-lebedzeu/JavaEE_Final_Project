@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet"/>
+    <title>Error</title>
+</head>
+<body>
+<header th:include="fragments/header::header"></header>
+<div class="text-center" style="margin-top: 10%">
+    <h1 style="font-size: 5em; color: red">Error</h1>
+    <h4><span>An error occurred when accessing the url "</span><span th:text="${uri}"></span><span>":</span></h4>
+    <h3 style="white-space: normal; color: red; text-decoration: underline" th:text="${errorMessage}"></h3>
+</div>
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
+</body>
+</html>

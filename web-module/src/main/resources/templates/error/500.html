@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet"/>
+    <title>500</title>
+</head>
+<body>
+<header th:include="fragments/header::header"></header>
+    <div style="color: red; margin-top: 10%" class="text-center">
+        <h1>Error 500</h1>
+        <h2>Something went wrong!</h2>
+        <h2>Our Engineers are on it...</h2>
+        <h2>Please, come back later.</h2>
+    </div>
+<script th:src="@{js/bootstrap.bundle.js}"></script>
+</body>
+</html>

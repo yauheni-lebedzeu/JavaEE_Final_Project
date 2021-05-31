@@ -24,6 +24,7 @@ public class OrderDTO {
     private String customerEmail;
     private String customerAddress;
     private String customerPhoneNumber;
+    private Boolean isCustomerDeleted;
 
     public void addOrderDetail(OrderDetailDTO orderDetail) {
         orderDetails.add(orderDetail);

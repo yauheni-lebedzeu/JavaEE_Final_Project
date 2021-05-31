@@ -1,6 +1,5 @@
 package com.gmail.yauheniylebedzeu.web.controller.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gmail.yauheniylebedzeu.service.enums.RoleDTOEnum;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import com.gmail.yauheniylebedzeu.web.configuration.BaseIntegrationTest;
@@ -22,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class UserAPIControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
-    @Sql(value = {"/scripts/clean.sql", "/scripts/init.sql"})
+    @Sql(scripts = {"/scripts/clean-order.sql", "/scripts/clean-article.sql", "/scripts/clean-user.sql", "/scripts/init-user.sql"})
     void shouldGetAllUsers() {
         HttpEntity<String> request = new HttpEntity<>(null, new HttpHeaders());
         ResponseEntity<List<UserDTO>> response = testRestTemplate.exchange(
@@ -41,8 +40,8 @@ public class UserAPIControllerIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    @Sql(value = {"/scripts/clean.sql"})
-    void shouldAddUser() throws JsonProcessingException {
+    @Sql(value = {"/scripts/clean-order.sql", "/scripts/clean-article.sql", "/scripts/clean-user.sql"})
+    void shouldAddUser() {
         UserDTO user = new UserDTO();
         user.setFirstName("FirstName");
         user.setLastName("LastName");

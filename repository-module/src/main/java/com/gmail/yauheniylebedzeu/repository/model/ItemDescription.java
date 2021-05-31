@@ -3,8 +3,10 @@ package com.gmail.yauheniylebedzeu.repository.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +19,8 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "item_description")
+@SQLDelete(sql = "UPDATE item_description SET is_deleted = 1 WHERE item_id = ?")
+@DynamicInsert
 @Data
 public class ItemDescription {
 
@@ -30,6 +34,9 @@ public class ItemDescription {
 
     @Column
     private String description;
+
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
 
     @OneToOne(fetch = FetchType.LAZY)
     @PrimaryKeyJoinColumn

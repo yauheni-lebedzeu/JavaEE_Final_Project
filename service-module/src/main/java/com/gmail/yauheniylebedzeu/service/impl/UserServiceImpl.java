@@ -9,9 +9,9 @@ import com.gmail.yauheniylebedzeu.repository.model.UserContacts;
 import com.gmail.yauheniylebedzeu.service.UserService;
 import com.gmail.yauheniylebedzeu.service.converter.UserConverter;
 import com.gmail.yauheniylebedzeu.service.enums.RoleDTOEnum;
-import com.gmail.yauheniylebedzeu.service.exception.RoleNotFoundException;
-import com.gmail.yauheniylebedzeu.service.exception.UserDeletedException;
-import com.gmail.yauheniylebedzeu.service.exception.UserNotFoundException;
+import com.gmail.yauheniylebedzeu.service.exception.RoleNotFoundModuleException;
+import com.gmail.yauheniylebedzeu.service.exception.UserDeletedModuleException;
+import com.gmail.yauheniylebedzeu.service.exception.UserNotFoundModuleException;
 import com.gmail.yauheniylebedzeu.service.generator.RandomPasswordGenerator;
 import com.gmail.yauheniylebedzeu.service.model.PageDTO;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
@@ -64,11 +64,11 @@ public class UserServiceImpl implements UserService {
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             if (user.getIsDeleted()) {
-                throw new UserDeletedException(String.format("User with email %s was deleted from database", email));
+                throw new UserDeletedModuleException(String.format("User with email %s was deleted from database", email));
             }
             return userConverter.convertUserToUserDTOWithContacts(user);
         } else {
-            throw new UserNotFoundException(String.format("User with email \"%s\" was not found in the database", email));
+            throw new UserNotFoundModuleException(String.format("User with email \"%s\" was not found in the database", email));
         }
     }
 
@@ -165,17 +165,26 @@ public class UserServiceImpl implements UserService {
         if (optionalUser.isPresent()) {
             return optionalUser.get();
         } else {
-            throw new UserNotFoundException(String.format("User with uuid %s was not found", userUuid));
+            throw new UserNotFoundModuleException(String.format("User with uuid %s was not found", userUuid));
         }
     }
 
-    private Role getSafeRole(String roleName) {
+    @Override
+    @Transactional
+    public UserDTO restore(String userUuid) {
+        User user = getSafeUser(userUuid);
+        user.setIsDeleted(false);
+        userRepository.merge(user);
+        return userConverter.convertUserToUserDTO(user);
+    }
+
+    protected Role getSafeRole(String roleName) {
         RoleEnum roleEnum = RoleEnum.valueOf(roleName);
         Optional<Role> optionalRole = roleRepository.findByName(roleEnum);
         if (optionalRole.isPresent()) {
             return optionalRole.get();
         } else {
-            throw new RoleNotFoundException(String.format("An unexpected error occurred while adding a user. Role" +
+            throw new RoleNotFoundModuleException(String.format("An unexpected error occurred while adding a user. Role" +
                     " named %s was not found", roleEnum.name()));
         }
     }

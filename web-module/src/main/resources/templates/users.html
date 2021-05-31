@@ -1,24 +1,28 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"/>
     <title>Users</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
 </head>
 <body>
-<div align="center">
-    <form action=# th:action="@{/admin/users/delete/{sourcePageNumber}(sourcePageNumber=${page.pageNumber})}" method="post"
+<header th:include="fragments/header::header"></header>
+<div class="container text-center">
+    <h1>Users</h1>
+    <form action=# th:action="@{/admin/users/delete/{sourcePageNumber}(sourcePageNumber=${page.pageNumber})}"
+          method="post"
           id="deletingForm"></form>
-    <table border="2">
+    <table class="table table-bordered table-striped">
         <thead>
         <tr>
             <th>Last name</th>
             <th>First name</th>
             <th>Patronymic</th>
             <th>Email</th>
-            <th>Change the password</th>
+            <th>Change password</th>
             <th>Role</th>
             <th>Change role</th>
-            <th>Check the box for deletion</th>
+            <th>Check for deletion</th>
         </tr>
         </thead>
         <tbody>
@@ -31,36 +35,48 @@
                 <form th:unless="${user.isDeleted}" action=#
                       th:action="@{/admin/users/change-password/{uuid}/{sourcePageNumber}(sourcePageNumber=${page.pageNumber}, uuid = ${user.uuid})}"
                       method="post">
-                    <button type="submit">Generate a new password</button>
+                    <button class="btn btn-primary" type="submit">Change</button>
                 </form>
+                <span style="color: red; font-size: large" th:if="${user.isDeleted}">User deleted</span>
             </td>
             <td th:text="${user.role.description}">Role</td>
-            <td align="center" th:unless="${email.equals(user.email)}">
-                <form th:unless="${user.isDeleted}" action=#
-                      th:action="@{/admin/users/change-role/{uuid}/{sourcePageNumber}(sourcePageNumber=${page.pageNumber}, uuid = ${user.uuid})}"
+            <td>
+                <form th:unless="${user.isDeleted or email.equals(user.email)}" action=#
+                      th:action="@{/admin/users/change-role/{uuid}/{sourcePageNumber}(sourcePageNumber=${page.pageNumber},
+                       uuid = ${user.uuid})}"
                       method="post">
                     <select name="roleName">
                         <option th:each="role : ${roles}" th:value="${role.name()}"
                                 th:unless="${user.role} == ${role}" th:text="${role.description}">Role
                         </option>
                     </select><br>
-                    <input type="submit" value="Change role"/>
+                    <input class="btn btn-primary" type="submit" value="Change role"/>
                 </form>
-            </td>
-            <td align="center">
-                <span th:unless="${email.equals(user.email) or user.isDeleted}">
-                    <input type="checkbox" name="uuids" th:value="${user.uuid}" form="deletingForm"/>
+                <span style="font-size: large">
+                    <span style="color: red" th:if="${user.isDeleted}">User deleted</span>
+                    <span style="color: blue" th:if="${email.equals(user.email)}">It's you!</span>
                 </span>
-                <span style="color: red" th:if="${user.isDeleted}">Deleted</span>
+            </td>
+            <td>
+                <span th:unless="${email.equals(user.email) or user.isDeleted}">
+                    <input type="checkbox" name="uuids"
+                           th:value="${user.uuid}" form="deletingForm"/>
+                </span>
+                <span th:if="${user.isDeleted}">
+                    <form action=#
+                          th:action="@{/admin/users/{userUuid}/restore(userUuid = ${user.uuid})}"
+                          method="post">
+                        <button class="btn btn-success" type="submit">Restore</button>
+                    </form>
+                </span>
             </td>
         </tr>
         </tbody>
     </table>
     <p th:if="${page.objects.size() > 1}">
-        <input type="submit" form="deletingForm" value="Delete checked users"/>
+        <input class="btn btn-danger" type="submit" form="deletingForm" value="Delete checked users"/>
     </p>
 </div>
-</body>
 <footer>
     <div align="center" th:if="${page.countOfPages>1}">
         <span style="white-space: nowrap;" th:each="i : ${#numbers.sequence(1,page.countOfPages)}">
@@ -71,6 +87,7 @@
         </span>
     </div>
     <h3 align="center" class="text-center"><a th:href="@{/admin/users/add}">Add new user</a></h3>
-    <h3 align="center" class="text-center"><a th:href="@{/main}">Go back to the main page</a></h3>
 </footer>
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
+</body>
 </html>

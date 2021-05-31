@@ -33,7 +33,7 @@ public class ArticleConverterImpl implements ArticleConverter {
         Article article = new Article();
         article.setTitle(articleDTO.getTitle());
         article.setSynopsis(articleDTO.getSynopsis());
-        article.setAdditionDateTime(LocalDateTime.now());
+        article.setAdditionDateTime(LocalDateTime.now().withNano(0));
         ArticleContent articleContent = new ArticleContent();
         articleContent.setContent(articleDTO.getContent());
         articleContent.setArticle(article);
@@ -65,11 +65,10 @@ public class ArticleConverterImpl implements ArticleConverter {
         articleDTO.setContent(articleContent.getContent());
         Set<Comment> comments = getComments(article);
         if (!comments.isEmpty()) {
-            Set<CommentDTO> commentDTOs = comments.stream()
+            List<CommentDTO> commentDTOs = comments.stream()
                     .map(commentConverter::convertCommentToCommentDTO)
-                    .collect(Collectors.toSet());
-            Set<CommentDTO> emptyCommentsDTOs = articleDTO.getComments();
-            emptyCommentsDTOs.addAll(commentDTOs);
+                    .collect(Collectors.toList());
+            articleDTO.addComments(commentDTOs);
         }
         return articleDTO;
     }

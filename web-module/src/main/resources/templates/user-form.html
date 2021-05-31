@@ -2,10 +2,13 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
     <title>Add new user</title>
 </head>
 <body>
+<header th:include="fragments/header::header"></header>
 <div align="center">
+    <h1>New user addition</h1>
     <form action="#" th:action="@{/admin/users/add}" th:object="${userDTO}" method="post">
         <label for="last_name">Last name</label><br>
         <input th:field="*{lastName}" id="last_name" type="text" pattern="^[A-Za-z]{1,40}+$"
@@ -25,8 +28,8 @@
                required/><br>
         <p style="color: red; white-space: pre" th:if="${#fields.hasErrors('patronymic')}" th:errors="*{patronymic}">
             Patronymic error</p>
-        <label for="roles">Roles</label><br>
-        <select th:field="*{role}" id="roles">
+        <label for="roles">Role</label><br>
+        <select class="form-select-sm" th:field="*{role}" id="roles">
             <option th:each="role : ${roles}" th:value="${role}"
                     th:text="${role.description}">Role
             </option>
@@ -49,9 +52,9 @@
                required/>
         <p style="color: red; white-space: pre" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
             Password errors</p><br>
-        <input type="submit" value="Add"><input type="reset" value="Reset">
+        <input class="btn btn-primary" type="submit" value="Add"><span> </span><input class="btn btn-primary" type="reset" value="Reset">
     </form>
-    <h3 class="text-center"><a th:href="@{/admin/users}">Go back to the list of users</a></h3>
 </div>
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
 </body>
 </html>

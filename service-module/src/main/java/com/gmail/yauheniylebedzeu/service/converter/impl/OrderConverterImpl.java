@@ -65,7 +65,7 @@ public class OrderConverterImpl implements OrderConverter {
         orderDTO.setStatus(orderStatusDTOEnum);
 
         int totalQuantity = 0;
-        BigDecimal totalAmount = new BigDecimal("0");
+        BigDecimal totalAmount = BigDecimal.ZERO;
         Set<OrderDetail> orderDetails = getOrderDetails(order);
         for (OrderDetail orderDetail : orderDetails) {
             OrderDetailDTO orderDetailDTO = covertOrderDetailToOrderDetailDTO(orderDetail);
@@ -88,6 +88,7 @@ public class OrderConverterImpl implements OrderConverter {
         orderDTO.setCustomerEmail(user.getEmail());
         String fullName = getFullName(user);
         orderDTO.setCustomerFullName(fullName);
+        orderDTO.setIsCustomerDeleted(user.getIsDeleted());
         return orderDTO;
     }
 

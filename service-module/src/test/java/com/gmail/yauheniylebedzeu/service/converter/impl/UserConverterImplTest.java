@@ -4,8 +4,7 @@ import com.gmail.yauheniylebedzeu.repository.enums.RoleEnum;
 import com.gmail.yauheniylebedzeu.repository.model.Role;
 import com.gmail.yauheniylebedzeu.repository.model.User;
 import com.gmail.yauheniylebedzeu.repository.model.UserContacts;
-import com.gmail.yauheniylebedzeu.service.exception.RoleNotReceivedException;
-import com.gmail.yauheniylebedzeu.service.exception.UserContactsNotReceivedException;
+import com.gmail.yauheniylebedzeu.service.converter.UserConverter;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import org.junit.jupiter.api.Test;
 
@@ -14,12 +13,15 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class UserConverterImplTest {
 
-    private final UserConverterImpl userConverter = new UserConverterImpl();
+    private final UserConverter userConverter;
+
+    UserConverterImplTest() {
+        userConverter = new UserConverterImpl();
+    }
 
     @Test
     void shouldConvertUserDTOToUserAndGetNotNullObject() {
@@ -74,16 +76,35 @@ class UserConverterImplTest {
     }
 
     @Test
+    void shouldConvertUserDTOToUserAndReturnNotNullContacts() {
+        UserDTO userDTO = new UserDTO();
+        User user = userConverter.convertUserDTOToUser(userDTO);
+        assertNotNull(user.getContacts());
+    }
+
+    @Test
+    void shouldConvertUserDTOToUserAndReturnRightAddress() {
+        UserDTO userDTO = new UserDTO();
+        String address = "test address";
+        userDTO.setAddress(address);
+        User user = userConverter.convertUserDTOToUser(userDTO);
+        assertEquals(address, user.getContacts().getAddress());
+    }
+
+    @Test
+    void shouldConvertUserDTOToUserAndReturnRightPhoneNumber() {
+        UserDTO userDTO = new UserDTO();
+        String phoneNumber = "11111111111";
+        userDTO.setPhoneNumber(phoneNumber);
+        User user = userConverter.convertUserDTOToUser(userDTO);
+        assertEquals(phoneNumber, user.getContacts().getPhoneNumber());
+    }
+
+    @Test
     void shouldConvertUserToUserDTOAndGetNotNullObject() {
         User user = getTestUserWithValidRole();
         UserDTO userDTO = userConverter.convertUserToUserDTO(user);
         assertNotNull(userDTO);
-    }
-
-    @Test
-    void shouldConvertUserWithoutRoleToUserDTO() {
-        User user = new User();
-        assertThrows(RoleNotReceivedException.class, () -> userConverter.convertUserToUserDTO(user));
     }
 
     @Test
@@ -152,10 +173,9 @@ class UserConverterImplTest {
     @Test
     void shouldConvertUserToUserDTOAndReturnRightIsDeleted() {
         User user = getTestUserWithValidRole();
-        Boolean isDeleted = false;
-        user.setIsDeleted(isDeleted);
+        user.setIsDeleted(false);
         UserDTO userDTO = userConverter.convertUserToUserDTO(user);
-        assertEquals(isDeleted, userDTO.getIsDeleted());
+        assertEquals(false, userDTO.getIsDeleted());
     }
 
     @Test
@@ -166,12 +186,6 @@ class UserConverterImplTest {
         RoleEnum roleEnum = role.getName();
         String stringRoleEnum = roleEnum.name();
         assertEquals(stringRoleEnum, userDTO.getRole().name());
-    }
-
-    @Test
-    void shouldConvertUserToUserDTOWithContactsAndGetNullContacts() {
-        User user = getTestUserWithValidRole();
-        assertThrows(UserContactsNotReceivedException.class, () -> userConverter.convertUserToUserDTOWithContacts(user));
     }
 
     @Test

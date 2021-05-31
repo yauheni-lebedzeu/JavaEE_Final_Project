@@ -2,61 +2,75 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet"/>
     <title>Cart</title>
 </head>
 <body>
-<h1 align="center">Your cart</h1>
-<div align="center" th:if="${cart.cartDetails.isEmpty()}">
-    <h2>You don't have any items in your cart yet</h2>
-</div>
-<div align="center" th:unless="${cart.cartDetails.isEmpty()}">
-    <table border="1">
-        <thead>
-        <tr>
-            <th>Item</th>
-            <th>Quantity</th>
-            <th>Amount</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="cartDetail : ${cart.cartDetails}">
-            <td align="left">
-                <p>
-                    <a th:href="@{/items/{uuid}/1(uuid = ${cartDetail.item.uuid})}" th:text="${cartDetail.item.name}">Item
+<header th:include="fragments/header::header"></header>
+<div class="container text-center" style="width: 80%">
+    <h1 style="margin-top: 3%">Your cart</h1>
+    <div style="margin-top: 2%" th:if="${cart.cartDetails.isEmpty()}">
+        <h2>You don't have any items in your cart yet</h2>
+    </div>
+    <div style="margin-top: 2%" th:unless="${cart.cartDetails.isEmpty()}">
+        <h2><span style="color: red" th:unless="${message} == null" th:if="${message}" th:text="${message}"></span></h2>
+        <table class="table table-bordered" style="table-layout: fixed; width: 50%; margin: auto">
+            <thead>
+            <tr>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Amount</th>
+                <th>Delete</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="cartDetail : ${cart.cartDetails}">
+                <td align="left">
+                    <a th:href="@{/items/{uuid}/(uuid = ${cartDetail.item.uuid})}"
+                       th:text="${cartDetail.item.name}">Item
                         name</a>
-                </p>
-                <p th:text="'$' + ${cartDetail.item.price}">Item price</p>
-            </td>
-            <td>
-                <form action=# th:action="@{/customer/cart/update/{itemUuid}(itemUuid = ${cartDetail.item.uuid})}"
-                      method="post">
-                    <input type="number" min="0" max="99" th:value="${cartDetail.quantity}" name="newQuantity"/>
-                    <button type="submit">Update quantity</button>
-                </form>
-            </td>
-            <td th:text="${cartDetail.amount}"></td>
-            <td>
-                <form action=# th:action="@{/customer/cart/update/{itemUuid}(itemUuid = ${cartDetail.item.uuid})}"
-                      method="post">
-                    <input type="hidden" value="0" name="newQuantity"/>
-                    <button type="submit">Delete</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <p align="center" th:text="'Total quantity: ' + ${cart.totalQuantity} + ' pcs.'"></p>
-    <p align="center" th:text="'Total amount: $' + ${cart.totalAmount}"></p>
-    <p>
-    <form action=# th:action="@{/customer/cart/clear}"
-          method="post">
-        <button type="submit">Clear the cart</button>
-    </form>
-    <form action=# th:action="@{/customer/orders/make}"
-          method="post">
-        <button type="submit">Confirm the order</button>
-    </form>
-    </p>
+                    <span th:text="' — $' + ${cartDetail.item.price}">Item price</span>
+                </td>
+                <td>
+                    <form action=# th:action="@{/customer/cart/update/{itemUuid}(itemUuid = ${cartDetail.item.uuid})}"
+                          method="post">
+                        <input style="width: 30%" type="number" min="0" th:max="${cartDetail.quantityInStock}"
+                               th:value="${cartDetail.quantity}" name="newQuantity"/>
+                        <button class="btn btn-outline-success" type="submit">Update</button>
+                    </form>
+                    <span style="color: red" th:if="${cartDetail.quantityInStock} < 10">
+                        <b><span>There are </span>
+                           <span th:text="${cartDetail.quantityInStock}"></span>
+                           <span> pcs. left</span></b>
+                </span><br>
+                </td>
+                <td th:text="'$' + ${cartDetail.amount}"></td>
+                <td>
+                    <form action=# th:action="@{/customer/cart/update/{itemUuid}(itemUuid = ${cartDetail.item.uuid})}"
+                          method="post">
+                        <input type="hidden" value="0" name="newQuantity"/>
+                        <button class="btn btn-danger" type="submit">X</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <span>Total quantity: </span>
+        <b th:text="${cart.totalQuantity} + ' pcs.'"></b><br>
+        <span>Total amount: </span>
+        <b th:text="' $' + ${cart.totalAmount}"></b>
+        <div style="display: flex; justify-content: space-around">
+        <form action=# th:action="@{/customer/cart/clear}"
+              method="post">
+            <button class="btn btn-warning" type="submit">Clear the cart</button>
+        </form><br>
+        <form action=# th:action="@{/customer/orders/make}"
+              method="post">
+            <button class="btn btn-success" type="submit">Confirm the order</button>
+        </form>
+        </div>
+    </div>
 </div>
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
 </body>
 </html>

@@ -17,10 +17,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.testcontainers.shaded.org.apache.commons.lang.StringUtils;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.gmail.yauheniylebedzeu.service.constant.ValidationConstant.MAX_LENGTH_OF_ARTICLE_CONTENT;
+import static com.gmail.yauheniylebedzeu.service.constant.ValidationConstant.MAX_LENGTH_OF_ARTICLE_SYNOPSIS;
+import static com.gmail.yauheniylebedzeu.service.constant.ValidationConstant.MAX_LENGTH_OF_ARTICLE_TITLE;
+import static com.gmail.yauheniylebedzeu.service.constant.ValidationConstant.MIN_LENGTH_OF_ARTICLE_CONTENT;
+import static com.gmail.yauheniylebedzeu.service.constant.ValidationConstant.MIN_LENGTH_OF_ARTICLE_SYNOPSIS;
+import static com.gmail.yauheniylebedzeu.service.constant.ValidationConstant.MIN_LENGTH_OF_ARTICLE_TITLE;
 import static com.gmail.yauheniylebedzeu.web.constant.TestConstant.TEST_UUID;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.API_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.ARTICLES_CONTROLLER_URL;
@@ -173,9 +178,7 @@ public class ArticleAPIControllerTest {
         ArticleDTO article = getArticleDTOWithValidFields();
         article.setTitle(null);
         ErrorsDTO errors = new ErrorsDTO();
-        ArrayList<String> errorMessages = new ArrayList<>();
-        errorMessages.add("This field cannot be empty or consist of only spaces!");
-        errors.addError("title", errorMessages);
+        errors.addErrorMessage("title", "This field cannot be empty or consist of only spaces!");
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + ARTICLES_CONTROLLER_URL + "/" + TEST_UUID)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -203,11 +206,9 @@ public class ArticleAPIControllerTest {
     @Test
     void shouldAddArticleWithOnlySpacesInTitle() throws Exception {
         ArticleDTO article = getArticleDTOWithValidFields();
-        article.setTitle("   ");
+        article.setTitle(StringUtils.repeat(" ", MIN_LENGTH_OF_ARTICLE_TITLE + 1));
         ErrorsDTO errors = new ErrorsDTO();
-        ArrayList<String> errorMessages = new ArrayList<>();
-        errorMessages.add("This field cannot be empty or consist of only spaces!");
-        errors.addError("title", errorMessages);
+        errors.addErrorMessage("title", "This field cannot be empty or consist of only spaces!");
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + ARTICLES_CONTROLLER_URL + "/" + TEST_UUID)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -221,11 +222,9 @@ public class ArticleAPIControllerTest {
     @Test
     void shouldAddArticleWithTooShortTitle() throws Exception {
         ArticleDTO article = getArticleDTOWithValidFields();
-        article.setTitle("Ti");
+        article.setTitle(StringUtils.repeat("T", MIN_LENGTH_OF_ARTICLE_TITLE - 1));
         ErrorsDTO errors = new ErrorsDTO();
-        ArrayList<String> errorMessages = new ArrayList<>();
-        errorMessages.add("The article title must be between 3 and 50 characters long!");
-        errors.addError("title", errorMessages);
+        errors.addErrorMessage("title", "The article title must be between 3 and 50 characters long!");
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + ARTICLES_CONTROLLER_URL + "/" + TEST_UUID)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -239,11 +238,9 @@ public class ArticleAPIControllerTest {
     @Test
     void shouldAddArticleWithTooLongTitle() throws Exception {
         ArticleDTO article = getArticleDTOWithValidFields();
-        article.setTitle(StringUtils.repeat("T", 51));
+        article.setTitle(StringUtils.repeat("T", MAX_LENGTH_OF_ARTICLE_TITLE + 1));
         ErrorsDTO errors = new ErrorsDTO();
-        ArrayList<String> errorMessages = new ArrayList<>();
-        errorMessages.add("The article title must be between 3 and 50 characters long!");
-        errors.addError("title", errorMessages);
+        errors.addErrorMessage("title", "The article title must be between 3 and 50 characters long!");
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + ARTICLES_CONTROLLER_URL + "/" + TEST_UUID)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -259,9 +256,7 @@ public class ArticleAPIControllerTest {
         ArticleDTO article = getArticleDTOWithValidFields();
         article.setSynopsis(null);
         ErrorsDTO errors = new ErrorsDTO();
-        ArrayList<String> errorMessages = new ArrayList<>();
-        errorMessages.add("This field cannot be empty or consist of only spaces!");
-        errors.addError("synopsis", errorMessages);
+        errors.addErrorMessage("synopsis", "This field cannot be empty or consist of only spaces!");
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + ARTICLES_CONTROLLER_URL + "/" + TEST_UUID)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -289,11 +284,9 @@ public class ArticleAPIControllerTest {
     @Test
     void shouldAddArticleWithOnlySpacesInSynopsis() throws Exception {
         ArticleDTO article = getArticleDTOWithValidFields();
-        article.setSynopsis(StringUtils.repeat(" ", 21));
+        article.setSynopsis(StringUtils.repeat(" ", MIN_LENGTH_OF_ARTICLE_SYNOPSIS + 1));
         ErrorsDTO errors = new ErrorsDTO();
-        ArrayList<String> errorMessages = new ArrayList<>();
-        errorMessages.add("This field cannot be empty or consist of only spaces!");
-        errors.addError("synopsis", errorMessages);
+        errors.addErrorMessage("synopsis", "This field cannot be empty or consist of only spaces!");
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + ARTICLES_CONTROLLER_URL + "/" + TEST_UUID)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -307,11 +300,10 @@ public class ArticleAPIControllerTest {
     @Test
     void shouldAddArticleWithTooShortSynopsis() throws Exception {
         ArticleDTO article = getArticleDTOWithValidFields();
-        article.setSynopsis("Synopsis");
+        article.setSynopsis(StringUtils.repeat("S", MIN_LENGTH_OF_ARTICLE_SYNOPSIS - 1));
         ErrorsDTO errors = new ErrorsDTO();
-        ArrayList<String> errorMessages = new ArrayList<>();
-        errorMessages.add("The article synopsis must be between 20 and 200 characters long!");
-        errors.addError("synopsis", errorMessages);
+        errors.addErrorMessage("synopsis", "The article synopsis must be between 20 and 200" +
+                " characters long!");
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + ARTICLES_CONTROLLER_URL + "/" + TEST_UUID)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -325,11 +317,10 @@ public class ArticleAPIControllerTest {
     @Test
     void shouldAddArticleWithTooLongSynopsis() throws Exception {
         ArticleDTO article = getArticleDTOWithValidFields();
-        article.setSynopsis(StringUtils.repeat("S", 201));
+        article.setSynopsis(StringUtils.repeat("S", MAX_LENGTH_OF_ARTICLE_SYNOPSIS + 1));
         ErrorsDTO errors = new ErrorsDTO();
-        ArrayList<String> errorMessages = new ArrayList<>();
-        errorMessages.add("The article synopsis must be between 20 and 200 characters long!");
-        errors.addError("synopsis", errorMessages);
+        errors.addErrorMessage("synopsis", "The article synopsis must be between 20 and 200" +
+                " characters long!");
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + ARTICLES_CONTROLLER_URL + "/" + TEST_UUID)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -345,9 +336,7 @@ public class ArticleAPIControllerTest {
         ArticleDTO article = getArticleDTOWithValidFields();
         article.setContent(null);
         ErrorsDTO errors = new ErrorsDTO();
-        ArrayList<String> errorMessages = new ArrayList<>();
-        errorMessages.add("This field cannot be empty or consist of only spaces!");
-        errors.addError("content", errorMessages);
+        errors.addErrorMessage("content", "This field cannot be empty or consist of only spaces!");
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + ARTICLES_CONTROLLER_URL + "/" + TEST_UUID)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -375,11 +364,9 @@ public class ArticleAPIControllerTest {
     @Test
     void shouldAddArticleWithOnlySpacesInContent() throws Exception {
         ArticleDTO article = getArticleDTOWithValidFields();
-        article.setContent(StringUtils.repeat(" ", 101));
+        article.setContent(StringUtils.repeat(" ", MIN_LENGTH_OF_ARTICLE_CONTENT + 1));
         ErrorsDTO errors = new ErrorsDTO();
-        ArrayList<String> errorMessages = new ArrayList<>();
-        errorMessages.add("This field cannot be empty or consist of only spaces!");
-        errors.addError("content", errorMessages);
+        errors.addErrorMessage("content", "This field cannot be empty or consist of only spaces!");
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + ARTICLES_CONTROLLER_URL + "/" + TEST_UUID)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -393,11 +380,10 @@ public class ArticleAPIControllerTest {
     @Test
     void shouldAddArticleWithTooShortContent() throws Exception {
         ArticleDTO article = getArticleDTOWithValidFields();
-        article.setContent("Content");
+        article.setContent(StringUtils.repeat("C", MIN_LENGTH_OF_ARTICLE_CONTENT - 1));
         ErrorsDTO errors = new ErrorsDTO();
-        ArrayList<String> errorMessages = new ArrayList<>();
-        errorMessages.add("The article text must be between 100 and 1000 characters long!");
-        errors.addError("content", errorMessages);
+        errors.addErrorMessage("content", "The article text must be between 100 and 1000" +
+                " characters long!");
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + ARTICLES_CONTROLLER_URL + "/" + TEST_UUID)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -411,11 +397,10 @@ public class ArticleAPIControllerTest {
     @Test
     void shouldAddArticleWithTooLongContent() throws Exception {
         ArticleDTO article = getArticleDTOWithValidFields();
-        article.setContent(StringUtils.repeat("C", 1001));
+        article.setContent(StringUtils.repeat("C", MAX_LENGTH_OF_ARTICLE_CONTENT + 1));
         ErrorsDTO errors = new ErrorsDTO();
-        ArrayList<String> errorMessages = new ArrayList<>();
-        errorMessages.add("The article text must be between 100 and 1000 characters long!");
-        errors.addError("content", errorMessages);
+        errors.addErrorMessage("content", "The article text must be between 100 and 1000 characters" +
+                " long!");
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + ARTICLES_CONTROLLER_URL + "/" + TEST_UUID)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -428,10 +413,9 @@ public class ArticleAPIControllerTest {
 
     private ArticleDTO getArticleDTOWithValidFields() {
         ArticleDTO article = new ArticleDTO();
-        article.setTitle("Title");
-        article.setSynopsis("Test synopsis, test synopsis, test synopsis, test synopsis");
-        article.setContent("Test content, test content, test content, test content, test content, test content," +
-                " test content, test content, test content, test content, test content, test content, test content");
+        article.setTitle(StringUtils.repeat("T", MIN_LENGTH_OF_ARTICLE_TITLE));
+        article.setSynopsis(StringUtils.repeat("S", MIN_LENGTH_OF_ARTICLE_SYNOPSIS));
+        article.setContent(StringUtils.repeat("C", MIN_LENGTH_OF_ARTICLE_CONTENT));
         return article;
     }
 }

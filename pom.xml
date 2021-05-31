@@ -26,6 +26,8 @@
         <passay.version>1.6.0</passay.version>
         <mysql.testcontainers.version>1.15.3</mysql.testcontainers.version>
         <hibernate.envers.version>5.4.27.Final</hibernate.envers.version>
+        <jackson.dataformat.xml.version>2.12.3</jackson.dataformat.xml.version>
+        <springfox.boot.starter.version>3.0.0</springfox.boot.starter.version>
     </properties>
 
     <dependencies>
@@ -53,5 +55,15 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+        <finalName>app</finalName>
+    </build>
 
 </project>

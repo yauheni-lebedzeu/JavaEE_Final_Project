@@ -1,10 +1,13 @@
 package com.gmail.yauheniylebedzeu.web.controller.mvc;
 
 import com.gmail.yauheniylebedzeu.service.ReviewService;
+import com.gmail.yauheniylebedzeu.service.enums.RoleDTOEnum;
 import com.gmail.yauheniylebedzeu.service.model.PageDTO;
 import com.gmail.yauheniylebedzeu.service.model.ReviewDTO;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,7 +20,12 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
-import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.*;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.ADD_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.ADMIN_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.CHANGE_VISIBILITY_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.CUSTOMER_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.DELETE_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.REVIEWS_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.util.ControllerUtil.getLoggedUserUuid;
 import static com.gmail.yauheniylebedzeu.web.controller.util.ControllerUtil.getUserPrincipal;
 
@@ -32,6 +40,7 @@ public class ReviewController {
                              @RequestParam(defaultValue = "10") int pageSize, Model model) {
         PageDTO<ReviewDTO> page = reviewService.getReviewPage(pageNumber, pageSize, "additionDateTime desc");
         model.addAttribute("page", page);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return "admin-reviews";
     }
 
@@ -56,6 +65,13 @@ public class ReviewController {
                                     @RequestParam(defaultValue = "10") int pageSize, Model model) {
         PageDTO<ReviewDTO> page = reviewService.getVisibleReviewsPage(pageNumber, pageSize, "additionDateTime desc");
         model.addAttribute("page", page);
+        Optional<UserDTO> userPrincipal = getUserPrincipal();
+        if(userPrincipal.isPresent()) {
+            UserDTO user = userPrincipal.get();
+            RoleDTOEnum role = user.getRole();
+            String roleName = role.name();
+            model.addAttribute("role", roleName);
+        }
         return "reviews";
     }
 

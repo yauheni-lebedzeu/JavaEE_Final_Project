@@ -6,6 +6,7 @@ import com.gmail.yauheniylebedzeu.service.enums.RoleDTOEnum;
 import com.gmail.yauheniylebedzeu.service.model.PageDTO;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import com.gmail.yauheniylebedzeu.service.model.UserUpdateDTO;
+import com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant;
 import com.gmail.yauheniylebedzeu.web.validator.UserUpdateValidator;
 import com.gmail.yauheniylebedzeu.web.validator.UserValidator;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.ADD_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.ADMIN_CONTROLLER_URL;
@@ -29,9 +29,9 @@ import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlCo
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.CUSTOMER_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.DELETE_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.PROFILE_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.RESTORE_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.USERS_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.util.ControllerUtil.getLoggedUserEmail;
-import static com.gmail.yauheniylebedzeu.web.controller.util.ControllerUtil.getUserPrincipal;
 
 @Controller
 @AllArgsConstructor
@@ -83,9 +83,11 @@ public class UserController {
     }
 
     @PostMapping(value = ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL + DELETE_CONTROLLER_URL + "/{sourcePageNumber}")
-    public String delUsers(@PathVariable String sourcePageNumber,
-                           @RequestParam List<String> uuids) {
-        uuids.forEach(userService::removeByUuid);
+    public String deleteUsers(@PathVariable String sourcePageNumber,
+                              @RequestParam(required = false) List<String> uuids) {
+        if (uuids != null) {
+            uuids.forEach(userService::removeByUuid);
+        }
         return "redirect:" + ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL + "?pageNumber=" + sourcePageNumber;
     }
 
@@ -121,5 +123,11 @@ public class UserController {
             userService.changeParameters(uuid, userUpdateDTO);
             return "redirect:" + CUSTOMER_CONTROLLER_URL + PROFILE_CONTROLLER_URL;
         }
+    }
+
+    @PostMapping(value = ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL + "/{userUuid}" + RESTORE_CONTROLLER_URL)
+    public String restoreUser(@PathVariable String userUuid) {
+        userService.restore(userUuid);
+        return "redirect:" + ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL;
     }
 }
