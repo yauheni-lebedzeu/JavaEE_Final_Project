@@ -97,11 +97,11 @@
     <changeSet id="9" author="yauheniylebedzeu@gmail.com">
         <insert tableName="user">
             <column name="uuid"  valueComputed="(UUID())"/>
-            <column name="last_name" value="Ivanov"/>
-            <column name="first_name" value="Ivan"/>
-            <column name="patronymic" value="Ivanovich"/>
+            <column name="last_name" value="Lebedev"/>
+            <column name="first_name" value="Evgeniy"/>
+            <column name="patronymic" value="Michailovich"/>
             <column name="email" value="Lemot@yandex.ru"/>
-            <column name="password" value="$2y$12$.MG3W/1aTYCvbetO1jmTWeAheLOJDI2oMzDPXgXeFNBao.j8RikMG"/>
+            <column name="password" value="$2y$12$8yY2m.vdV2dIcBO93cGEfeH16B5dSCrVsx3uH/0DBjdfM0uz4poXG"/>
             <column name="role_id" valueComputed="(SELECT id FROM role WHERE name = 'ADMIN')"/>
         </insert>
     </changeSet>
@@ -242,7 +242,7 @@
             <column name="order_date_time" type="DATETIME">
                 <constraints nullable="false"/>
             </column>
-            <column name="status" type="VARCHAR(20)" defaultValue="NEW">
+            <column name="status" type="VARCHAR(20)">
                 <constraints nullable="false"/>
             </column>
             <column name="user_id" type="BIGINT">
