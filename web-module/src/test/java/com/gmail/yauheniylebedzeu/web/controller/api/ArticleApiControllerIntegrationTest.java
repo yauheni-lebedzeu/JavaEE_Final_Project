@@ -24,7 +24,8 @@ import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlCo
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@Sql(scripts = {"/scripts/clean-article.sql","/scripts/clean-user.sql", "/scripts/init-user.sql", "/scripts/init-article.sql"})
+@Sql(scripts = {"/scripts/clean-article.sql", "/scripts/clean-order.sql", "/scripts/clean-item.sql",
+        "/scripts/clean-user.sql", "/scripts/init-user.sql", "/scripts/init-article.sql"})
 public class ArticleApiControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
@@ -57,7 +58,8 @@ public class ArticleApiControllerIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    @Sql(scripts = {"/scripts/clean-article.sql","/scripts/clean-user.sql", "/scripts/init-user.sql"})
+    @Sql(scripts = {"/scripts/clean-article.sql", "/scripts/clean-order.sql", "/scripts/clean-item.sql",
+            "/scripts/clean-user.sql", "/scripts/init-user.sql"})
     void shouldAddArticle() {
         HttpEntity<String> requestOne = new HttpEntity<>(null, new HttpHeaders());
         ResponseEntity<List<UserDTO>> responseOne = testRestTemplate.exchange(
