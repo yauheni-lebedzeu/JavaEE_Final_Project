@@ -35,7 +35,9 @@ public class CartServiceImpl implements CartService {
         Optional<CartDetail> optionalCartDetail = findCartDetailByItem(item, cart);
         if (optionalCartDetail.isPresent()) {
             CartDetail cartDetail = optionalCartDetail.get();
-            cartDetail.incrementQuantity();
+            if (cartDetail.getQuantity() < item.getQuantityInStock()) {
+                cartDetail.incrementQuantity();
+            }
         } else {
             CartDetail cartDetail = new CartDetail(item, user);
             cart.add(cartDetail);

@@ -1,8 +1,8 @@
 package com.gmail.yauheniylebedzeu.web.validator;
 
 import com.gmail.yauheniylebedzeu.service.UserService;
-import com.gmail.yauheniylebedzeu.service.exception.UserDeletedModuleException;
-import com.gmail.yauheniylebedzeu.service.exception.UserNotFoundModuleException;
+import com.gmail.yauheniylebedzeu.service.exception.UserDeletedException;
+import com.gmail.yauheniylebedzeu.service.exception.UserNotFoundException;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import lombok.AllArgsConstructor;
 import org.junit.platform.commons.util.StringUtils;
@@ -59,14 +59,14 @@ public class UserValidator implements Validator {
                 try {
                     userService.findByEmail(email);
                     errors.rejectValue(EMAIL_FIELD_NAME, USER_EXISTS_MESSAGE_PROPERTY);
-                } catch (UserNotFoundModuleException e) {
+                } catch (UserNotFoundException e) {
                     checkPassword(errors, user);
                     checkFirstName(errors, user);
                     checkLastName(errors, user);
                     checkPatronymic(errors, user);
                     checkAddress(errors, user);
                     checkPhoneNumber(errors, user);
-                } catch (UserDeletedModuleException e) {
+                } catch (UserDeletedException e) {
                     errors.rejectValue(EMAIL_FIELD_NAME, USER_EXISTS_MESSAGE_PROPERTY);
                 }
             } else {

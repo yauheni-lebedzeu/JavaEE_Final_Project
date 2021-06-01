@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.gmail.yauheniylebedzeu.service.ItemService;
 import com.gmail.yauheniylebedzeu.service.UploadService;
-import com.gmail.yauheniylebedzeu.service.exception.FileUploadingModuleException;
+import com.gmail.yauheniylebedzeu.service.exception.FileUploadingException;
 import com.gmail.yauheniylebedzeu.service.model.ItemDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -39,7 +39,7 @@ public class UploadServiceImpl implements UploadService {
             return items;
         } catch (IOException e) {
             log.error(e.getMessage(), e);
-            throw new FileUploadingModuleException(String.format("Failed to upload file named \"%s\" (%s)",
+            throw new FileUploadingException(String.format("Failed to upload file named \"%s\" (%s)",
                     file.getOriginalFilename(), e.getMessage()));
         }
     }

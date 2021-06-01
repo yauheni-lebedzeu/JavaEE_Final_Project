@@ -7,14 +7,16 @@ import com.gmail.yauheniylebedzeu.repository.enums.OrderStatusEnum;
 import com.gmail.yauheniylebedzeu.repository.model.CartDetail;
 import com.gmail.yauheniylebedzeu.repository.model.Item;
 import com.gmail.yauheniylebedzeu.repository.model.Order;
+import com.gmail.yauheniylebedzeu.repository.model.OrderDetail;
 import com.gmail.yauheniylebedzeu.repository.model.User;
+import com.gmail.yauheniylebedzeu.service.ItemService;
 import com.gmail.yauheniylebedzeu.service.OrderService;
 import com.gmail.yauheniylebedzeu.service.UserService;
 import com.gmail.yauheniylebedzeu.service.converter.OrderConverter;
-import com.gmail.yauheniylebedzeu.service.exception.EmptyCartModuleException;
-import com.gmail.yauheniylebedzeu.service.exception.OrderNotFoundModuleException;
-import com.gmail.yauheniylebedzeu.service.exception.WrongItemQuantityModuleException;
-import com.gmail.yauheniylebedzeu.service.exception.WrongOrderStatusModuleException;
+import com.gmail.yauheniylebedzeu.service.exception.EmptyCartException;
+import com.gmail.yauheniylebedzeu.service.exception.OrderNotFoundException;
+import com.gmail.yauheniylebedzeu.service.exception.WrongItemQuantityException;
+import com.gmail.yauheniylebedzeu.service.exception.WrongOrderStatusException;
 import com.gmail.yauheniylebedzeu.service.model.OrderDTO;
 import com.gmail.yauheniylebedzeu.service.model.PageDTO;
 import lombok.AllArgsConstructor;
@@ -37,6 +39,7 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final ItemRepository itemRepository;
+    private final ItemService itemService;
     private final UserRepository userRepository;
     private final UserService userService;
     private final OrderConverter orderConverter;
@@ -47,7 +50,7 @@ public class OrderServiceImpl implements OrderService {
         User user = userService.getSafeUser(userUuid);
         Set<CartDetail> cart = getCart(user);
         if (cart.isEmpty()) {
-            throw new EmptyCartModuleException(String.format("The user with uuid%s tried to place an order with an empty" +
+            throw new EmptyCartException(String.format("The user with uuid%s tried to place an order with an empty" +
                     " shopping cart!", userUuid));
         }
         for (CartDetail cartDetail : cart) {
@@ -55,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
             Item item = getItem(cartDetail);
             Integer quantityInStock = item.getQuantityInStock();
             if (quantityInCart > quantityInStock) {
-                throw new WrongItemQuantityModuleException(String.format("The order could not be formed. There are not so" +
+                throw new WrongItemQuantityException(String.format("The order could not be formed. There are not so" +
                         " many  pieces of the item with id = %d in stock", item.getId()));
             }
             int newQuantityInStock = quantityInStock - quantityInCart;
@@ -118,7 +121,7 @@ public class OrderServiceImpl implements OrderService {
         OrderStatusEnum status = order.getStatus();
         OrderStatusEnum orderNewStatusEnum = OrderStatusEnum.valueOf(newStatus);
         if (status.equals(OrderStatusEnum.REJECTED) || status.equals(OrderStatusEnum.DELIVERED)) {
-            throw new WrongOrderStatusModuleException(String.format("Attempt to assign an invalid status to an order with" +
+            throw new WrongOrderStatusException(String.format("Attempt to assign an invalid status to an order with" +
                     " an id = %d", order.getId()));
         }
         order.setStatus(orderNewStatusEnum);
@@ -130,6 +133,15 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderDTO reject(String orderUuid) {
         Order order = getSafeOrder(orderUuid);
+        Set<OrderDetail> orderDetails = order.getOrderDetails();
+        for (OrderDetail orderDetail : orderDetails) {
+            Item item = getItem(orderDetail);
+            Integer quantityInStock = item.getQuantityInStock();
+            Integer quantityInOrder = orderDetail.getQuantity();
+            quantityInStock = quantityInStock + quantityInOrder;
+            item.setQuantityInStock(quantityInStock);
+            itemRepository.merge(item);
+        }
         order.setStatus(OrderStatusEnum.REJECTED);
         orderRepository.merge(order);
         return orderConverter.convertOrderToOrderDTO(order);
@@ -142,7 +154,7 @@ public class OrderServiceImpl implements OrderService {
         if (optionalOrder.isPresent()) {
             return optionalOrder.get();
         } else {
-            throw new OrderNotFoundModuleException(String.format("Couldn't find the order with uuid = %s", orderUuid));
+            throw new OrderNotFoundException(String.format("Couldn't find the order with uuid = %s", orderUuid));
         }
     }
 

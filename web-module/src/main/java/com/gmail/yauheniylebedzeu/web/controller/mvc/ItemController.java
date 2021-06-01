@@ -1,7 +1,7 @@
 package com.gmail.yauheniylebedzeu.web.controller.mvc;
 
 import com.gmail.yauheniylebedzeu.service.ItemService;
-import com.gmail.yauheniylebedzeu.service.exception.FileUploadingModuleException;
+import com.gmail.yauheniylebedzeu.service.exception.FileUploadingException;
 import com.gmail.yauheniylebedzeu.service.impl.UploadServiceImpl;
 import com.gmail.yauheniylebedzeu.service.model.ItemDTO;
 import com.gmail.yauheniylebedzeu.service.model.PageDTO;
@@ -75,7 +75,7 @@ public class ItemController {
             try {
                 xmlValidator.validateItemXMLFile(file);
                 uploadService.uploadFile(file);
-            } catch (ItemFileException | FileUploadingModuleException e) {
+            } catch (ItemFileException | FileUploadingException e) {
                 model.addAttribute("errorMessage", e.getMessage());
                 return getItems(1, 10, model);
             }

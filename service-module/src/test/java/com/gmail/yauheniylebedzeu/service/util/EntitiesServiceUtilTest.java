@@ -12,15 +12,15 @@ import com.gmail.yauheniylebedzeu.repository.model.Review;
 import com.gmail.yauheniylebedzeu.repository.model.Role;
 import com.gmail.yauheniylebedzeu.repository.model.User;
 import com.gmail.yauheniylebedzeu.repository.model.UserContacts;
-import com.gmail.yauheniylebedzeu.service.exception.ArticleContentNotReceivedModuleException;
-import com.gmail.yauheniylebedzeu.service.exception.CartDetailNotReceivedModuleException;
-import com.gmail.yauheniylebedzeu.service.exception.CommentNotReceivedModuleException;
-import com.gmail.yauheniylebedzeu.service.exception.ItemDescriptionNotReceivedModuleException;
-import com.gmail.yauheniylebedzeu.service.exception.ItemNotReceivedModuleException;
-import com.gmail.yauheniylebedzeu.service.exception.OrderDetailNotReceivedModuleException;
-import com.gmail.yauheniylebedzeu.service.exception.RoleNotReceivedModuleException;
-import com.gmail.yauheniylebedzeu.service.exception.UserContactsNotReceivedModuleException;
-import com.gmail.yauheniylebedzeu.service.exception.UserNotReceivedModuleException;
+import com.gmail.yauheniylebedzeu.service.exception.ArticleContentNotReceivedException;
+import com.gmail.yauheniylebedzeu.service.exception.CartDetailNotReceivedException;
+import com.gmail.yauheniylebedzeu.service.exception.CommentNotReceivedException;
+import com.gmail.yauheniylebedzeu.service.exception.ItemDescriptionNotReceivedException;
+import com.gmail.yauheniylebedzeu.service.exception.ItemNotReceivedException;
+import com.gmail.yauheniylebedzeu.service.exception.OrderDetailNotReceivedException;
+import com.gmail.yauheniylebedzeu.service.exception.RoleNotReceivedException;
+import com.gmail.yauheniylebedzeu.service.exception.UserContactsNotReceivedException;
+import com.gmail.yauheniylebedzeu.service.exception.UserNotReceivedException;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
@@ -52,7 +52,7 @@ public class EntitiesServiceUtilTest {
     @Test
     void shouldGetRoleFromUserAndReceiveNullObject() {
         User user = new User();
-        assertThrows(RoleNotReceivedModuleException.class, () -> getRole(user));
+        assertThrows(RoleNotReceivedException.class, () -> getRole(user));
     }
 
     @Test
@@ -66,7 +66,7 @@ public class EntitiesServiceUtilTest {
     @Test
     void shouldGetUserFromReviewAndReceiveNullObject() {
         Review review = new Review();
-        assertThrows(UserNotReceivedModuleException.class, () -> getUser(review));
+        assertThrows(UserNotReceivedException.class, () -> getUser(review));
     }
 
     @Test
@@ -80,7 +80,7 @@ public class EntitiesServiceUtilTest {
     @Test
     void shouldGetUserFromArticleAndReceiveNullObject() {
         Article article = new Article();
-        assertThrows(UserNotReceivedModuleException.class, () -> getUser(article));
+        assertThrows(UserNotReceivedException.class, () -> getUser(article));
     }
 
     @Test
@@ -94,7 +94,7 @@ public class EntitiesServiceUtilTest {
     @Test
     void shouldGetUserFromCommentAndReceiveNullObject() {
         Comment comment = new Comment();
-        assertThrows(UserNotReceivedModuleException.class, () -> getUser(comment));
+        assertThrows(UserNotReceivedException.class, () -> getUser(comment));
     }
 
     @Test
@@ -108,7 +108,7 @@ public class EntitiesServiceUtilTest {
     @Test
     void shouldGetUserFromOrderAndReceiveNullObject() {
         Order order = new Order();
-        assertThrows(UserNotReceivedModuleException.class, () -> getUser(order));
+        assertThrows(UserNotReceivedException.class, () -> getUser(order));
     }
 
     @Test
@@ -122,7 +122,7 @@ public class EntitiesServiceUtilTest {
     @Test
     void shouldGetUserContactsAndReceiveNullObject() {
         User user = new User();
-        assertThrows(UserContactsNotReceivedModuleException.class, () -> getUserContacts(user));
+        assertThrows(UserContactsNotReceivedException.class, () -> getUserContacts(user));
     }
 
     @Test
@@ -136,7 +136,7 @@ public class EntitiesServiceUtilTest {
     @Test
     void shouldGetItemFromOrderDetailAndReceiveNullObject() {
         OrderDetail orderDetail = new OrderDetail();
-        assertThrows(ItemNotReceivedModuleException.class, () -> getItem(orderDetail));
+        assertThrows(ItemNotReceivedException.class, () -> getItem(orderDetail));
     }
 
     @Test
@@ -150,7 +150,7 @@ public class EntitiesServiceUtilTest {
     @Test
     void shouldGetItemFromCartDetailAndReceiveNullObject() {
         CartDetail cartDetail = new CartDetail();
-        assertThrows(ItemNotReceivedModuleException.class, () -> getItem(cartDetail));
+        assertThrows(ItemNotReceivedException.class, () -> getItem(cartDetail));
     }
 
     @Test
@@ -164,7 +164,7 @@ public class EntitiesServiceUtilTest {
     @Test
     void shouldGetItemDescriptionFromItemDetailAndReceiveNullObject() {
         Item item = new Item();
-        assertThrows(ItemDescriptionNotReceivedModuleException.class, () -> getItemDescription(item));
+        assertThrows(ItemDescriptionNotReceivedException.class, () -> getItemDescription(item));
     }
 
     @Test
@@ -183,7 +183,7 @@ public class EntitiesServiceUtilTest {
         Set<CartDetail> cart = new HashSet<>();
         cart.add(null);
         user.setCart(cart);
-        assertThrows(CartDetailNotReceivedModuleException.class, () -> getCart(user));
+        assertThrows(CartDetailNotReceivedException.class, () -> getCart(user));
     }
 
     @Test
@@ -202,7 +202,7 @@ public class EntitiesServiceUtilTest {
         Set<OrderDetail> orderDetails = new HashSet<>();
         orderDetails.add(null);
         order.setOrderDetails(orderDetails);
-        assertThrows(OrderDetailNotReceivedModuleException.class, () -> getOrderDetails(order));
+        assertThrows(OrderDetailNotReceivedException.class, () -> getOrderDetails(order));
     }
 
     @Test
@@ -216,7 +216,7 @@ public class EntitiesServiceUtilTest {
     @Test
     void shouldGetArticleContentAndReceiveNullObject() {
         Article article = new Article();
-        assertThrows(ArticleContentNotReceivedModuleException.class, () -> getArticleContent(article));
+        assertThrows(ArticleContentNotReceivedException.class, () -> getArticleContent(article));
     }
 
     @Test
@@ -235,6 +235,6 @@ public class EntitiesServiceUtilTest {
         Set<Comment> comments = new HashSet<>();
         comments.add(null);
         article.setComments(comments);
-        assertThrows(CommentNotReceivedModuleException.class, () -> getComments(article));
+        assertThrows(CommentNotReceivedException.class, () -> getComments(article));
     }
 }
