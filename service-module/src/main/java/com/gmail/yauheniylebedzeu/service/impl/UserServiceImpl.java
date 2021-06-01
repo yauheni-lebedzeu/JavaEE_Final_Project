@@ -173,6 +173,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDTO restore(String userUuid) {
         User user = getSafeUser(userUuid);
+        UserContacts contacts = user.getContacts();
+        contacts.setIsDeleted(false);
         user.setIsDeleted(false);
         userRepository.merge(user);
         return userConverter.convertUserToUserDTO(user);

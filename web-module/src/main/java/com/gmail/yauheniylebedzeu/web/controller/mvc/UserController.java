@@ -6,7 +6,6 @@ import com.gmail.yauheniylebedzeu.service.enums.RoleDTOEnum;
 import com.gmail.yauheniylebedzeu.service.model.PageDTO;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import com.gmail.yauheniylebedzeu.service.model.UserUpdateDTO;
-import com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant;
 import com.gmail.yauheniylebedzeu.web.validator.UserUpdateValidator;
 import com.gmail.yauheniylebedzeu.web.validator.UserValidator;
 import lombok.AllArgsConstructor;
@@ -125,9 +124,11 @@ public class UserController {
         }
     }
 
-    @PostMapping(value = ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL + "/{userUuid}" + RESTORE_CONTROLLER_URL)
-    public String restoreUser(@PathVariable String userUuid) {
+    @PostMapping(value = ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL + "/{userUuid}"
+            + RESTORE_CONTROLLER_URL + "/{sourcePageNumber}")
+    public String restoreUser(@PathVariable String userUuid,
+                              @PathVariable String sourcePageNumber) {
         userService.restore(userUuid);
-        return "redirect:" + ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL;
+        return "redirect:" + ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL + "?pageNumber=" + sourcePageNumber;
     }
 }

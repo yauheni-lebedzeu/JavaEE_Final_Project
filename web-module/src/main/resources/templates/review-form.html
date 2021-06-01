@@ -13,7 +13,7 @@
         <label for="content">Review text</label><br>
         <textarea th:field="*{content}" id="content" rows="10" cols="50"
                   placeholder="Enter a text of an review..."
-                  title="A review text must be between 50 and 500 characters long">
+                  title="A review text must be between 50 and 500 characters long" minlength="50" maxlength="500" required>
         </textarea>
         <p style="color: red; white-space: pre" th:if="${#fields.hasErrors('content')}" th:errors="*{content}">Content
             errors</p><br>
