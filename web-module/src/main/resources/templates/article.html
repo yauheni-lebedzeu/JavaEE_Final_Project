@@ -51,7 +51,7 @@
                         <pre style="white-space:pre-wrap; word-break: break-word"
                              th:text="${comment.content}">Content</pre>
                             <span th:text="${comment.firstAndLastName}">Author</span>
-                            <span th:if="${article.isAuthorDeleted}"><i style="color: red"> (deleted)</i></span><br>
+                            <span th:if="${comment.isAuthorDeleted}"><i style="color: red"> (deleted)</i></span><br>
                             <i th:text="${comment.additionDateTime}">Date</i>
                         </td>
                         <td th:if="${role} == 'SALE_USER'" align="center">
