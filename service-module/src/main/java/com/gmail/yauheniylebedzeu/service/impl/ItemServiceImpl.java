@@ -5,7 +5,7 @@ import com.gmail.yauheniylebedzeu.repository.model.Item;
 import com.gmail.yauheniylebedzeu.repository.model.ItemDescription;
 import com.gmail.yauheniylebedzeu.service.ItemService;
 import com.gmail.yauheniylebedzeu.service.converter.ItemConverter;
-import com.gmail.yauheniylebedzeu.service.exception.ItemNotFoundModuleException;
+import com.gmail.yauheniylebedzeu.service.exception.ItemNotFoundException;
 import com.gmail.yauheniylebedzeu.service.model.ItemDTO;
 import com.gmail.yauheniylebedzeu.service.model.PageDTO;
 import lombok.AllArgsConstructor;
@@ -100,7 +100,7 @@ public class ItemServiceImpl implements ItemService {
         if (optionalItem.isPresent()) {
             return optionalItem.get();
         } else {
-            throw new ItemNotFoundModuleException(String.format("An item with uuid %s was not found", itemUuid));
+            throw new ItemNotFoundException(String.format("An item with uuid %s was not found", itemUuid));
         }
     }
 

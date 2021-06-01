@@ -7,7 +7,7 @@ import com.gmail.yauheniylebedzeu.repository.model.User;
 import com.gmail.yauheniylebedzeu.service.ArticleService;
 import com.gmail.yauheniylebedzeu.service.UserService;
 import com.gmail.yauheniylebedzeu.service.converter.ArticleConverter;
-import com.gmail.yauheniylebedzeu.service.exception.ArticleNotFoundModuleException;
+import com.gmail.yauheniylebedzeu.service.exception.ArticleNotFoundException;
 import com.gmail.yauheniylebedzeu.service.model.ArticleDTO;
 import com.gmail.yauheniylebedzeu.service.model.PageDTO;
 import lombok.AllArgsConstructor;
@@ -100,7 +100,7 @@ public class ArticleServiceImpl implements ArticleService {
         if (optionalArticle.isPresent()) {
             return optionalArticle.get();
         } else {
-            throw new ArticleNotFoundModuleException(String.format("The article with uuid %s was not found", articleUuid));
+            throw new ArticleNotFoundException(String.format("The article with uuid %s was not found", articleUuid));
         }
     }
 }

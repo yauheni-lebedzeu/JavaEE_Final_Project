@@ -8,7 +8,7 @@ import com.gmail.yauheniylebedzeu.service.ArticleService;
 import com.gmail.yauheniylebedzeu.service.CommentService;
 import com.gmail.yauheniylebedzeu.service.UserService;
 import com.gmail.yauheniylebedzeu.service.converter.CommentConverter;
-import com.gmail.yauheniylebedzeu.service.exception.CommentNotFoundModuleException;
+import com.gmail.yauheniylebedzeu.service.exception.CommentNotFoundException;
 import com.gmail.yauheniylebedzeu.service.model.CommentDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -46,6 +46,6 @@ public class CommentServiceImpl implements CommentService {
             commentRepository.remove(comment);
             return true;
         }
-        throw new CommentNotFoundModuleException(String.format("A comment with uuid %s was not found!", commentUuid));
+        throw new CommentNotFoundException(String.format("A comment with uuid %s was not found!", commentUuid));
     }
 }

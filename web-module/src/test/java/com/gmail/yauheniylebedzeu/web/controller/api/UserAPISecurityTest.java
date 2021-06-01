@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmail.yauheniylebedzeu.service.UserService;
 import com.gmail.yauheniylebedzeu.service.converter.impl.BindingResultConverterImpl;
 import com.gmail.yauheniylebedzeu.service.enums.RoleDTOEnum;
-import com.gmail.yauheniylebedzeu.service.exception.UserNotFoundModuleException;
+import com.gmail.yauheniylebedzeu.service.exception.UserNotFoundException;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import com.gmail.yauheniylebedzeu.web.configuration.TestUserDetailsConfig;
 import com.gmail.yauheniylebedzeu.web.validator.UserValidator;
@@ -99,7 +99,7 @@ public class UserAPISecurityTest {
         user.setPassword("Test1234!");
         user.setAddress("TestAddress");
         user.setPhoneNumber("+375291111111");
-        when(userService.findByEmail(user.getEmail())).thenThrow(UserNotFoundModuleException.class);
+        when(userService.findByEmail(user.getEmail())).thenThrow(UserNotFoundException.class);
         mockMvc.perform(
                 post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(APPLICATION_JSON)

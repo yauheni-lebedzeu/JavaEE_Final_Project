@@ -8,10 +8,10 @@ import com.gmail.yauheniylebedzeu.repository.model.User;
 import com.gmail.yauheniylebedzeu.repository.model.UserContacts;
 import com.gmail.yauheniylebedzeu.service.converter.UserConverter;
 import com.gmail.yauheniylebedzeu.service.enums.RoleDTOEnum;
-import com.gmail.yauheniylebedzeu.service.exception.RoleNotFoundModuleException;
-import com.gmail.yauheniylebedzeu.service.exception.UserContactsNotReceivedModuleException;
-import com.gmail.yauheniylebedzeu.service.exception.UserDeletedModuleException;
-import com.gmail.yauheniylebedzeu.service.exception.UserNotFoundModuleException;
+import com.gmail.yauheniylebedzeu.service.exception.RoleNotFoundException;
+import com.gmail.yauheniylebedzeu.service.exception.UserContactsNotReceivedException;
+import com.gmail.yauheniylebedzeu.service.exception.UserDeletedException;
+import com.gmail.yauheniylebedzeu.service.exception.UserNotFoundException;
 import com.gmail.yauheniylebedzeu.service.generator.RandomPasswordGenerator;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import com.gmail.yauheniylebedzeu.service.model.UserUpdateDTO;
@@ -89,7 +89,7 @@ class UserServiceImplTest {
         when(passwordEncoder.encode(password)).thenReturn(encodedPassword);
         RoleEnum roleEnum = RoleEnum.valueOf(roleDTOEnum.name());
         when(roleRepository.findByName(roleEnum)).thenReturn(Optional.empty());
-        assertThrows(RoleNotFoundModuleException.class, () -> userService.add(userDTO));
+        assertThrows(RoleNotFoundException.class, () -> userService.add(userDTO));
     }
 
     @Test
@@ -112,14 +112,14 @@ class UserServiceImplTest {
         user.setIsDeleted(true);
         String email = "User@email.ru";
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
-        assertThrows(UserDeletedModuleException.class, () ->  userService.findByEmail(email));
+        assertThrows(UserDeletedException.class, () ->  userService.findByEmail(email));
     }
 
     @Test
     void shouldFindUserByEmailAndNotFindSuchUser() {
         String email = "User@email.ru";
         when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
-        assertThrows(UserNotFoundModuleException.class, () -> userService.findByEmail(email));
+        assertThrows(UserNotFoundException.class, () -> userService.findByEmail(email));
     }
 
     @Test
@@ -158,7 +158,7 @@ class UserServiceImplTest {
         user.setUuid(uuid);
         when(userRepository.findByUuid(uuid)).thenReturn(Optional.empty());
         String newRoleName = RoleDTOEnum.CUSTOMER_USER.name();
-        assertThrows(UserNotFoundModuleException.class, () -> userService.changeRoleByUuid(uuid, newRoleName));
+        assertThrows(UserNotFoundException.class, () -> userService.changeRoleByUuid(uuid, newRoleName));
     }
 
     @Test
@@ -171,14 +171,14 @@ class UserServiceImplTest {
         Role newRole = new Role();
         newRole.setName(newRoleEnum);
         when(roleRepository.findByName(newRoleEnum)).thenReturn(Optional.empty());
-        assertThrows(RoleNotFoundModuleException.class, () -> userService.changeRoleByUuid(uuid, newRoleName));
+        assertThrows(RoleNotFoundException.class, () -> userService.changeRoleByUuid(uuid, newRoleName));
     }
 
     @Test
     void shouldRemoveUserByUuidAndNotFindUser() {
         String uuid = "6d4883c7-aa9c-11eb-a3ca-0242ac130002";
         when(userRepository.findByUuid(uuid)).thenReturn(Optional.empty());
-        assertThrows(UserNotFoundModuleException.class, () -> userService.removeByUuid(uuid));
+        assertThrows(UserNotFoundException.class, () -> userService.removeByUuid(uuid));
     }
 
     @Test
@@ -207,7 +207,7 @@ class UserServiceImplTest {
     void shouldChangePasswordByUuidAndGetEmptyOptional() {
         String uuid = "6d4883c7-aa9c-11eb-a3ca-0242ac130002";
         when(userRepository.findByUuid(uuid)).thenReturn(Optional.empty());
-        assertThrows(UserNotFoundModuleException.class, () -> userService.changePasswordByUuid(uuid));
+        assertThrows(UserNotFoundException.class, () -> userService.changePasswordByUuid(uuid));
     }
 
     @Test
@@ -215,7 +215,7 @@ class UserServiceImplTest {
         String uuid = "6d4883c7-aa9c-11eb-a3ca-0242ac130002";
         when(userRepository.findByUuid(uuid)).thenReturn(Optional.empty());
         UserUpdateDTO userUpdateDTO = new UserUpdateDTO();
-        assertThrows(UserNotFoundModuleException.class, () -> userService.changeParameters(uuid, userUpdateDTO));
+        assertThrows(UserNotFoundException.class, () -> userService.changeParameters(uuid, userUpdateDTO));
     }
 
     @Test
@@ -303,7 +303,7 @@ class UserServiceImplTest {
         UserUpdateDTO userUpdateDTO = new UserUpdateDTO();
         String newAddress = "new address";
         userUpdateDTO.setAddress(newAddress);
-        assertThrows(UserContactsNotReceivedModuleException.class, () -> userService.changeParameters(uuid, userUpdateDTO));
+        assertThrows(UserContactsNotReceivedException.class, () -> userService.changeParameters(uuid, userUpdateDTO));
     }
 
     @Test

@@ -1,7 +1,7 @@
 package com.gmail.yauheniylebedzeu.service.impl;
 
 import com.gmail.yauheniylebedzeu.service.MailSendingService;
-import com.gmail.yauheniylebedzeu.service.exception.MailSendingModuleException;
+import com.gmail.yauheniylebedzeu.service.exception.MailSendingException;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -30,7 +30,7 @@ public class MailSendingServiceImpl implements MailSendingService {
             javaMailSender.send(mailMessage);
         } catch (MailException e) {
             log.error(e.getMessage(), e);
-            throw new MailSendingModuleException(String.format("Couldn't send password to the \"%s\"", email));
+            throw new MailSendingException(String.format("Couldn't send password to the \"%s\"", email));
         }
     }
 }

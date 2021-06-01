@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmail.yauheniylebedzeu.service.UserService;
 import com.gmail.yauheniylebedzeu.service.converter.impl.BindingResultConverterImpl;
 import com.gmail.yauheniylebedzeu.service.enums.RoleDTOEnum;
-import com.gmail.yauheniylebedzeu.service.exception.UserNotFoundModuleException;
+import com.gmail.yauheniylebedzeu.service.exception.UserNotFoundException;
 import com.gmail.yauheniylebedzeu.service.model.ErrorsDTO;
 import com.gmail.yauheniylebedzeu.service.model.UserDTO;
 import com.gmail.yauheniylebedzeu.web.validator.UserValidator;
@@ -51,7 +51,7 @@ public class UserAPIControllerTest {
     void shouldVerifyThatBusinessLogicIsCalledWhenWeRequestAddUser() throws Exception {
         UserDTO user = getUserWithValidFields();
         String email = user.getEmail();
-        when(userService.findByEmail(email)).thenThrow(UserNotFoundModuleException.class);
+        when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         mockMvc.perform(
                 post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -64,7 +64,7 @@ public class UserAPIControllerTest {
     void shouldAddUserWithValidFields() throws Exception {
         UserDTO user = getUserWithValidFields();
         String email = user.getEmail();
-        when(userService.findByEmail(email)).thenThrow(UserNotFoundModuleException.class);
+        when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         mockMvc.perform(
                 post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -130,7 +130,7 @@ public class UserAPIControllerTest {
         ErrorsDTO errors = new ErrorsDTO();
         errors.addErrorMessage("password", "This field cannot be empty or consist of only spaces!");
         String email = user.getEmail();
-        when(userService.findByEmail(email)).thenThrow(UserNotFoundModuleException.class);
+        when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -152,7 +152,7 @@ public class UserAPIControllerTest {
                 "uppercase Latin character (A-Z),\n at least one special character like ! @ # & ( ).\n And must be " +
                 "between 8 and 20 characters long.");
         String email = user.getEmail();
-        when(userService.findByEmail(email)).thenThrow(UserNotFoundModuleException.class);
+        when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -170,7 +170,7 @@ public class UserAPIControllerTest {
         ErrorsDTO errors = new ErrorsDTO();
         errors.addErrorMessage("firstName", "This field cannot be empty or consist of only spaces!");
         String email = user.getEmail();
-        when(userService.findByEmail(email)).thenThrow(UserNotFoundModuleException.class);
+        when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -190,7 +190,7 @@ public class UserAPIControllerTest {
         errors.addErrorMessage("firstName", "The first name must contain only Latin letters\n and" +
                 " be between 1 and 20 characters long!");
         String email = user.getEmail();
-        when(userService.findByEmail(email)).thenThrow(UserNotFoundModuleException.class);
+        when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -208,7 +208,7 @@ public class UserAPIControllerTest {
         ErrorsDTO errors = new ErrorsDTO();
         errors.addErrorMessage("lastName", "This field cannot be empty or consist of only spaces!");
         String email = user.getEmail();
-        when(userService.findByEmail(email)).thenThrow(UserNotFoundModuleException.class);
+        when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -228,7 +228,7 @@ public class UserAPIControllerTest {
         errors.addErrorMessage("lastName", "The last name must contain only Latin letters\n and" +
                 " be between 1 and 40 characters long!");
         String email = user.getEmail();
-        when(userService.findByEmail(email)).thenThrow(UserNotFoundModuleException.class);
+        when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -246,7 +246,7 @@ public class UserAPIControllerTest {
         ErrorsDTO errors = new ErrorsDTO();
         errors.addErrorMessage("patronymic", "This field cannot be empty or consist of only spaces!");
         String email = user.getEmail();
-        when(userService.findByEmail(email)).thenThrow(UserNotFoundModuleException.class);
+        when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -266,7 +266,7 @@ public class UserAPIControllerTest {
         errors.addErrorMessage("patronymic", "The patronymic must contain only Latin letters\n and" +
                 " be between 1 and 40 characters long!");
         String email = user.getEmail();
-        when(userService.findByEmail(email)).thenThrow(UserNotFoundModuleException.class);
+        when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -282,7 +282,7 @@ public class UserAPIControllerTest {
         UserDTO user = getUserWithValidFields();
         user.setAddress(null);
         String email = user.getEmail();
-        when(userService.findByEmail(email)).thenThrow(UserNotFoundModuleException.class);
+        when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         mockMvc.perform(
                 post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -298,7 +298,7 @@ public class UserAPIControllerTest {
         ErrorsDTO errors = new ErrorsDTO();
         errors.addErrorMessage("address", "The maximum length of the address must be 40 characters!");
         String email = user.getEmail();
-        when(userService.findByEmail(email)).thenThrow(UserNotFoundModuleException.class);
+        when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -314,7 +314,7 @@ public class UserAPIControllerTest {
         UserDTO user = getUserWithValidFields();
         user.setPhoneNumber(null);
         String email = user.getEmail();
-        when(userService.findByEmail(email)).thenThrow(UserNotFoundModuleException.class);
+        when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         mockMvc.perform(
                 post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -331,7 +331,7 @@ public class UserAPIControllerTest {
         errors.addErrorMessage("phoneNumber", "The phone number must match the following pattern:\n" +
                 " +375(XX)XXX-XX-XX or +375XXXXXXXXX");
         String email = user.getEmail();
-        when(userService.findByEmail(email)).thenThrow(UserNotFoundModuleException.class);
+        when(userService.findByEmail(email)).thenThrow(UserNotFoundException.class);
         MvcResult mvcResult = mockMvc.perform(
                 post(API_CONTROLLER_URL + USERS_CONTROLLER_URL)
                         .contentType(MediaType.APPLICATION_JSON)
