@@ -8,7 +8,7 @@
 <body>
 <header th:include="fragments/header::header"></header>
 <div class="container text-center">
-    <h1 style="margin-top: 2%; font-family: 'Comic Sans MS',serif">News</h1>
+    <h1 style="margin-top: 2%; font-size: 4em">News</h1>
     <div th:if="${role.equals('SALE_USER')}" class="text-start">
         <h3><a th:href="@{/seller/articles/add}">Post a new article</a></h3>
     </div>

@@ -28,7 +28,7 @@
                      th:text="${item.description}">Description</pre>
             </td>
             <td th:if="${role.equals('CUSTOMER_USER')}">
-                <form th:unless="${item.isDeleted}" action=#
+                <form th:unless="${item.isDeleted or item.quantityInStock == 0}" action=#
                       th:action="@{/customer/cart/add/{itemUuid}/item(itemUuid = ${item.uuid})}"
                       method="post">
                     <button class="btn btn-warning" type="submit">Add</button>

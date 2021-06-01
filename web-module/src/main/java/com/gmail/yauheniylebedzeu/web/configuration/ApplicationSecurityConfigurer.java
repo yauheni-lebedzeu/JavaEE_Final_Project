@@ -64,6 +64,7 @@ public class ApplicationSecurityConfigurer extends WebSecurityConfigurerAdapter 
                 .successHandler(new AppAccessHandler())
                 .and()
                 .logout()
+                .logoutSuccessUrl("/")
                 .and()
                 .exceptionHandling()
                 .accessDeniedHandler(new LoginAccessDeniedHandler())

@@ -2,6 +2,7 @@ package com.gmail.yauheniylebedzeu.service.impl;
 
 import com.gmail.yauheniylebedzeu.repository.ItemRepository;
 import com.gmail.yauheniylebedzeu.repository.model.Item;
+import com.gmail.yauheniylebedzeu.repository.model.ItemDescription;
 import com.gmail.yauheniylebedzeu.service.ItemService;
 import com.gmail.yauheniylebedzeu.service.converter.ItemConverter;
 import com.gmail.yauheniylebedzeu.service.exception.ItemNotFoundModuleException;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.gmail.yauheniylebedzeu.service.util.ServiceUtil.checkPageNumber;
 import static com.gmail.yauheniylebedzeu.service.util.ServiceUtil.getCountOfPages;
@@ -86,7 +88,7 @@ public class ItemServiceImpl implements ItemService {
         itemCopy.setName(copyName);
         itemCopy.setCopyNumber(0);
         itemCopy.setId(null);
-        itemCopy.setUuid(null);
+        itemCopy.setUuid(UUID.randomUUID().toString());
         itemRepository.persist(itemCopy);
         return itemConverter.convertItemToItemDTO(itemCopy);
     }
@@ -106,6 +108,8 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public ItemDTO restore(String itemUuid) {
         Item item = getSafeItem(itemUuid);
+        ItemDescription itemDescription = item.getItemDescription();
+        itemDescription.setIsDeleted(false);
         item.setIsDeleted(false);
         itemRepository.merge(item);
         return itemConverter.convertItemToItemDTO(item);

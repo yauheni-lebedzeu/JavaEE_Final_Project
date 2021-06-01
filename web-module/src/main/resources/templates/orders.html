@@ -33,7 +33,7 @@
             <tbody>
             <tr th:each="orderDetail : ${order.orderDetails}">
 
-                <td><a th:href="@{/items/{uuid}/1(uuid = ${orderDetail.itemUuid})}"
+                <td><a th:href="@{/items/{uuid}(uuid = ${orderDetail.itemUuid})}"
                        th:text="${orderDetail.itemName}">Item name</a>
                 </td>
                 <td th:text="'$' + ${orderDetail.price}"></td>
