@@ -24,8 +24,10 @@ import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlCo
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.CUSTOMER_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.ITEMS_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.MAIN_PAGE_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.REGISTER_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.REVIEWS_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.SELLER_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.USERS_CONTROLLER_URL;
 
 @Configuration
 @Profile("!test")
@@ -57,10 +59,14 @@ public class ApplicationSecurityConfigurer extends WebSecurityConfigurerAdapter 
                 .hasAuthority(RoleDTOEnum.SALE_USER.name())
                 .antMatchers(ARTICLES_CONTROLLER_URL + "/**", ITEMS_CONTROLLER_URL + "/**")
                 .hasAnyAuthority(RoleDTOEnum.CUSTOMER_USER.name(), RoleDTOEnum.SALE_USER.name())
-                .antMatchers(MAIN_PAGE_CONTROLLER_URL, REVIEWS_CONTROLLER_URL, ACCESS_DENIED_CONTROLLER_URL)
+                .antMatchers(MAIN_PAGE_CONTROLLER_URL, REVIEWS_CONTROLLER_URL, ACCESS_DENIED_CONTROLLER_URL,
+                        USERS_CONTROLLER_URL + REGISTER_CONTROLLER_URL, "/login*")
                 .permitAll()
                 .and()
                 .formLogin()
+                .loginPage("/login.html")
+                .loginProcessingUrl("/login-check")
+                .failureUrl("/login?error=true")
                 .successHandler(new AppAccessHandler())
                 .and()
                 .logout()

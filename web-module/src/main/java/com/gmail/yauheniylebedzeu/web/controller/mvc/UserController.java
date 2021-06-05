@@ -28,6 +28,7 @@ import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlCo
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.CUSTOMER_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.DELETE_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.PROFILE_CONTROLLER_URL;
+import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.REGISTER_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.RESTORE_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.constant.ControllerUrlConstant.USERS_CONTROLLER_URL;
 import static com.gmail.yauheniylebedzeu.web.controller.util.ControllerUtil.getLoggedUserEmail;
@@ -105,7 +106,7 @@ public class UserController {
     }
 
     @GetMapping(value = CUSTOMER_CONTROLLER_URL + PROFILE_CONTROLLER_URL)
-    public String GetProfile(UserUpdateDTO userUpdateDTO, BindingResult errors, Model model) {
+    public String getProfile(UserUpdateDTO userUpdateDTO, BindingResult errors, Model model) {
         String email = getLoggedUserEmail();
         UserDTO user = userService.findByEmail(email);
         model.addAttribute("user", user);
@@ -117,7 +118,7 @@ public class UserController {
                                        BindingResult errors, Model model) {
         userUpdateValidator.validate(userUpdateDTO, errors);
         if (errors.hasErrors()) {
-            return GetProfile(userUpdateDTO, errors, model);
+            return getProfile(userUpdateDTO, errors, model);
         } else {
             userService.changeParameters(uuid, userUpdateDTO);
             return "redirect:" + CUSTOMER_CONTROLLER_URL + PROFILE_CONTROLLER_URL;
@@ -130,5 +131,27 @@ public class UserController {
                               @PathVariable String sourcePageNumber) {
         userService.restore(userUuid);
         return "redirect:" + ADMIN_CONTROLLER_URL + USERS_CONTROLLER_URL + "?pageNumber=" + sourcePageNumber;
+    }
+
+    @GetMapping(value = USERS_CONTROLLER_URL + REGISTER_CONTROLLER_URL)
+    public String getRegistrationForm(UserDTO user, BindingResult bindingResult, Model model) {
+        RoleDTOEnum[] roles = {RoleDTOEnum.CUSTOMER_USER, RoleDTOEnum.SALE_USER};
+        model.addAttribute("roles", roles);
+        return "registration-form";
+    }
+
+    @PostMapping(value = USERS_CONTROLLER_URL + REGISTER_CONTROLLER_URL)
+    public String registerUser(UserDTO user, BindingResult bindingResult, Model model) {
+        userValidator.validate(user, bindingResult);
+        if (!bindingResult.hasErrors()) {
+            RoleDTOEnum role = user.getRole();
+            if (role.equals(RoleDTOEnum.SALE_USER) || role.equals(RoleDTOEnum.CUSTOMER_USER)) {
+                userService.add(user);
+                model.addAttribute("message", "Registration was successful!");
+            } else {
+                model.addAttribute("errorMessage", String.format("You can't choose this role for yourself:%s!", role));
+            }
+        }
+        return getRegistrationForm(user,bindingResult, model);
     }
 }

@@ -9,4 +9,5 @@ public interface FieldNameConstant {
     String ADDRESS_FIELD_NAME = "address";
     String PHONE_NUMBER_FIELD_NAME = "phoneNumber";
     String RE_ENTERED_PASSWORD_FIELD_NAME = "reEnteredPassword";
+    String ROLE_FIELD_NAME = "role";
 }

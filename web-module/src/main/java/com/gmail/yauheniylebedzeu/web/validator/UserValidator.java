@@ -18,6 +18,7 @@ import static com.gmail.yauheniylebedzeu.web.validator.constant.FieldNameConstan
 import static com.gmail.yauheniylebedzeu.web.validator.constant.FieldNameConstant.PASSWORD_FIELD_NAME;
 import static com.gmail.yauheniylebedzeu.web.validator.constant.FieldNameConstant.PATRONYMIC_FIELD_NAME;
 import static com.gmail.yauheniylebedzeu.web.validator.constant.FieldNameConstant.PHONE_NUMBER_FIELD_NAME;
+import static com.gmail.yauheniylebedzeu.web.validator.constant.FieldNameConstant.ROLE_FIELD_NAME;
 import static com.gmail.yauheniylebedzeu.web.validator.constant.MessagesPropertyConstant.NOT_EMPTY_FIELD_MESSAGE_PROPERTY;
 import static com.gmail.yauheniylebedzeu.web.validator.constant.MessagesPropertyConstant.USER_EXISTS_MESSAGE_PROPERTY;
 import static com.gmail.yauheniylebedzeu.web.validator.constant.MessagesPropertyConstant.WRONG_ADDRESS_FORMAT_MESSAGE_PROPERTY;
@@ -52,6 +53,7 @@ public class UserValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, FIRST_NAME_FIELD_NAME, NOT_EMPTY_FIELD_MESSAGE_PROPERTY);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, LAST_NAME_FIELD_NAME, NOT_EMPTY_FIELD_MESSAGE_PROPERTY);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, PATRONYMIC_FIELD_NAME, NOT_EMPTY_FIELD_MESSAGE_PROPERTY);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, ROLE_FIELD_NAME, NOT_EMPTY_FIELD_MESSAGE_PROPERTY);
         UserDTO user = (UserDTO) object;
         String email = user.getEmail();
         if (StringUtils.isNotBlank(email)) {
