@@ -29,4 +29,5 @@ public interface ControllerUrlConstant {
     String EDIT_CONTROLLER_URL = "/edit";
     String UPLOAD_CONTROLLER_URL = "/upload";
     String RESTORE_CONTROLLER_URL = "/restore";
+    String REGISTER_CONTROLLER_URL = "/register";
 }

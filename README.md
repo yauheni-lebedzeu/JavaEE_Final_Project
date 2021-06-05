@@ -29,8 +29,15 @@
 ## Technologies Used
 - Java 11
 - Spring Boot 2.4.2
+- Spring Security
+- Hibernate
+- Thymeleaf
+- Lombock 1.18.16
+- Jackson Dataformat Xml 2.11.4
 - Docker Desktop 3.3.3
 - Springfox Swagger 3.0.0 
+- Git
+- Maven
 
 
 ## Features
@@ -63,7 +70,7 @@ List the ready features here:
 ## Setup
 Using Maven, build the project (mvn clean package command), then run the docker-compose file with the following settings:
 version: "3.3"
-services:
+  services:
   db_mysql:
     image: mysql:latest
     restart: always

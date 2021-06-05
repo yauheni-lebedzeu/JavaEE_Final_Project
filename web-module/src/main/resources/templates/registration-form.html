@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
-    <title>Add new user</title>
+    <title>Registration</title>
 </head>
 <body>
 <header th:include="fragments/header::header"></header>
 <div class="container text-center">
-    <h1>New user addition</h1>
-    <form action="#" th:action="@{/admin/users/add}" th:object="${userDTO}" method="post">
+    <h1 style="margin-top: 3%">Registration form</h1>
+    <form style="margin-top: 2%" action="#" th:action="@{/users/register}" th:object="${userDTO}" method="post">
         <label for="last_name">Last name</label><br>
         <input th:field="*{lastName}" id="last_name" type="text" pattern="^[A-Za-z]{1,40}+$"
                title="The last name must contain only Latin letters and be between 1 and 40 characters long!" required
@@ -34,6 +34,7 @@
                     th:text="${role.description}">Role
             </option>
         </select><br>
+        <p style="color: red; white-space: normal" th:text="${errorMessage}"></p>
         <p style="color: red; white-space: pre" th:if="${#fields.hasErrors('role')}" th:errors="*{role}">Role error</p>
         <label for="email">Email</label><br>
         <input th:field="*{email}" id="email" type="email" required/><br>
@@ -48,8 +49,10 @@
                   And must be between 8 and 20 characters long." required/>
         <p style="color: red; white-space: pre" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
             Password errors</p><br>
-        <input class="btn btn-primary" type="submit" value="Add"><span> </span><input class="btn btn-primary" type="reset" value="Reset">
+        <input class="btn btn-primary" type="submit" value="Add"><span> </span><input class="btn btn-primary"
+                                                                                      type="reset" value="Reset">
     </form>
+    <h4 style="color: green" th:text="${message}"></h4>
 </div>
 <script th:src="@{/js/bootstrap.bundle.js}"></script>
 </body>

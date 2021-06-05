@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet"/>
+    <title>Log in</title>
+</head>
+<body>
+<header th:include="fragments/header::header"></header>
+<div class="container text-center">
+    <form name="f" th:action="@{/login-check}" method="post">
+        <fieldset>
+            <h1 style="margin-top: 3%">Please Login</h1>
+            <label for="email">Email</label><br>
+            <input type="text" id="email" name="username"/><br>
+            <label for="password">Password</label><br>
+            <input type="password" id="password" name="password"/>
+            <div style="margin-top: 1%" class="form-actions">
+                <button type="submit" class="btn btn-primary">Log in</button>
+                <button type="reset" class="btn btn-primary">Reset</button>
+            </div>
+            <div th:if="${param.error}" style="margin-top: 1%" class="alert alert-danger">
+                Invalid username or password.
+            </div>
+        </fieldset>
+    </form>
+</div>
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
+</body>
+</html>

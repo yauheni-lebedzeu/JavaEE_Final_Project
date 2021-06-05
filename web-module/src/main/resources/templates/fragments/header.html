@@ -8,7 +8,11 @@
 <div th:fragment="header">
     <div class="bg-warning text-wrap text-center">
         <div style="font-size: xx-large">
-            <div class="bg-warning" sec:authorize="isAnonymous()"><a th:href="@{/login}">Log in</a></div>
+            <div class="bg-warning" sec:authorize="isAnonymous()">
+                <a th:href="@{/login}">Log in</a>
+                <span> || </span>
+                <a th:href="@{/users/register}">Sign up</a>
+            </div>
             <div sec:authorize="isAuthenticated()">
                 <div class="text-wrap text-start" style="font-size: 0.5em">
                     <b style="color:blue" sec:authentication="name"></b> ||
@@ -16,19 +20,25 @@
                 </div>
                 <span sec:authorize="hasAuthority('ADMIN')">
                     <a th:href="@{/admin/users}">Users</a>
+                    <span> || </span>
                     <a th:href="@{/admin/reviews}">Reviews</a>
                 </span>
                 <span sec:authorize="hasAnyAuthority('CUSTOMER_USER', 'SALE_USER')">
                     <a th:href="@{/articles}">News</a>
+                    <span> || </span>
                     <a th:href="@{/items}">Shop</a>
+                    <span> || </span>
                     <span sec:authorize="hasAnyAuthority('SALE_USER')">
                         <a th:href="@{/seller/orders}">Orders</a>
                     </span>
                     <span sec:authorize="hasAuthority('CUSTOMER_USER')">
                         <a th:href="@{/customer/profile}">Profile</a>
+                        <span> || </span>
                         <a th:href="@{/customer/cart}">Cart</a>
+                        <span> || </span>
                         <a th:href="@{/customer/orders}">Orders</a>
                     </span>
+                    <span> || </span>
                     <a th:href="@{/reviews}">Reviews</a>
                 </span>
             </div>
