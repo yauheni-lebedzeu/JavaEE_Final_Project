@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
+    <title>Article posting</title>
+</head>
+<body>
+<header th:include="fragments/header::header"></header>
+<div class="container text-center">
+    <h1 style="margin-top: 1%">Post a new article</h1>
+    <form style="margin-top: 1%" action="#" th:action="@{/seller/articles/add}" th:object="${articleDTO}" method="post">
+        <label for="title">Title</label><br>
+        <input th:field="*{title}" id="title" type="text" minlength="3" maxlength="50"
+               title="An article title must be between 3 and 50 characters long" autofocus required/><br>
+        <p style="color: red; white-space: pre" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Title
+            errors</p><br>
+        <label for="synopsis">Synopsis</label><br>
+        <textarea th:field="*{synopsis}" id="synopsis" minlength="20" maxlength="200" rows="3" cols="77"
+                  placeholder="Enter a synopsis of an article..."
+                  title="An article synopsis must be between 3 and 50 characters long" required>
+        </textarea><br>
+        <p style="color: red; white-space: pre" th:if="${#fields.hasErrors('synopsis')}" th:errors="*{synopsis}">
+            Synopsis errors</p><br>
+        <label for="content">Article text</label><br>
+        <textarea th:field="*{content}" id="content" minlength="100" maxlength="1000" rows="13" cols="77"
+                  placeholder="Enter a text of an article..."
+                  title="An article text must be between 100 and 1000 characters long" required>
+        </textarea>
+        <p style="color: red; white-space: pre" th:if="${#fields.hasErrors('content')}" th:errors="*{content}">Content
+            errors</p><br>
+        <input type="submit" value="Post"><input type="reset" value="Reset">
+    </form>
+</div>
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
+</body>
+<footer>
+</footer>
+</html>

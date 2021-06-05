@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:display="http://www.w3.org/1999/xhtml"
+      xmlns:justify-content="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
+    <title>Shop</title>
+</head>
+<body>
+<header th:include="fragments/header::header"></header>
+<h1 style="margin-top: 2%" align="center">Shop</h1>
+<div class="container text-center" style="margin-top: 3%">
+    <div th:if="${role.equals('SALE_USER')}" class="text-start">
+        <label class="form-label" for="fileLoader"><span
+                style="font-size: x-large"><b>Upload new items</b></span></label>
+        <form id="fileLoader" action="#" th:action="@{/seller/items/upload}" enctype="multipart/form-data"
+              method="post">
+            <p><input class="form-control-sm" type="file" name="file" accept=".xml" required/></p>
+            <p><input class="btn btn-warning" type="submit" value="Upload"/></p>
+            <span>
+                <h4 style="color: green" th:text="${message}"></h4>
+                <h4 style="color: red; white-space: normal" th:text="${errorMessage}"></h4>
+            </span>
+        </form>
+    </div>
+    <div th:if="${page.objects.isEmpty()}">
+        <h2>There is no items here yet</h2>
+    </div>
+    <div th:unless="${page.objects.isEmpty()}">
+        <table class="table table-striped" style="table-layout: fixed">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Unique number</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${page.objects}">
+                <td>
+                    <a th:href="@{/items/{uuid}(uuid = ${item.uuid})}"
+                       th:text="${item.name}">Item name</a></td>
+                <td th:text="${item.uniqueNumber}">Unique number</td>
+                <td th:text="'$' + ${item.price}">Price</td>
+                <td th:if="${role.equals('SALE_USER')}">
+                    <span th:unless="${item.isDeleted}" style="display: flex; justify-content: space-around">
+                        <form action=#
+                              th:action="@{/seller/items/delete/{uuid}/{sourcePageNumber}(uuid = ${item.uuid}, sourcePageNumber=${page.pageNumber})}"
+                              method="post">
+                            <button class="btn btn-danger" type="submit">Delete</button>
+                        </form>
+                        <form action=#
+                              th:action="@{/seller/items/{uuid}/replicate/{sourcePageNumber}(uuid = ${item.uuid}, sourcePageNumber=${page.pageNumber})}"
+                              method="post">
+                            <button class="btn btn-primary" type="submit">Replicate</button>
+                        </form>
+                     </span>
+                    <span th:if="${item.isDeleted}" style="display: flex; justify-content: space-around">
+                        <span style="color: red"><b>Item deleted</b></span>
+                        <form action=#
+                          th:action="@{/seller/items/{itemUuid}/restore/{sourcePageNumber}(itemUuid = ${item.uuid}, sourcePageNumber=${page.pageNumber})}"
+                          method="post">
+                            <button class="btn btn-success" type="submit">Restore</button>
+                        </form>
+                    </span>
+
+                </td>
+                <td th:if="${role.equals('CUSTOMER_USER')}">
+                    <form th:if="${!(item.isDeleted or item.quantityInStock == 0)}" action=#
+                          th:action="@{/customer/cart/add/{itemUuid}/{sourcePageNumber}(itemUuid = ${item.uuid}, sourcePageNumber=${page.pageNumber})}"
+                          method="post">
+                        <button class="btn btn-warning" type="submit">Add to the cart</button>
+                    </form>
+                    <span th:unless="${!(item.isDeleted or item.quantityInStock == 0)}">
+                        <i style="color: red">Unavailable to order</i></span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <footer>
+        <div th:if="${page.countOfPages > 1}">
+        <span th:each="i : ${#numbers.sequence(1,page.countOfPages)}">
+            <span th:unless="${page.pageNumber == i}">
+            <a th:href="@{'/items?pageNumber=' + ${i}}" th:text="'|' + ${i} + '|'"></a>
+            </span>
+            <span th:if="${page.pageNumber == i}" th:text="${i}"></span>
+        </span>
+        </div>
+    </footer>
+</div>
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
+</body>
+</html>

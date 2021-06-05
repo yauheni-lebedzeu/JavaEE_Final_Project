@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet"/>
+    <title>404</title>
+</head>
+<body>
+<header th:include="fragments/header::header"></header>
+    <div style="color: red; margin-top: 10%" class="text-center">
+        <h1>Error 404</h1>
+        <h1>The page you requested was not found</h1>
+    </div>
+<script th:src="@{js/bootstrap.bundle.js}"></script>
+</body>
+</html>

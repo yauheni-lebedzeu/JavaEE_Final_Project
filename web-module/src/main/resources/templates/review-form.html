@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet"/>
+    <title>Leave a review</title>
+</head>
+<body>
+<header th:include="fragments/header::header"></header>
+<div class="container text-center">
+    <h1 style="margin-top: 3%">Leave a review</h1>
+    <form style="margin-top: 2%" class="form-text" action="#" th:action="@{/customer/reviews/add}" th:object="${reviewDTO}" method="post">
+        <label for="content">Review text</label><br>
+        <textarea th:field="*{content}" id="content" rows="10" cols="50"
+                  placeholder="Enter a text of an review..."
+                  title="A review text must be between 50 and 500 characters long" minlength="50" maxlength="500" required>
+        </textarea>
+        <p style="color: red; white-space: pre" th:if="${#fields.hasErrors('content')}" th:errors="*{content}">Content
+            errors</p><br>
+        <input class="btn btn-warning" type="submit" value="Leave">
+        <span> </span>
+        <input class="btn btn-warning" type="reset" value="Reset">
+    </form>
+</div>
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
+</body>
+</html>

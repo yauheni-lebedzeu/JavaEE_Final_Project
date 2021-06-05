@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet"/>
+    <title>Access denied</title>
+</head>
+<body>
+<header th:include="fragments/header::header"></header>
+<div align="center">
+    <p style="margin-top: 10%; color: red; font-size: 5em" >You do not have sufficient rights to view this page!</p>
+</div>
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
+</body>
+</html>

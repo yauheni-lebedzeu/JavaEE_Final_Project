@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}"/>
+    <title>Reviews</title>
+</head>
+<script th:src="@{js/bootstrap.bundle.js}"></script>
+<body>
+<header th:include="fragments/header::header"></header>
+<div class="container text-center">
+    <h1 style="margin-top: 2%">Reviews</h1>
+    <div style="margin-top: 3%" th:if="${page.getObjects.isEmpty()}">
+        <h2>There are no reviews here yet</h2>
+    </div>
+    <div style="margin-top: 3%" th:unless="${page.getObjects.isEmpty()}">
+        <table class="table table-bordered table-striped " style="table-layout: fixed">
+            <tbody>
+            <tr th:each="review : ${page.getObjects}">
+                <td align="justify">
+                <pre style="white-space:pre-wrap; word-break: break-word"
+                     th:text="${review.content}">Review content</pre>
+                    <span th:text="${review.fullName}">Author</span>
+                    <span th:if="${review.isAuthorDeleted}"><i style="color: red"> (deleted)</i></span><br>
+                    <i th:text="${review.getAdditionDateTime}">Addition date</i>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div th:if="${role == 'CUSTOMER_USER'}">
+        <h2><a th:href="@{/customer/reviews/add}">Leave review</a></h2>
+    </div>
+</div>
+<footer>
+    <div th:if="${page.countOfPages > 1}">
+        <span th:each="i : ${#numbers.sequence(1,page.countOfPages)}">
+            <span th:unless="${page.pageNumber == i}">
+            <a th:href="@{'/reviews?pageNumber=' + ${i}}" th:text="'|' + ${i} + '|'"></a>
+            </span>
+            <span th:if="${page.pageNumber == i}" th:text="${i}"></span>
+        </span>
+    </div>
+</footer>
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
+</body>
+</html>
